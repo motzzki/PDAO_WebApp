@@ -3,7 +3,6 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 
-// Create a pool of connections
 const pool = mysql
   .createPool({
     host: process.env.DB_HOST,
