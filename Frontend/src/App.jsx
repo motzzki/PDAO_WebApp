@@ -1,13 +1,33 @@
 import { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import Sidebar from "./components/Sidebar";
+import { Routes, Route } from "react-router-dom";
+
+import Login from "./pages/Login.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import PrivateRoute from "./layout/ProtectedRoute.jsx";
+import MainLayout from "./layout/MainLayout.jsx";
+import GraphReport from "./pages/GraphReport.jsx";
+import Registration from "./pages/Registration.jsx";
 
 function App() {
   return (
-    <>
-      <Sidebar />
-    </>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+
+      <Route
+        path="/"
+        element={
+          <PrivateRoute>
+            <MainLayout />
+          </PrivateRoute>
+        }
+      >
+        <Route index element={<Dashboard />} />
+        <Route path="/graph_report" element={<GraphReport />} />
+        <Route path="/registration" element={<Registration />} />
+      </Route>
+    </Routes>
   );
 }
 
