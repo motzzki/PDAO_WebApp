@@ -3,6 +3,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import { FaWheelchair, FaUsers, FaHouseUser } from "react-icons/fa";
 import { MdLiveHelp } from "react-icons/md";
 import CardPreview from "../components/CardPreview.jsx";
+import { Link, useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   return (
@@ -28,11 +29,13 @@ const Dashboard = () => {
           lg={3}
           className="d-flex justify-content-center"
         >
-          <CardPreview
-            cardTitle="Registered PWD"
-            cardBody="Total:"
-            ImageIcon={FaWheelchair}
-          />
+          <Link to="/registered_pwd">
+            <CardPreview
+              cardTitle="Registered PWD"
+              cardBody="Total:"
+              ImageIcon={FaWheelchair}
+            />
+          </Link>
         </Col>
         <Col
           xs={12}

@@ -9,6 +9,7 @@ import PrivateRoute from "./layout/ProtectedRoute.jsx";
 import MainLayout from "./layout/MainLayout.jsx";
 import GraphReport from "./pages/GraphReport.jsx";
 import Registration from "./pages/Registration.jsx";
+import RegisteredPwd from "./pages/RegisteredPwd.jsx";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route index element={<Dashboard />} />
         <Route path="/graph_report" element={<GraphReport />} />
         <Route path="/registration" element={<Registration />} />
+        <Route path="/registered_pwd" element={<RegisteredPwd />} />
       </Route>
     </Routes>
   );
