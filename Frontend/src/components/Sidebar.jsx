@@ -46,7 +46,7 @@ const Sidebar = () => {
     });
   };
   return (
-    <CDBSidebar className="d-flex flex-column vh-100 open-sans-bold">
+    <CDBSidebar className="d-flex flex-column vh-100 open-sans-bold bg-danger">
       <CDBSidebarHeader prefix={<i className="fa fa-bars" />}>
         PDAO
       </CDBSidebarHeader>

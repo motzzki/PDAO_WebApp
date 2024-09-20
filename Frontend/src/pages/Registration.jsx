@@ -32,7 +32,6 @@ const Registration = () => {
 
     if (
       !firstName ||
-      !middleName ||
       !lastName ||
       !gender ||
       !dateOfBirth ||

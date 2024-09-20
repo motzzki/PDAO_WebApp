@@ -58,7 +58,7 @@ const GraphReport = () => {
     ],
     chart: {
       type: "bar",
-      height: 350,
+      height: 450,
     },
     plotOptions: {
       bar: {
@@ -84,7 +84,7 @@ const GraphReport = () => {
     series: departmentData.map((data) => data.value),
     chart: {
       type: "pie",
-      height: 350,
+      height: 450,
     },
     labels: departmentData.map((data) => data.name),
     colors: ["#00E396", "#FF4560", "#008FFB", "#775DD0", "#FEB019"],
@@ -107,7 +107,7 @@ const GraphReport = () => {
               options={cityChartOptions}
               series={cityChartOptions.series}
               type="bar"
-              height={350}
+              height={450}
             />
           </div>
         </Tab>
@@ -118,7 +118,7 @@ const GraphReport = () => {
               options={departmentChartOptions}
               series={departmentChartOptions.series}
               type="pie"
-              height={350}
+              height={450}
             />
           </div>
         </Tab>

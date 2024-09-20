@@ -29,7 +29,7 @@ const Dashboard = () => {
           lg={3}
           className="d-flex justify-content-center"
         >
-          <Link to="/registered_pwd">
+          <Link to="/registered_pwd" className="text-decoration-none">
             <CardPreview
               cardTitle="Registered PWD"
               cardBody="Total:"
