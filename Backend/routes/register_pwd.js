@@ -111,10 +111,7 @@ router.post("/register_pwd", async (req, res) => {
       "INSERT INTO tbladdress (user_id, house_address, barangay) VALUES (?,?,?)",
       [userId, house_address, barangay]
     );
-    await connection.query(
-      "INSERT INTO tbladdress (user_id, house_address, barangay) VALUES (?,?,?)",
-      [userId, house_address, barangay]
-    );
+
     await connection.query(
       "INSERT INTO tbl_civilstatus (user_id, civilStatus) VALUES (?,?)",
       [userId, civilStatus]

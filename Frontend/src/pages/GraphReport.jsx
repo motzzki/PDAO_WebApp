@@ -1,59 +1,51 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Chart from "react-apexcharts";
-import { Tab, Tabs } from "react-bootstrap"; // Import Tabs and Tab components
+import { Tab, Tabs } from "react-bootstrap";
+
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 const GraphReport = () => {
-  const [cityData, setCityData] = useState([]);
-  const [departmentData, setDepartmentData] = useState([]);
+  const [barangayData, setBarangayData] = useState([]);
+  const [disabilityData, setDisabilityData] = useState([]);
+
+  // Fetch barangay data
+  const fetchBarangayData = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/api/barangay/get_barangay"
+      );
+      setBarangayData(response.data);
+    } catch (error) {
+      console.error("Error fetching barangay data:", error);
+    }
+  };
+
+  // Fetch disability data
+  const fetchDisabilityData = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/api/barangay/get_disability"
+      );
+      setDisabilityData(response.data);
+    } catch (error) {
+      console.error("Error fetching disability data:", error);
+    }
+  };
 
   useEffect(() => {
-    // Fetch users data
-    axios
-      .get("https://dummyjson.com/users")
-      .then((response) => {
-        const users = response.data.users;
-
-        // Extract cities from the user data
-        const cityList = users.map((user) => user.address.city);
-
-        // Create an object to count how many users live in each city
-        const cityCount = cityList.reduce((acc, city) => {
-          acc[city] = (acc[city] || 0) + 1;
-          return acc;
-        }, {});
-
-        // Convert the cityCount object into an array of city names and counts
-        const formattedCityData = Object.entries(cityCount).map(
-          ([city, count]) => ({ city, count })
-        );
-
-        // Prepare department data
-        const departmentList = users.map((user) => user.company.department); // Extract departments
-        const departmentCount = departmentList.reduce((acc, dept) => {
-          acc[dept] = (acc[dept] || 0) + 1;
-          return acc;
-        }, {});
-
-        const formattedDepartmentData = Object.entries(departmentCount).map(
-          ([department, count]) => ({ name: department, value: count })
-        );
-
-        // Set the data
-        setCityData(formattedCityData);
-        setDepartmentData(formattedDepartmentData);
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-      });
+    fetchBarangayData();
+    fetchDisabilityData();
   }, []);
 
-  // Chart options for city data
-  const cityChartOptions = {
+  // Chart options for the barangay data
+  const barangayChartOptions = {
     series: [
       {
-        name: "Number of Residents",
-        data: cityData.map((data) => data.count), // Use the count of people living in each city
+        name: "Registered Users",
+        data: barangayData.map((data) => data.Registered),
       },
     ],
     chart: {
@@ -62,31 +54,35 @@ const GraphReport = () => {
     },
     plotOptions: {
       bar: {
-        distributed: true, // Different colors for each city
+        distributed: true,
         horizontal: false,
         columnWidth: "50%",
       },
     },
-    colors: ["#00E396", "#FF4560", "#008FFB", "#775DD0", "#FEB019"],
+    colors: ["#008FFB"],
     dataLabels: {
       enabled: false,
     },
     xaxis: {
-      categories: cityData.map((data) => data.city), // Display city names on x-axis
+      categories: barangayData.map((data) =>
+        capitalizeFirstLetter(data.barangay)
+      ),
     },
     legend: {
       show: false,
     },
   };
 
-  // Chart options for department data
-  const departmentChartOptions = {
-    series: departmentData.map((data) => data.value),
+  // Chart options for the disability data
+  const disabilityChartOptions = {
+    series: disabilityData.map((data) => data.Num),
     chart: {
       type: "pie",
       height: 450,
     },
-    labels: departmentData.map((data) => data.name),
+    labels: disabilityData.map((data) =>
+      capitalizeFirstLetter(data.disability_status)
+    ),
     colors: ["#00E396", "#FF4560", "#008FFB", "#775DD0", "#FEB019"],
     dataLabels: {
       enabled: true,
@@ -97,26 +93,34 @@ const GraphReport = () => {
   };
 
   return (
-    <div>
-      <h1 className="open-sans-bold">Graph Report</h1>
-      <Tabs defaultActiveKey="cities" id="graph-report-tabs" className="mb-3">
-        <Tab eventKey="cities" title="Barangays">
-          <div>
-            <h2 className="open-sans-bold">Number of People Registered</h2>
+    <div className="container mt-5">
+      <h1 className="open-sans-bold text-center mb-4">Graphical Report</h1>
+      <Tabs
+        defaultActiveKey="barangays"
+        id="graph-report-tabs"
+        className="mb-3"
+      >
+        <Tab eventKey="barangays" title="Barangays">
+          <div className="mb-5">
+            <h2 className="open-sans-bold text-center mb-3">
+              Number of People Registered by Barangay
+            </h2>
             <Chart
-              options={cityChartOptions}
-              series={cityChartOptions.series}
+              options={barangayChartOptions}
+              series={barangayChartOptions.series}
               type="bar"
               height={450}
             />
           </div>
         </Tab>
-        <Tab eventKey="departments" title="Disabilities">
-          <div>
-            <h2 className="open-sans-bold">Percentage of Disabilities</h2>
+        <Tab eventKey="disabilities" title="Disabilities">
+          <div className="mb-5">
+            <h2 className="open-sans-bold text-center mb-3">
+              Disability Status Distribution
+            </h2>
             <Chart
-              options={departmentChartOptions}
-              series={departmentChartOptions.series}
+              options={disabilityChartOptions}
+              series={disabilityChartOptions.series}
               type="pie"
               height={450}
             />

@@ -10,6 +10,7 @@ import MainLayout from "./layout/MainLayout.jsx";
 import GraphReport from "./pages/GraphReport.jsx";
 import Registration from "./pages/Registration.jsx";
 import RegisteredPwd from "./pages/RegisteredPwd.jsx";
+import Barangay from "./pages/Barangay.jsx";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/graph_report" element={<GraphReport />} />
         <Route path="/registration" element={<Registration />} />
         <Route path="/registered_pwd" element={<RegisteredPwd />} />
+        <Route path="/barangay" element={<Barangay />} />
       </Route>
     </Routes>
   );

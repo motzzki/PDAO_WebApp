@@ -3,7 +3,7 @@ import { Card } from "react-bootstrap";
 
 const CardPreview = ({ cardTitle, cardBody, ImageIcon }) => {
   return (
-    <Card style={{ width: "18rem", textAlign: "center", cursor: "pointer" }}>
+    <Card style={{ width: "40rem", textAlign: "center", cursor: "pointer" }}>
       <Card.Body className="open-sans-bold">
         <div style={{ fontSize: "10rem", color: "#007bff" }}>
           <ImageIcon />

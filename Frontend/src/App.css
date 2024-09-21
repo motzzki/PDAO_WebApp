@@ -21,3 +21,12 @@
   font-style: normal;
   font-variation-settings: "wdth" 100;
 }
+
+.hover-bg-danger {
+  transition: background-color 0.3s ease;
+}
+
+.hover-bg-danger:hover {
+  background-color: #dc3545; /* Bootstrap's bg-danger color */
+  color: #fff; /* Optional: Change text color to white for better readability */
+}

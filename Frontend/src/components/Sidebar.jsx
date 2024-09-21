@@ -53,18 +53,22 @@ const Sidebar = () => {
       <CDBSidebarContent className="d-flex flex-column">
         <CDBSidebarMenu className="flex-fill">
           <Link to="/">
-            <CDBSidebarMenuItem>Dashboard</CDBSidebarMenuItem>
+            <CDBSidebarMenuItem icon="th-large">Dashboard</CDBSidebarMenuItem>
           </Link>
-          <CDBSidebarMenuItem>Notifications</CDBSidebarMenuItem>
+          <CDBSidebarMenuItem icon="th-large">Notifications</CDBSidebarMenuItem>
           <Link to="/registration">
-            <CDBSidebarMenuItem>PWD Registration</CDBSidebarMenuItem>
+            <CDBSidebarMenuItem icon="th-large">
+              PWD Registration
+            </CDBSidebarMenuItem>
           </Link>
           <Link to="/graph_report">
-            <CDBSidebarMenuItem>Graphical Report</CDBSidebarMenuItem>
+            <CDBSidebarMenuItem icon="th-large" className="">
+              Graphical Report
+            </CDBSidebarMenuItem>
           </Link>
         </CDBSidebarMenu>
         <div className="mt-auto" onClick={handleLogout}>
-          <CDBSidebarMenuItem>Logout</CDBSidebarMenuItem>
+          <CDBSidebarMenuItem icon="th-large">Logout</CDBSidebarMenuItem>
         </div>
       </CDBSidebarContent>
     </CDBSidebar>
