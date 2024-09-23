@@ -6,7 +6,7 @@ const PrivateRoute = ({ children }) => {
   const { auth } = useAuth();
 
   if (!auth.isAuthenticated) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/landing_page" />;
   }
 
   return children;

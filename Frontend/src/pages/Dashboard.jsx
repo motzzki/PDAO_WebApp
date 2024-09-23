@@ -19,7 +19,9 @@ const Dashboard = () => {
 
   const fetchTotalRegistered = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/api/barangay/get_total_registered");
+      const response = await axios.get(
+        "http://localhost:8000/api/barangay/get_total_registered"
+      );
       return response.data.total_registered;
     } catch (error) {
       console.error("Error fetching total registered users:", error);
@@ -47,21 +49,43 @@ const Dashboard = () => {
       <Row className="g-4 justify-content-center">
         <Col xs={12} sm={6} md={6} lg={6}>
           <Link to="/barangay" className="text-decoration-none">
-            <CardPreview cardTitle="Barangay" cardBody="Total: 18" 
-            ImageIcon={FaUsers} style={cardStyle} />
+            <CardPreview
+              cardTitle="Barangay"
+              cardBody="Total: 18"
+              ImageIcon={FaUsers}
+              style={cardStyle}
+            />
           </Link>
         </Col>
         <Col xs={12} sm={6} md={6} lg={6}>
           <Link to="/registered_pwd" className="text-decoration-none">
-            <CardPreview cardTitle="Registered PWD" cardBody={`Total: ${totalRegistered}`} ImageIcon={FaWheelchair} style={cardStyle} />
+            <CardPreview
+              cardTitle="Registered PWD"
+              cardBody={`Total: ${totalRegistered}`}
+              ImageIcon={FaWheelchair}
+              style={cardStyle}
+            />
           </Link>
         </Col>
         <Col xs={12} sm={6} md={6} lg={6}>
-          <CardPreview cardTitle="Facilities" cardBody="Total:" 
-          ImageIcon={FaHouseUser} style={cardStyle} />
+          <Link to="/facilities" className="text-decoration-none">
+            {" "}
+            {/* Made clickable */}
+            <CardPreview
+              cardTitle="Facilities"
+              cardBody="Anti/Pro"
+              ImageIcon={FaHouseUser}
+              style={cardStyle}
+            />
+          </Link>
         </Col>
         <Col xs={12} sm={6} md={6} lg={6}>
-          <CardPreview cardTitle="Help" cardBody="Click here for help!" ImageIcon={MdLiveHelp} style={cardStyle} />
+          <CardPreview
+            cardTitle="Help"
+            cardBody="Click here for help!"
+            ImageIcon={MdLiveHelp}
+            style={cardStyle}
+          />
         </Col>
       </Row>
     </Container>

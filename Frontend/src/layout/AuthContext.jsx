@@ -108,7 +108,7 @@ const AuthProvider = ({ children }) => {
 
   const logout = () => {
     clearToken();
-    navigate("/login");
+    navigate("/");
   };
 
   const isAdmin = () => auth.user?.role === "admin";

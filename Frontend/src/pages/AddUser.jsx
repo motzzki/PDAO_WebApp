@@ -7,25 +7,20 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import axios from "axios";
 
-const Registration = () => {
+const AddUser = () => {
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState(new Date());
+  const [dateOfBirth, setDateOfBirth] = useState("");
   const [contactNum, setContactNum] = useState("");
   const [email, setEmail] = useState("");
   const [nationality, setNationality] = useState("");
   const [age, setAge] = useState("");
   const [bloodType, setBloodType] = useState("");
-  const [disability, setDisability] = useState("");
   const [civilStatus, setCivilStatus] = useState("");
-  const [cause, setCause] = useState("");
   const [barangay, setBarangay] = useState("");
-  const [education, setEducation] = useState("");
-  const [employment, setEmployment] = useState("");
   const [address, setAddress] = useState("");
-  const [occupation, setOccupation] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,14 +35,9 @@ const Registration = () => {
       !nationality ||
       !age ||
       !bloodType ||
-      !disability ||
       !civilStatus ||
-      !cause ||
       !barangay ||
-      !education ||
-      !employment ||
-      !address ||
-      !occupation
+      !address
     ) {
       alert("Please fill in all the fields.");
       return;
@@ -57,28 +47,22 @@ const Registration = () => {
       first_name: firstName,
       middle_name: middleName,
       last_name: lastName,
-      gender: gender,
+      gender,
       date_of_birth: dateOfBirth,
       contact_num: contactNum,
-      email: email,
-      nationality: nationality,
-      age: age,
+      email,
+      nationality,
+      age,
       blood_type: bloodType,
-      disability_status: disability,
-      civilStatus: civilStatus,
-      cause_status: cause,
-      barangay: barangay,
-      educational_status: education,
-      employment_status: employment,
+      civil_status: civilStatus,
+      barangay,
       house_address: address,
-      occupation_name: occupation,
     };
 
     try {
       const response = await axios.post(
         "http://localhost:8000/api/registerPwd/register_pwd",
         newUser,
-
         {
           headers: {
             "Content-Type": "application/json",
@@ -86,32 +70,16 @@ const Registration = () => {
         }
       );
       if (response.status !== 201) {
-        // Check for 201 status code
         throw new Error("Failed to add user");
       } else {
         alert("Added Successfully");
-        setFirstName("");
-        setAddress("");
-        setAge("");
-        setBarangay("");
-        setBloodType("");
-        setCause("");
-        setCivilStatus("");
-        setContactNum("");
-        setDateOfBirth("");
-        setDisability("");
-        setEducation("");
-        setEmail("");
-        setEmployment("");
-        setLastName("");
-        setMiddleName("");
-        setNationality("");
-        setOccupation("");
+        clearForm();
       }
     } catch (err) {
       console.error("Error adding user:", err.message);
     }
   };
+
   const clearForm = () => {
     setFirstName("");
     setMiddleName("");
@@ -126,18 +94,13 @@ const Registration = () => {
     setCivilStatus("");
     setBarangay("");
     setAddress("");
-    setCause("");
-    setEducation("");
-    setOccupation("");
-    setEmployment("");
   };
 
   return (
     <Card>
-      <Card.Header className="open-sans-bold fs-3">Add PWD</Card.Header>
+      <Card.Header className="open-sans-bold fs-3">Add User</Card.Header>
       <Card.Body className="open-sans-regular">
         <Form className="my-2" onSubmit={handleSubmit}>
-          {/* Name Fields */}
           <Row className="mb-3">
             <Col md={4}>
               <FloatingLabel controlId="floatingFirstName" label="First Name">
@@ -146,16 +109,6 @@ const Registration = () => {
                   placeholder="First Name"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                />
-              </FloatingLabel>
-            </Col>
-            <Col md={4}>
-              <FloatingLabel controlId="floatingLastName" label="Last Name">
-                <Form.Control
-                  type="text"
-                  placeholder="Last Name"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
                 />
               </FloatingLabel>
             </Col>
@@ -169,12 +122,21 @@ const Registration = () => {
                 />
               </FloatingLabel>
             </Col>
+            <Col md={4}>
+              <FloatingLabel controlId="floatingLastName" label="Last Name">
+                <Form.Control
+                  type="text"
+                  placeholder="Last Name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
+              </FloatingLabel>
+            </Col>
           </Row>
 
-          {/* Sex and Date of Birth */}
           <Row className="mb-3">
             <Col md={6}>
-              <FloatingLabel controlId="floatingSex" label="Gender">
+              <FloatingLabel controlId="floatingGender" label="Gender">
                 <Form.Select
                   aria-label="Gender"
                   value={gender}
@@ -193,16 +155,19 @@ const Registration = () => {
                 <Form.Control
                   type="date"
                   placeholder="Date of Birth"
+                  value={dateOfBirth}
                   onChange={(e) => setDateOfBirth(e.target.value)}
                 />
               </Form.Group>
             </Col>
           </Row>
 
-          {/* Mobile Number, Email Address, and Nationality */}
           <Row className="mb-3">
             <Col md={4}>
-              <FloatingLabel controlId="floatingMobile" label="Mobile Number">
+              <FloatingLabel
+                controlId="floatingContactNum"
+                label="Mobile Number"
+              >
                 <Form.Control
                   type="number"
                   placeholder="Mobile Number"
@@ -236,7 +201,6 @@ const Registration = () => {
             </Col>
           </Row>
 
-          {/* Age, Blood Type, and Occupation */}
           <Row className="mb-3">
             <Col md={4}>
               <FloatingLabel controlId="floatingAge" label="Age">
@@ -268,43 +232,6 @@ const Registration = () => {
               </FloatingLabel>
             </Col>
             <Col md={4}>
-              <FloatingLabel controlId="floatingOccupation" label="Occupation">
-                <Form.Control
-                  type="text"
-                  placeholder="Occupation"
-                  value={occupation}
-                  onChange={(e) => setOccupation(e.target.value)}
-                />
-              </FloatingLabel>
-            </Col>
-          </Row>
-
-          {/* Disability Type, Civil Status, Barangay, and Disability Cause */}
-          <Row className="mb-3">
-            <Col md={6}>
-              <FloatingLabel
-                controlId="floatingDisabilityType"
-                label="Type of Disability"
-              >
-                <Form.Select
-                  aria-label="Type of Disability"
-                  value={disability}
-                  onChange={(e) => setDisability(e.target.value)}
-                >
-                  <option value="">Select Disability Type</option>
-                  <option value="psychosocial">Psychosocial Disability</option>
-                  <option value="visual">Visual Disability</option>
-                  <option value="speech">Speech Disability</option>
-                  <option value="mental">Mental Disability</option>
-                  <option value="learning">Learning Disability</option>
-                  <option value="hearing">Hearing Disability</option>
-                  <option value="orthopedic">
-                    Orthopedic Disability (Musculoskeletal)
-                  </option>
-                </Form.Select>
-              </FloatingLabel>
-            </Col>
-            <Col md={6}>
               <FloatingLabel
                 controlId="floatingCivilStatus"
                 label="Civil Status"
@@ -337,93 +264,15 @@ const Registration = () => {
                   <option value="banaybanay">Banaybanay</option>
                   <option value="banlic">Banlic</option>
                   <option value="bigaa">Bigaa</option>
-                  <option value="butong">Butong</option>
-                  <option value="casile">Casile</option>
-                  <option value="diezmo">Diezmo</option>
-                  <option value="gulod">Gulod</option>
-                  <option value="mamatid">Mamatid</option>
-                  <option value="marinig">Marinig</option>
-                  <option value="niugan">Niugan</option>
-                  <option value="pittland">Pittland</option>
-                  <option value="poblacion-uno">Poblacion Uno</option>
-                  <option value="poblacion-dos">Poblacion Dos</option>
-                  <option value="poblacion-tres">Poblacion Tres</option>
-                  <option value="pulo">Pulo</option>
-                  <option value="sala">Sala</option>
-                  <option value="san-isidro">San Isidro</option>
                 </Form.Select>
               </FloatingLabel>
             </Col>
-            <Col md={4}>
-              <FloatingLabel
-                controlId="floatingSelectDisabilityCause"
-                label="Cause of Disability"
-              >
-                <Form.Select
-                  aria-label="Cause of Disability"
-                  value={cause}
-                  onChange={(e) => setCause(e.target.value)}
-                >
-                  <option value="">Select cause</option>
-                  <option value="inborn">Inborn</option>
-                  <option value="acquired">Acquired</option>
-                </Form.Select>
-              </FloatingLabel>
-            </Col>
-            <Col md={4}>
-              <FloatingLabel
-                controlId="floatingEducationalAttainment"
-                label="Educational Attainment"
-              >
-                <Form.Select
-                  aria-label="Educational Attainment"
-                  value={education}
-                  onChange={(e) => setEducation(e.target.value)}
-                >
-                  <option value="">Select Educational Attainment</option>
-                  <option value="none">None</option>
-                  <option value="kinder">Kindergarten</option>
-                  <option value="elem">Elementary</option>
-                  <option value="junior-high">Junior High</option>
-                  <option value="senior-high">Senior High</option>
-                  <option value="college">College</option>
-                  <option value="vocational">Vocational</option>
-                  <option value="post-graduate">Post Graduate</option>
-                </Form.Select>
-              </FloatingLabel>
-            </Col>
-          </Row>
-
-          {/* Employment Status */}
-          <Row className="mb-3">
-            <Col md={12}>
-              <FloatingLabel
-                controlId="floatingSelectEmployment"
-                label="Employment Status"
-              >
-                <Form.Select
-                  aria-label="Employment Status"
-                  value={employment}
-                  onChange={(e) => setEmployment(e.target.value)}
-                >
-                  <option value="">Select Employment Status</option>
-                  <option value="employed">Employed</option>
-                  <option value="unemployed">Unemployed</option>
-                  <option value="self-employed">Self-Employed</option>
-                  <option value="student">Student</option>
-                </Form.Select>
-              </FloatingLabel>
-            </Col>
-          </Row>
-
-          {/* Address (Text Area) */}
-          <Row className="mb-3">
-            <Col md={12}>
+            <Col md={8}>
               <FloatingLabel controlId="floatingAddress" label="Address">
                 <Form.Control
                   as="textarea"
-                  placeholder="Address"
-                  rows={3}
+                  placeholder="House #, Block #, Lot #"
+                  style={{ height: "100px" }}
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                 />
@@ -431,11 +280,11 @@ const Registration = () => {
             </Col>
           </Row>
 
-          <div className="d-flex justify-content-between mt-5">
+          <div className="d-flex justify-content-between">
             <Button variant="secondary" type="button" onClick={clearForm}>
               Clear
             </Button>
-            <Button size="lg" variant="primary" type="submit">
+            <Button variant="primary" type="submit">
               Register
             </Button>
           </div>
@@ -445,4 +294,4 @@ const Registration = () => {
   );
 };
 
-export default Registration;
+export default AddUser;

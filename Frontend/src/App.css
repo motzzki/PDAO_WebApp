@@ -22,11 +22,36 @@
   font-variation-settings: "wdth" 100;
 }
 
-.hover-bg-danger {
-  transition: background-color 0.3s ease;
+.custom-bg-image {
+  width: 100%; /* Make the image take full width */
+  height: auto; /* Maintain aspect ratio */
 }
 
-.hover-bg-danger:hover {
-  background-color: #dc3545; /* Bootstrap's bg-danger color */
-  color: #fff; /* Optional: Change text color to white for better readability */
+.navbar {
+  padding: 1rem; /* Increase padding for larger navbar */
+}
+
+.navbar-brand {
+  font-size: 1.5rem; /* Make brand text larger */
+}
+
+.nav-link {
+  font-size: 1.2rem; /* Make nav link text larger */
+}
+
+.btn {
+  font-size: 1.2rem; /* Make button text larger */
+}
+
+footer {
+  background-color: #343a40; /* Dark background */
+  color: white; /* Light text */
+}
+
+footer h5 {
+  margin-bottom: 10px;
+}
+
+footer p {
+  margin: 0;
 }

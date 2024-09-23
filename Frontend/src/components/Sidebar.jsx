@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "../layout/AuthContext.jsx";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -14,6 +14,7 @@ import {
 const Sidebar = () => {
   const { auth, logout } = useAuth();
   const { user } = auth;
+  const [isUserManagementOpen, setIsUserManagementOpen] = useState(false); // State to handle dropdown
 
   const handleLogout = () => {
     Swal.fire({
@@ -46,13 +47,15 @@ const Sidebar = () => {
   };
 
   const menuItemStyle = {
-    transition: "background-color 0.3s ease, box-shadow 0.3s ease",
+    transition:
+      "background-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease",
     borderRadius: "8px",
   };
 
   const hoverStyle = {
-    backgroundColor: "#f8d7da", 
-    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)", // Lighter shadow
+    backgroundColor: "#f8d7da",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+    color: "red", // Add hover text color here
   };
 
   return (
@@ -67,68 +70,164 @@ const Sidebar = () => {
               icon="th-large"
               style={menuItemStyle}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = hoverStyle.backgroundColor;
+                e.currentTarget.style.backgroundColor =
+                  hoverStyle.backgroundColor;
                 e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
+                e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = "";
                 e.currentTarget.style.boxShadow = "";
+                e.currentTarget.style.color = ""; // Revert text color on hover end
               }}
             >
               Dashboard
             </CDBSidebarMenuItem>
           </Link>
+
+          {/* Updated Notification Icon */}
           <CDBSidebarMenuItem
-            icon="th-large"
+            icon="bell"
             style={menuItemStyle}
             onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = hoverStyle.backgroundColor;
+              e.currentTarget.style.backgroundColor =
+                hoverStyle.backgroundColor;
               e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
+              e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = "";
               e.currentTarget.style.boxShadow = "";
+              e.currentTarget.style.color = ""; // Revert text color on hover end
             }}
           >
             Notifications
           </CDBSidebarMenuItem>
+
           <Link to="/registration">
+            {/* Updated PWD Registration Icon */}
             <CDBSidebarMenuItem
-              icon="th-large"
+              icon="file-alt"
               style={menuItemStyle}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = hoverStyle.backgroundColor;
+                e.currentTarget.style.backgroundColor =
+                  hoverStyle.backgroundColor;
                 e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
+                e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = "";
                 e.currentTarget.style.boxShadow = "";
+                e.currentTarget.style.color = ""; // Revert text color on hover end
               }}
             >
               PWD Registration
             </CDBSidebarMenuItem>
           </Link>
+
           <Link to="/graph_report">
+            {/* Updated Graphical Report Icon */}
             <CDBSidebarMenuItem
-              icon="th-large"
+              icon="chart-bar"
               style={menuItemStyle}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = hoverStyle.backgroundColor;
+                e.currentTarget.style.backgroundColor =
+                  hoverStyle.backgroundColor;
                 e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
+                e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.backgroundColor = "";
                 e.currentTarget.style.boxShadow = "";
+                e.currentTarget.style.color = ""; // Revert text color on hover end
               }}
             >
               Graphical Report
             </CDBSidebarMenuItem>
           </Link>
+
+          {/* User Management Dropdown */}
+          <div>
+            <CDBSidebarMenuItem
+              icon="user"
+              style={menuItemStyle}
+              onClick={() => setIsUserManagementOpen(!isUserManagementOpen)} // Toggle dropdown
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor =
+                  hoverStyle.backgroundColor;
+                e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
+                e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "";
+                e.currentTarget.style.boxShadow = "";
+                e.currentTarget.style.color = ""; // Revert text color on hover end
+              }}
+            >
+              User Management
+            </CDBSidebarMenuItem>
+            {isUserManagementOpen && (
+              <div style={{ paddingLeft: "20px" }}>
+                <Link to="/add_user">
+                  <CDBSidebarMenuItem
+                    icon="user-plus"
+                    style={menuItemStyle}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        hoverStyle.backgroundColor;
+                      e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
+                      e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "";
+                      e.currentTarget.style.boxShadow = "";
+                      e.currentTarget.style.color = ""; // Revert text color on hover end
+                    }}
+                  >
+                    Add User
+                  </CDBSidebarMenuItem>
+                </Link>
+                <Link to="/registered_users">
+                  <CDBSidebarMenuItem
+                    icon="users"
+                    style={menuItemStyle}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        hoverStyle.backgroundColor;
+                      e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
+                      e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "";
+                      e.currentTarget.style.boxShadow = "";
+                      e.currentTarget.style.color = ""; // Revert text color on hover end
+                    }}
+                  >
+                    Registered Users
+                  </CDBSidebarMenuItem>
+                </Link>
+              </div>
+            )}
+          </div>
         </CDBSidebarMenu>
-        <div className="mt-auto" onClick={handleLogout}>
-          <CDBSidebarMenuItem icon="th-large">
-            Logout
-          </CDBSidebarMenuItem>
+
+        {/* Updated Logout Icon */}
+        <div
+          className="mt-auto"
+          onClick={handleLogout}
+          style={menuItemStyle}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = hoverStyle.backgroundColor;
+            e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
+            e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "";
+            e.currentTarget.style.boxShadow = "";
+            e.currentTarget.style.color = ""; // Revert text color on hover end
+          }}
+        >
+          <CDBSidebarMenuItem icon="sign-out-alt">Logout</CDBSidebarMenuItem>
         </div>
       </CDBSidebarContent>
     </CDBSidebar>
@@ -136,4 +235,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
