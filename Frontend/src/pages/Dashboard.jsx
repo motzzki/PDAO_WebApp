@@ -3,7 +3,7 @@ import { Container, Row, Col } from "react-bootstrap";
 import { FaWheelchair, FaUsers, FaHouseUser } from "react-icons/fa";
 import { MdLiveHelp } from "react-icons/md";
 import CardPreview from "../components/CardPreview.jsx";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 const Dashboard = () => {
@@ -14,80 +14,54 @@ const Dashboard = () => {
       const total = await fetchTotalRegistered();
       setTotalRegistered(total);
     };
-
     getTotal();
   }, []);
 
   const fetchTotalRegistered = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/api/barangay/get_total_registered"
-      );
-      return response.data.total_registered; // Access the total_registered from the response
+      const response = await axios.get("http://localhost:8000/api/barangay/get_total_registered");
+      return response.data.total_registered;
     } catch (error) {
       console.error("Error fetching total registered users:", error);
-      throw error; // Rethrow the error to handle it later if needed
+      return "0"; // Default to zero if there's an error
     }
+  };
+
+  const cardStyle = {
+    width: "100%",
+    maxWidth: "300px",
+    height: "200px",
+    padding: "15px",
+    backgroundColor: "#f8f9fa",
+    borderRadius: "10px",
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+    margin: "10px", // Space between cards
   };
 
   return (
     <Container className="mt-4">
-      <Row className="g-4">
-        <Col
-          xs={12}
-          sm={6}
-          md={6}
-          lg={6} // Set to 6 for two cards per row on large screens
-          className="d-flex justify-content-center"
-        >
+      <Row className="g-4 justify-content-center">
+        <Col xs={12} sm={6} md={6} lg={6}>
           <Link to="/barangay" className="text-decoration-none">
-            <CardPreview
-              cardTitle="Barangay"
-              cardBody="Total: 18"
-              ImageIcon={FaUsers}
-            />
+            <CardPreview cardTitle="Barangay" cardBody="Total: 18" 
+            ImageIcon={FaUsers} style={cardStyle} />
           </Link>
         </Col>
-        <Col
-          xs={12}
-          sm={6}
-          md={6}
-          lg={6} // Set to 6 for two cards per row on large screens
-          className="d-flex justify-content-center"
-        >
+        <Col xs={12} sm={6} md={6} lg={6}>
           <Link to="/registered_pwd" className="text-decoration-none">
-            <CardPreview
-              cardTitle="Registered PWD"
-              cardBody={`Total: ${totalRegistered}`}
-              ImageIcon={FaWheelchair}
-            />
+            <CardPreview cardTitle="Registered PWD" cardBody={`Total: ${totalRegistered}`} ImageIcon={FaWheelchair} style={cardStyle} />
           </Link>
         </Col>
-        <Col
-          xs={12}
-          sm={6}
-          md={6}
-          lg={6} // Set to 6 for two cards per row on large screens
-          className="d-flex justify-content-center"
-        >
-          <CardPreview
-            cardTitle="Facilities"
-            cardBody="Total:"
-            ImageIcon={FaHouseUser}
-          />
+        <Col xs={12} sm={6} md={6} lg={6}>
+          <CardPreview cardTitle="Facilities" cardBody="Total:" 
+          ImageIcon={FaHouseUser} style={cardStyle} />
         </Col>
-        <Col
-          xs={12}
-          sm={6}
-          md={6}
-          lg={6} // Set to 6 for two cards per row on large screens
-          className="d-flex justify-content-center"
-        >
-          <CardPreview
-            cardTitle="Help"
-            cardBody="Click here for help!"
-            ImageIcon={MdLiveHelp}
-          />
+        <Col xs={12} sm={6} md={6} lg={6}>
+          <CardPreview cardTitle="Help" cardBody="Click here for help!" ImageIcon={MdLiveHelp} style={cardStyle} />
         </Col>
       </Row>
     </Container>
