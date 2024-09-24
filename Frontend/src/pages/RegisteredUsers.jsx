@@ -10,12 +10,10 @@ const TABLE_HEAD = [
   "Last Name",
   "Contact Number",
   "Email",
-  "Age",
   "Gender",
   "Birthdate",
-  "Blood Type",
-  "Nationality",
-  "Civil Status", // Added Civil Status
+  "Username",
+  "User Role",
   "Action",
 ];
 
@@ -29,9 +27,9 @@ const RegisteredUsers = () => {
   const fetchRegistered = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/pwdInfo/pwd_info`
+        `http://localhost:8000/api/user_management/get-employee`
       );
-      setRegisteredUsers(response.data); // Assuming you might want to use this later
+      setRegisteredUsers(response.data);
     } catch (error) {
       console.error("Error fetching PWD information:", error);
     }
@@ -58,12 +56,25 @@ const RegisteredUsers = () => {
           </tr>
         </thead>
         <tbody>
-          {/* Data has been removed */}
-          <tr>
-            <td colSpan={TABLE_HEAD.length} style={styles.noData}>
-              No registered users available.
-            </td>
-          </tr>
+          {registeredUsers.map((employee) => (
+            <tr
+              key={employee.employeeId}
+              style={styles.tableRow}
+              onMouseEnter={onRowHover}
+              onMouseLeave={onRowLeave}
+            >
+              <td>{employee.employeeId}</td>
+              <td>{employee.firstname}</td>
+              <td>{employee.middlename}</td>
+              <td>{employee.lastname}</td>
+              <td>{employee.contactnum}</td>
+              <td>{employee.email}</td>
+              <td>{employee.gender}</td>
+              <td>{employee.birthdate}</td>
+              <td>{employee.username}</td>
+              <td>{employee.group_name}</td>
+            </tr>
+          ))}
         </tbody>
       </Table>
     </div>

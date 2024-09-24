@@ -55,9 +55,9 @@ router.post("/register_pwd", async (req, res) => {
 
   try {
     await connection.beginTransaction();
-    const generatedUsername =
-      username || generateUsername(first_name, last_name);
+
     const generatedPassword = password || generatePassword();
+    const generateAccount = await generateAccountId();
     // const hashedPassword = await bcrypt.hash(
     //   password,
     //   parseInt(process.env.SALT_ROUNDS)
@@ -66,14 +66,14 @@ router.post("/register_pwd", async (req, res) => {
     const createdAt = new Date();
 
     const [userResult] = await connection.query(
-      "INSERT INTO tblusers (first_name, middle_name, last_name, contact_num, email, username, password, age, gender, date_of_birth, blood_type, created_at, nationality) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO tblusers (first_name, middle_name, last_name, contact_num, email, accountId, password, age, gender, date_of_birth, blood_type, created_at, nationality) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         first_name,
         middle_name,
         last_name,
         contact_num,
         email,
-        generatedUsername,
+        generateAccount,
         generatedPassword,
         age,
         gender,
@@ -121,7 +121,7 @@ router.post("/register_pwd", async (req, res) => {
 
     res.status(201).json({
       message: "User registered successfully",
-      username: generatedUsername,
+      accountId: generateAccount,
       password: generatedPassword,
     });
   } catch (error) {
@@ -133,12 +133,32 @@ router.post("/register_pwd", async (req, res) => {
   }
 });
 
-function generateUsername(firstName, lastName) {
-  const randomNumber = Math.floor(1000 + Math.random() * 9000); // Generate a random 4-digit number
-  return `${firstName.toLowerCase()}.${lastName.toLowerCase()}${randomNumber}`;
+async function generateAccountId() {
+  const connection = await pool.getConnection();
+
+  const generatedAccountId =
+    Math.floor(Math.random() * (999999999 - 100000000 + 1)) + 100000000; // Generate a random 10-digit number
+
+  await connection.beginTransaction();
+
+  const [results] = await connection.query(
+    `SELECT accountId FROM tblusers WHERE accountId = ?`,
+    [generatedAccountId]
+  );
+
+  console.log(results);
+
+  if (results?.length > 0) {
+    console.log("Nakarating sya dito");
+    return generateAccountId();
+  }
+
+  console.log(generatedAccountId);
+
+  return generatedAccountId;
 }
 
-function generatePassword(length = 12) {
+function generatePassword(length = 10) {
   const charset = "abcdefghijkmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ23456789";
 
   let password = "";

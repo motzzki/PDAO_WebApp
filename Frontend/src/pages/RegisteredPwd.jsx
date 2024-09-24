@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import axios from "axios";
 import moment from "moment";
+import eye from "../images/eye.svg";
+import PwdPreview from "../components/modal/PwdPreview";
 
 const TABLE_HEAD = [
   "User Id",
@@ -20,6 +22,15 @@ const TABLE_HEAD = [
 
 const RegisteredPwd = () => {
   const [registeredPwd, setRegisteredPwd] = useState([]);
+  const [showPwd, setShowPwd] = useState(false);
+  const [selectedPwd, setSelectedPwd] = useState(null); // State to hold selected PWD info
+
+  const handleShow = (infos) => {
+    setSelectedPwd(infos); // Set selected PWD info (contains userId)
+    setShowPwd(true);
+  };
+
+  const handleClose = () => setShowPwd(false);
 
   useEffect(() => {
     fetchRegistered();
@@ -50,12 +61,7 @@ const RegisteredPwd = () => {
         </thead>
         <tbody>
           {registeredPwd?.map((infos) => (
-            <tr
-              key={infos.userId}
-              style={styles.tableRow}
-              onMouseEnter={onRowHover}
-              onMouseLeave={onRowLeave}
-            >
+            <tr key={infos.userId} style={styles.tableRow}>
               <td>{infos.userId}</td>
               <td>{infos.first_name}</td>
               <td>{infos.middle_name}</td>
@@ -67,53 +73,56 @@ const RegisteredPwd = () => {
               <td>{moment(infos.date_of_birth).format("MMM DD, YYYY")}</td>
               <td>{infos.blood_type}</td>
               <td>{infos.nationality}</td>
-              <td>{}</td>
+              <td>
+                <img
+                  src={eye}
+                  onClick={() => handleShow(infos)} // Pass the current user info
+                  style={{ cursor: "pointer" }}
+                  alt="view"
+                />
+              </td>
             </tr>
           ))}
         </tbody>
       </Table>
+
+      {selectedPwd && (
+        <PwdPreview
+          show={showPwd}
+          handleClose={handleClose}
+          userId={selectedPwd.userId} // Pass userId here
+        />
+      )}
     </div>
   );
 };
 
 const styles = {
   tableContainer: {
-    padding: '20px',
-    backgroundColor: '#f8f9fa',
-    borderRadius: '10px',
-    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.05)',
+    padding: "20px",
+    backgroundColor: "#f8f9fa",
+    borderRadius: "10px",
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.05)",
   },
   table: {
-    borderCollapse: 'collapse',
-    width: '100%',
-    borderRadius: '10px',
-    overflow: 'hidden',
+    borderCollapse: "collapse",
+    width: "100%",
+    borderRadius: "10px",
+    overflow: "hidden",
   },
   tableHead: {
-    backgroundColor: '#e0e0e0', // light gray background for table headers
-    color: '#333', // dark text color for good contrast
-    textAlign: 'center',
-    fontWeight: 'bold',
-    padding: '12px',
+    backgroundColor: "#e0e0e0",
+    color: "#333",
+    textAlign: "center",
+    fontWeight: "bold",
+    padding: "12px",
   },
   tableRow: {
-    textAlign: 'center',
-    padding: '10px',
-    backgroundColor: '#ffffff', // white background for rows
-    transition: 'background-color 0.3s',
+    textAlign: "center",
+    padding: "10px",
+    backgroundColor: "#ffffff",
+    transition: "background-color 0.3s",
   },
-  tableRowHover: {
-    backgroundColor: '#f1f1f1', // light grey hover effect
-  },
-};
-
-const onRowHover = (e) => {
-  e.currentTarget.style.backgroundColor = '#f1f1f1'; // light grey on hover
-};
-const onRowLeave = (e) => {
-  e.currentTarget.style.backgroundColor = '#ffffff'; // reset to white
 };
 
 export default RegisteredPwd;
-
-

@@ -6,7 +6,7 @@ import axios from "axios";
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
-
+``;
 const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
     token: localStorage.getItem("accessToken") || null,

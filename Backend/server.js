@@ -26,11 +26,13 @@ import authUser from "./routes/authUser.js";
 import registerPwd from "./routes/register_pwd.js";
 import pwdInfo from "./routes/pwd_info.js";
 import barangay from "./routes/barangay.js";
+import user_management from "./routes/user_management.js";
 //
 app.use("/api/authUser", authUser);
 app.use("/api/registerPwd", registerPwd);
 app.use("/api/pwdInfo", pwdInfo);
 app.use("/api/barangay", barangay);
+app.use("/api/user_management", user_management);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

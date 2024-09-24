@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../layout/AuthContext.jsx";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import logo from "../images/logopdao.jpg";
 
 import {
   CDBSidebar,
@@ -61,6 +62,12 @@ const Sidebar = () => {
   return (
     <CDBSidebar className="d-flex flex-column vh-100 open-sans-bold bg-danger">
       <CDBSidebarHeader prefix={<i className="fa fa-bars" />}>
+        <img
+          src={logo}
+          alt="Logo"
+          className="rounded-circle"
+          style={{ width: "50px", height: "50px", marginRight: "10px" }}
+        />
         PDAO
       </CDBSidebarHeader>
       <CDBSidebarContent className="d-flex flex-column">
