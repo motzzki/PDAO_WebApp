@@ -55,3 +55,39 @@ footer h5 {
 footer p {
   margin: 0;
 }
+
+
+.icon-hover {
+  color: black; /* Default color */
+  transition: color 0.3s ease; /* Smooth transition */
+}
+
+.icon-hover:hover {
+  color: rgb(190, 46, 46); /* Color on hover */
+}
+
+.navbar {
+  background-color: rgb(190, 46, 46) !important;
+}
+
+.user-header {
+  height: 300px;
+}
+
+.userpage-container, .userFacility {
+  overflow-x: hidden;
+}
+
+div.footer {
+  background-color: red !important;
+}
+
+
+.contact-us, .about {
+  margin-top: 100px !important;
+}
+
+#footer-link {
+  color: white;
+}
+

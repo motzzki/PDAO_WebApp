@@ -42,7 +42,7 @@ router.post("/register_user", async (req, res) => {
     );
 
     await pool.query(
-      "INSERT INTO employees (firstname, middlename, lastname, username, password, gender, birthdate, contactnum, email, user_group) VALUES (?, ?, ?, ?, ?, ?,?, ?, ?, ?)",
+      "INSERT INTO employees (firstname, middlename, lastname, username, password, gender,birthdate, contactnum, email, user_group ) VALUES (?, ?, ?, ?, ?, ?,?, ?,?,?)",
       [
         firstname,
         middlename,
@@ -56,7 +56,7 @@ router.post("/register_user", async (req, res) => {
         user_group,
       ]
     );
-    console.log(generatePassword);
+    console.log(passwordGenerate);
 
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {

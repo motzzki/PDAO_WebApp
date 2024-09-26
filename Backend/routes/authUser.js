@@ -13,7 +13,7 @@ router.post("/register", async (req, res) => {
   }
 
   try {
-    const [rows] = await pool.query("SELECT * FROM users WHERE username = ?", [
+    const [rows] = await pool.query("SELECT * FROM users WHERE employees = ?", [
       username,
     ]);
 
@@ -46,7 +46,7 @@ router.post("/login", async (req, res) => {
   }
 
   try {
-    const [rows] = await pool.query("SELECT * FROM users WHERE username = ?", [
+    const [rows] = await pool.query("SELECT * FROM employees WHERE username = ?", [
       username,
     ]);
 
@@ -66,7 +66,7 @@ router.post("/login", async (req, res) => {
         id: user.id,
         first_name: user.first_name,
         username: user.username,
-        role: user.role,
+        // role: user.role,
       },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
@@ -77,7 +77,7 @@ router.post("/login", async (req, res) => {
         id: user.id,
         first_name: user.first_name,
         username: user.username,
-        role: user.role,
+        // role: user.role,
       },
       process.env.JWT_REFRESH_SECRET,
       { expiresIn: "3d" }

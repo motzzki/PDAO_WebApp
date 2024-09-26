@@ -5,6 +5,7 @@ import { MdLiveHelp } from "react-icons/md";
 import CardPreview from "../components/CardPreview.jsx";
 import { Link } from "react-router-dom";
 import axios from "axios";
+// import './Dashboard.css'; // Import the CSS file
 
 const Dashboard = () => {
   const [totalRegistered, setTotalRegistered] = useState("");
@@ -52,7 +53,7 @@ const Dashboard = () => {
             <CardPreview
               cardTitle="Barangay"
               cardBody="Total: 18"
-              ImageIcon={FaUsers}
+              ImageIcon={() => <FaUsers className="icon-hover" />} // Apply the hover class
               style={cardStyle}
             />
           </Link>
@@ -62,19 +63,17 @@ const Dashboard = () => {
             <CardPreview
               cardTitle="Registered PWD"
               cardBody={`Total: ${totalRegistered}`}
-              ImageIcon={FaWheelchair}
+              ImageIcon={() => <FaWheelchair className="icon-hover" />} // Apply the hover class
               style={cardStyle}
             />
           </Link>
         </Col>
         <Col xs={12} sm={6} md={6} lg={6}>
           <Link to="/facilities" className="text-decoration-none">
-            {" "}
-            {/* Made clickable */}
             <CardPreview
               cardTitle="Facilities"
               cardBody="Anti/Pro"
-              ImageIcon={FaHouseUser}
+              ImageIcon={() => <FaHouseUser className="icon-hover" />} // Apply the hover class
               style={cardStyle}
             />
           </Link>
@@ -83,7 +82,7 @@ const Dashboard = () => {
           <CardPreview
             cardTitle="Help"
             cardBody="Click here for help!"
-            ImageIcon={MdLiveHelp}
+            ImageIcon={() => <MdLiveHelp className="icon-hover" />} // Apply the hover class
             style={cardStyle}
           />
         </Col>

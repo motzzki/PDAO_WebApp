@@ -191,7 +191,7 @@ const Sidebar = () => {
                       e.currentTarget.style.color = ""; // Revert text color on hover end
                     }}
                   >
-                    Add User
+                    Add Employee
                   </CDBSidebarMenuItem>
                 </Link>
                 <Link to="/registered_users">
@@ -210,7 +210,7 @@ const Sidebar = () => {
                       e.currentTarget.style.color = ""; // Revert text color on hover end
                     }}
                   >
-                    Registered Users
+                    Registered Employee
                   </CDBSidebarMenuItem>
                 </Link>
               </div>

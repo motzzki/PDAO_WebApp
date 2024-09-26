@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Chart from "react-apexcharts";
-import { Tab, Tabs } from "react-bootstrap";
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -44,13 +43,13 @@ const GraphReport = () => {
   const barangayChartOptions = {
     series: [
       {
-        name: "Registered Users",
+        name:"",
         data: barangayData.map((data) => data.Registered),
       },
     ],
     chart: {
       type: "bar",
-      height: 450,
+      height: 350,
     },
     plotOptions: {
       bar: {
@@ -68,6 +67,15 @@ const GraphReport = () => {
         capitalizeFirstLetter(data.barangay)
       ),
     },
+    tooltip: {
+      y: {
+        formatter: (value, { seriesIndex, dataPointIndex }) => {
+          const barangay = barangayData[dataPointIndex].barangay;
+          const registered = barangayData[dataPointIndex].Registered;
+          return `${capitalizeFirstLetter(barangay)}: ${registered} registered`;
+        },
+      },
+    },
     legend: {
       show: false,
     },
@@ -78,7 +86,7 @@ const GraphReport = () => {
     series: disabilityData.map((data) => data.Num),
     chart: {
       type: "pie",
-      height: 450,
+      height: 350,
     },
     labels: disabilityData.map((data) =>
       capitalizeFirstLetter(data.disability_status)
@@ -93,40 +101,30 @@ const GraphReport = () => {
   };
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-1">
       <h1 className="open-sans-bold text-center mb-4">Graphical Report</h1>
-      <Tabs
-        defaultActiveKey="barangays"
-        id="graph-report-tabs"
-        className="mb-3"
-      >
-        <Tab eventKey="barangays" title="Barangays">
-          <div className="mb-5">
-            <h2 className="open-sans-bold text-center mb-3">
-              Number of People Registered by Barangay
-            </h2>
-            <Chart
-              options={barangayChartOptions}
-              series={barangayChartOptions.series}
-              type="bar"
-              height={450}
-            />
-          </div>
-        </Tab>
-        <Tab eventKey="disabilities" title="Disabilities">
-          <div className="mb-5">
-            <h2 className="open-sans-bold text-center mb-3">
-              Disability Status Distribution
-            </h2>
-            <Chart
-              options={disabilityChartOptions}
-              series={disabilityChartOptions.series}
-              type="pie"
-              height={450}
-            />
-          </div>
-        </Tab>
-      </Tabs>
+      <div className="mb-5">
+        <h2 className="open-sans-bold text-center mb-3">
+          Number of People Registered by Barangay
+        </h2>
+        <Chart
+          options={barangayChartOptions}
+          series={barangayChartOptions.series}
+          type="bar"
+          height={350}
+        />
+      </div>
+      <div className="mb-5 mt-3">
+        <h2 className="open-sans-bold text-center mb-5">
+          Disability Status Distribution
+        </h2>
+        <Chart
+          options={disabilityChartOptions}
+          series={disabilityChartOptions.series}
+          type="pie"
+          height={350}
+        />
+      </div>
     </div>
   );
 };

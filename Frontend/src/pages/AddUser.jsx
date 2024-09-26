@@ -71,6 +71,7 @@ const AddUser = () => {
     setMiddleName("");
     setLastName("");
     setGender("");
+    setUserGroup("");
     setDateOfBirth("");
     setContactNum("");
     setEmail("");
@@ -148,6 +149,7 @@ const AddUser = () => {
                   value={userGroup}
                   onChange={(e) => setUserGroup(e.target.value)}
                 >
+                  <option value="">Select Group</option>
                   <option value="2">STAFF</option>
                   <option value="1">ADMINISTRATOR</option>
                 </Form.Select>

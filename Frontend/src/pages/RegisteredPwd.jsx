@@ -3,6 +3,7 @@ import Table from "react-bootstrap/Table";
 import axios from "axios";
 import moment from "moment";
 import eye from "../images/eye.svg";
+import searchIcon from "../images/search.svg"; 
 import PwdPreview from "../components/modal/PwdPreview";
 
 const TABLE_HEAD = [
@@ -22,11 +23,13 @@ const TABLE_HEAD = [
 
 const RegisteredPwd = () => {
   const [registeredPwd, setRegisteredPwd] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [showPwd, setShowPwd] = useState(false);
-  const [selectedPwd, setSelectedPwd] = useState(null); // State to hold selected PWD info
+  const [selectedPwd, setSelectedPwd] = useState(null); 
+  const [hoveredUserId, setHoveredUserId] = useState(null); // State for tooltip visibility
 
   const handleShow = (infos) => {
-    setSelectedPwd(infos); // Set selected PWD info (contains userId)
+    setSelectedPwd(infos); 
     setShowPwd(true);
   };
 
@@ -38,17 +41,34 @@ const RegisteredPwd = () => {
 
   const fetchRegistered = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/pwdInfo/pwd_info`
-      );
+      const response = await axios.get(`http://localhost:8000/api/pwdInfo/pwd_info`);
       setRegisteredPwd(response.data);
     } catch (error) {
       console.error("Error fetching PWD information:", error);
     }
   };
 
+  const filteredPwd = registeredPwd.filter((infos) =>
+    `${infos.first_name} ${infos.middle_name} ${infos.last_name}`
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div style={styles.tableContainer}>
+      <div style={styles.searchContainer}>
+        <h1 style={styles.header}>Registered PWD</h1>
+        <div style={styles.searchWrapper}>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={styles.searchBar}
+          />
+          <img src={searchIcon} alt="search" style={styles.searchIcon} />
+        </div>
+      </div>
       <Table striped bordered hover responsive style={styles.table}>
         <thead>
           <tr>
@@ -60,7 +80,7 @@ const RegisteredPwd = () => {
           </tr>
         </thead>
         <tbody>
-          {registeredPwd?.map((infos) => (
+          {filteredPwd.map((infos) => (
             <tr key={infos.userId} style={styles.tableRow}>
               <td>{infos.userId}</td>
               <td>{infos.first_name}</td>
@@ -73,13 +93,18 @@ const RegisteredPwd = () => {
               <td>{moment(infos.date_of_birth).format("MMM DD, YYYY")}</td>
               <td>{infos.blood_type}</td>
               <td>{infos.nationality}</td>
-              <td>
+              <td style={{ position: "relative" }}>
                 <img
                   src={eye}
-                  onClick={() => handleShow(infos)} // Pass the current user info
+                  onClick={() => handleShow(infos)} 
+                  onMouseEnter={() => setHoveredUserId(infos.userId)} // Show tooltip
+                  onMouseLeave={() => setHoveredUserId(null)} // Hide tooltip
                   style={{ cursor: "pointer" }}
                   alt="view"
                 />
+                {hoveredUserId === infos.userId && (
+                  <div style={styles.tooltip}>See Details</div>
+                )}
               </td>
             </tr>
           ))}
@@ -90,7 +115,7 @@ const RegisteredPwd = () => {
         <PwdPreview
           show={showPwd}
           handleClose={handleClose}
-          userId={selectedPwd.userId} // Pass userId here
+          userId={selectedPwd.userId} 
         />
       )}
     </div>
@@ -103,6 +128,36 @@ const styles = {
     backgroundColor: "#f8f9fa",
     borderRadius: "10px",
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.05)",
+  },
+  searchContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between", // Adjust alignment
+    marginBottom: "15px",
+  },
+  header: {
+    margin: 0,
+    fontSize: "20px", // Adjust font size as needed
+  },
+  searchWrapper: {
+    position: "relative",
+    width: "200px", // Adjust width as needed
+  },
+  searchBar: {
+    padding: "10px",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+    width: "100%",
+    paddingRight: "30px", // Add padding to avoid overlap with the icon
+  },
+  searchIcon: {
+    position: "absolute",
+    right: "10px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    width: "20px",
+    height: "20px",
+    cursor: "pointer",
   },
   table: {
     borderCollapse: "collapse",
@@ -122,6 +177,18 @@ const styles = {
     padding: "10px",
     backgroundColor: "#ffffff",
     transition: "background-color 0.3s",
+  },
+  tooltip: {
+    position: "absolute",
+    bottom: "25px",
+    left: "50%",
+    transform: "translateX(-50%)",
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    color: "white",
+    padding: "5px 10px",
+    borderRadius: "5px",
+    fontSize: "12px",
+    zIndex: 10,
   },
 };
 

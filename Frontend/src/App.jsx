@@ -15,6 +15,10 @@ import AddUser from "./pages/AddUser.jsx";
 import RegisteredUsers from "./pages/RegisteredUsers.jsx";
 import Facilities from "./pages/Facilities.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
+import UserPage from "./pages/UserPage.jsx";
+import UserHeader from "./pages/UserHeader.jsx";
+import FooterUser from "./pages/Footer.jsx";
+import UserFacilities from "./pages/UserFacilities.jsx";
 
 function App() {
   return (
@@ -22,6 +26,11 @@ function App() {
       <Route path="/" element={<Navigate to="/landing_page" />} />
       <Route path="/landing_page" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
+      <Route path="UserHeader" element={<UserHeader />} />
+      {/* <Route path="Footer" element={<Footer />} /> */}
+      <Route path="UserFacilities" element={<UserFacilities />} />
+      <Route path="UserPage" element={<UserPage />} />
+      <Route path="FooterUser" element={<FooterUser />} />
 
       <Route
         path="/*"
@@ -39,7 +48,9 @@ function App() {
         <Route path="add_user" element={<AddUser />} />
         <Route path="registered_users" element={<RegisteredUsers />} />
         <Route path="facilities" element={<Facilities />} />
+        
       </Route>
+
     </Routes>
   );
 }
