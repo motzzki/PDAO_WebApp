@@ -137,7 +137,7 @@ async function generateAccountId() {
   const connection = await pool.getConnection();
 
   const generatedAccountId =
-    Math.floor(Math.random() * (999999999 - 100000000 + 1)) + 100000000; // Generate a random 10-digit number
+    Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 1000000; // Generate a random 7-digit number
 
   await connection.beginTransaction();
 

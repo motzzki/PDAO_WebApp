@@ -6,13 +6,14 @@ import axios from "axios";
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
-``;
+
 const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
     token: localStorage.getItem("accessToken") || null,
     isAuthenticated: !!localStorage.getItem("accessToken"),
     user: null,
   });
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,34 +23,20 @@ const AuthProvider = ({ children }) => {
         ...prev,
         user: {
           first_name: decodedToken.first_name,
-          role: decodedToken.role,
+          user_group: decodedToken.user_group,
         },
       }));
-    }
-  }, [auth.token]);
 
-  useEffect(() => {
-    const checkTokenExpiry = async () => {
-      if (!auth.token) return;
-
-      const decodedToken = jwtDecode(auth.token);
-      const currentTime = Date.now() / 1000;
-
-      if (decodedToken.exp < currentTime) {
-        try {
-          await refreshAuthToken();
-        } catch (error) {
-          clearToken();
-          navigate("/login");
-          alert("Session expired. Please log in again.");
-        }
+      // Redirect based on user_group
+      if (decodedToken.user_group === 1) {
+        navigate("/user-page");
+      } else if (
+        decodedToken.user_group === 2 ||
+        decodedToken.user_group === 3
+      ) {
+        navigate("/admin-page");
       }
-    };
-
-    checkTokenExpiry();
-    const interval = setInterval(checkTokenExpiry, 60000);
-
-    return () => clearInterval(interval);
+    }
   }, [auth.token, navigate]);
 
   const refreshAuthToken = async () => {
@@ -58,9 +45,7 @@ const AuthProvider = ({ children }) => {
 
     const response = await axios.post(
       "http://localhost:8000/api/authUser/token",
-      {
-        refreshToken,
-      }
+      { refreshToken }
     );
 
     handleToken(response.data.accessToken, refreshToken);
@@ -76,7 +61,7 @@ const AuthProvider = ({ children }) => {
       isAuthenticated: true,
       user: {
         first_name: decodedToken.first_name,
-        role: decodedToken.role,
+        user_group: decodedToken.user_group,
       },
     });
   };
@@ -97,6 +82,19 @@ const AuthProvider = ({ children }) => {
 
       const { accessToken, refreshToken } = response.data;
       handleToken(accessToken, refreshToken);
+
+      // Redirect based on user_group
+      const decodedToken = jwtDecode(accessToken);
+
+      if (decodedToken.user_group === 1) {
+        navigate("/user-page");
+      } else if (
+        decodedToken.user_group === 2 ||
+        decodedToken.user_group === 3
+      ) {
+        navigate("/admin-page");
+      }
+
       return "success";
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -111,7 +109,8 @@ const AuthProvider = ({ children }) => {
     navigate("/");
   };
 
-  const isAdmin = () => auth.user?.role === "admin";
+  const isAdmin = () =>
+    auth.user?.user_group === 2 || auth.user?.user_group === 3;
 
   return (
     <AuthContext.Provider value={{ auth, login, logout, isAdmin }}>

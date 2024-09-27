@@ -48,9 +48,6 @@ const Login = () => {
           icon: "success",
           title: "Signed in successfully",
         });
-        setTimeout(() => {
-          navigate("/");
-        }, 1000);
       } else {
         setError(result);
       }
