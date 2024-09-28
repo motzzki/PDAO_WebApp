@@ -72,7 +72,7 @@ const Sidebar = () => {
       </CDBSidebarHeader>
       <CDBSidebarContent className="d-flex flex-column">
         <CDBSidebarMenu className="flex-fill">
-          <Link to="/admin/dashboard">
+          <Link to="/admin">
             <CDBSidebarMenuItem
               icon="th-large"
               style={menuItemStyle}

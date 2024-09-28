@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import { Card, Row, Col, FloatingLabel, Form, Button } from "react-bootstrap";
 import axios from "axios";
 
 const AddUser = () => {
@@ -78,12 +73,14 @@ const AddUser = () => {
   };
 
   return (
-    <Card>
-      <Card.Header className="open-sans-bold fs-3">Add Employee</Card.Header>
-      <Card.Body className="open-sans-regular">
-        <Form className="my-2" onSubmit={handleSubmit}>
+    <Card className="shadow-sm">
+      <Card.Header className="open-sans-bold fs-3 text-center py-3">
+        Add Employee
+      </Card.Header>
+      <Card.Body className="open-sans-regular p-4">
+        <Form onSubmit={handleSubmit}>
           {/* First Row: First Name, Middle Name, Last Name, Username */}
-          <Row className="mb-3">
+          <Row className="mb-4">
             <Col md={3}>
               <FloatingLabel controlId="floatingFirstName" label="First Name">
                 <Form.Control
@@ -91,6 +88,7 @@ const AddUser = () => {
                   placeholder="First Name"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
+                  required
                 />
               </FloatingLabel>
             </Col>
@@ -111,6 +109,7 @@ const AddUser = () => {
                   placeholder="Last Name"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
+                  required
                 />
               </FloatingLabel>
             </Col>
@@ -121,19 +120,21 @@ const AddUser = () => {
                   placeholder="Username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
+                  required
                 />
               </FloatingLabel>
             </Col>
           </Row>
 
           {/* Second Row: Gender, User Group */}
-          <Row className="mb-3">
+          <Row className="mb-4">
             <Col md={6}>
               <FloatingLabel controlId="floatingGender" label="Gender">
                 <Form.Select
                   aria-label="Gender"
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
+                  required
                 >
                   <option value="">Select Gender</option>
                   <option value="male">Male</option>
@@ -145,9 +146,10 @@ const AddUser = () => {
             <Col md={6}>
               <FloatingLabel controlId="floatingGroup" label="User Group">
                 <Form.Select
-                  aria-label="Role"
+                  aria-label="User Group"
                   value={userGroup}
                   onChange={(e) => setUserGroup(e.target.value)}
+                  required
                 >
                   <option value="">Select Group</option>
                   <option value="2">STAFF</option>
@@ -158,34 +160,35 @@ const AddUser = () => {
           </Row>
 
           {/* Third Row: Date of Birth */}
-          <Row className="mb-3 justify-content-center">
-            <Col md={6}>
+          <Row className="mb-4">
+            <Col md={6} className="mx-auto">
               <FloatingLabel
                 controlId="floatingDateOfBirth"
                 label="Date of Birth"
               >
                 <Form.Control
                   type="date"
-                  placeholder="Date of Birth"
                   value={dateOfBirth}
                   onChange={(e) => setDateOfBirth(e.target.value)}
+                  required
                 />
               </FloatingLabel>
             </Col>
           </Row>
 
           {/* Fourth Row: Mobile Number, Email Address */}
-          <Row className="mb-3">
+          <Row className="mb-4">
             <Col md={6}>
               <FloatingLabel
                 controlId="floatingContactNum"
                 label="Mobile Number"
               >
                 <Form.Control
-                  type="number"
+                  type="text"
                   placeholder="Mobile Number"
                   value={contactNum}
                   onChange={(e) => setContactNum(e.target.value)}
+                  required
                 />
               </FloatingLabel>
             </Col>
@@ -196,17 +199,23 @@ const AddUser = () => {
                   placeholder="Email Address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  required
                 />
               </FloatingLabel>
             </Col>
           </Row>
 
           {/* Buttons */}
-          <div className="d-flex justify-content-between">
-            <Button variant="secondary" type="button" onClick={clearForm}>
+          <div className="d-flex justify-content-between mt-4">
+            <Button
+              variant="secondary"
+              type="button"
+              onClick={clearForm}
+              className="px-4"
+            >
               Clear
             </Button>
-            <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit" className="px-4">
               Register
             </Button>
           </div>

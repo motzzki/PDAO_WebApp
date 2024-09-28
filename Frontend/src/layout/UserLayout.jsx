@@ -1,16 +1,18 @@
 import React from "react";
 import UserHeader from "../components/UserHeader";
 import { Outlet } from "react-router-dom";
+import { Container } from "react-bootstrap";
 
 const UserLayout = () => {
   return (
     <div>
-      <div>
+      <header>
         <UserHeader />
-      </div>
-      <div>
+      </header>
+
+      <main>
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 };

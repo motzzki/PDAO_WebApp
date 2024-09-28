@@ -1,13 +1,31 @@
-const FooterUser = () => {
-    return (
-      <div className="text-center text-white mt-4 py-3 footer">
-        <p className="">&copy; {new Date().getFullYear()} Your Company. All rights reserved.</p>
-        <p>
-          <a href="/privacy-policy" id="footer-link">Privacy Policy</a> | 
-          <a href="/terms-of-service" id="footer-link"> Terms of Service</a>
-        </p>
-      </div>
-    );
-  };
+import React from "react";
+import { Container } from "react-bootstrap";
 
-  export default FooterUser;
+const FooterUser = () => {
+  return (
+    <footer className="bg-dark text-center text-white mt-4 py-3">
+      <Container>
+        <p className="mb-1">
+          &copy; {new Date().getFullYear()} Your Company. All rights reserved.
+        </p>
+        <p>
+          <a
+            href="/privacy-policy"
+            className="text-white text-decoration-none mx-2"
+          >
+            Privacy Policy
+          </a>
+          |
+          <a
+            href="/terms-of-service"
+            className="text-white text-decoration-none mx-2"
+          >
+            Terms of Service
+          </a>
+        </p>
+      </Container>
+    </footer>
+  );
+};
+
+export default FooterUser;

@@ -1,89 +1,74 @@
-import React, { useEffect, useState } from "react";
-import { Tabs, Tab, Container, Col, Row } from "react-bootstrap";
-import axios from "axios";
+import React from "react";
+import { Tabs, Tab, Container, Row, Col } from "react-bootstrap";
 import CardFacilities from "../components/CardFacilities";
 import rose from "../images/rosepwd.jpg";
 import ron from "../images/ron.jpg";
 
+const cardData = {
+  proFriendly: [
+    {
+      title: "Card 1",
+      text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit.",
+      imgSrc: ron,
+    },
+    {
+      title: "Card 2",
+      text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit.",
+      imgSrc: ron,
+    },
+    {
+      title: "Card 3",
+      text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit.",
+      imgSrc: ron,
+    },
+  ],
+  antiFriendly: [
+    {
+      title: "Card 1",
+      text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit.",
+      imgSrc: rose,
+    },
+    {
+      title: "Card 2",
+      text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit.",
+      imgSrc: rose,
+    },
+    {
+      title: "Card 3",
+      text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit.",
+      imgSrc: rose,
+    },
+  ],
+};
+
 const Facilities = () => {
+  const renderCardList = (cards) => {
+    return (
+      <Row className="g-4">
+        {cards.map((card, index) => (
+          <Col key={index} md={4}>
+            <CardFacilities
+              cardTitle={card.title}
+              cardText={card.text}
+              cardImg={card.imgSrc}
+            />
+          </Col>
+        ))}
+      </Row>
+    );
+  };
+
   return (
-    <Tabs
-      defaultActiveKey="profile"
-      id="uncontrolled-tab-example"
-      className="mb-3"
-    >
-      <Tab eventKey="home" title="Pro-Friendly">
-        <Row className="g-5">
-          <Col md={4}>
-            <CardFacilities
-              cardTitle="Card 1"
-              cardText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit."
-              cardImg={ron}
-            />
-          </Col>
-          <Col md={4}>
-            <CardFacilities
-              cardTitle="Card 2"
-              cardText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit."
-              cardImg={ron}
-            />
-          </Col>
-          <Col md={4}>
-            <CardFacilities
-              cardTitle="Card 3"
-              cardText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit."
-              cardImg={ron}
-            />
-          </Col>
-          <Col md={4}>
-            <CardFacilities
-              cardTitle="Card 3"
-              cardText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit."
-              cardImg={ron}
-            />
-          </Col>
-          <Col md={4}>
-            <CardFacilities
-              cardTitle="Card 3"
-              cardText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit."
-              cardImg={ron}
-            />
-          </Col>
-          <Col md={4}>
-            <CardFacilities
-              cardTitle="Card 3"
-              cardText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit."
-              cardImg={ron}
-            />
-          </Col>
-        </Row>
-      </Tab>
-      <Tab eventKey="profile" title="Anti-Friendly">
-        <Row className="g-5">
-          <Col md={4}>
-            <CardFacilities
-              cardTitle="Card 1"
-              cardText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit."
-              cardImg={rose}
-            />
-          </Col>
-          <Col md={4}>
-            <CardFacilities
-              cardTitle="Card 2"
-              cardText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit."
-              cardImg={rose}
-            />
-          </Col>
-          <Col md={4}>
-            <CardFacilities
-              cardTitle="Card 3"
-              cardText="Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit."
-              cardImg={rose}
-            />
-          </Col>
-        </Row>
-      </Tab>
-    </Tabs>
+    <Container className="my-4">
+      <Tabs defaultActiveKey="proFriendly" id="facilities-tab" className="mb-3">
+        <Tab eventKey="proFriendly" title="Pro-Friendly">
+          {renderCardList(cardData.proFriendly)}
+        </Tab>
+        <Tab eventKey="antiFriendly" title="Anti-Friendly">
+          {renderCardList(cardData.antiFriendly)}
+        </Tab>
+      </Tabs>
+    </Container>
   );
 };
 

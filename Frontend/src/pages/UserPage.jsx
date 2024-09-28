@@ -1,24 +1,25 @@
 import React from "react";
-import UserHeader from "../components/UserHeader";
 import FooterUser from "../components/UserFooter";
 import hehe from "../images/hehe.jpg";
+import { Container, Row, Col, Button, Form, Image } from "react-bootstrap";
 
 const UserPage = () => {
   return (
     <div className="userpage-container">
       <main>
-        <div className="user-header m-2">
-          <img
-            src={hehe}
-            className="img-fluid w-100 h-100"
-            alt="Responsive"
-            style={{ objectFit: "cover" }}
-          />
-        </div>
-        {/* brsSSQEkXn */}
-        <div className="userinfo mx-2">
-          <div className="row">
-            <div className="col-12 col-lg-8 col-md-6 px-3">
+        <Container>
+          <Row className="user-header mb-4">
+            <Image
+              src={hehe}
+              fluid
+              className="w-100 h-100"
+              style={{ objectFit: "cover" }}
+              alt="Responsive"
+            />
+          </Row>
+
+          <Row className="userinfo mb-5">
+            <Col lg={8} md={6} className="px-3">
               <h1 className="text-center">Welcome to the User Page</h1>
               <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -50,71 +51,55 @@ const UserPage = () => {
                 consectetur, ante sapien suscipit ex, a gravida felis ligula et
                 massa.
               </p>
-            </div>
-            <div className="col-12 col-lg-4 col-md-6 my-3">
-              <img
-                src={hehe}
-                className="img-fluid w-100 h-100"
-                alt="Responsive"
-              />
-            </div>
-          </div>
-        </div>
+            </Col>
+            <Col lg={4} md={6} className="my-3">
+              <Image src={hehe} fluid alt="Responsive" />
+            </Col>
+          </Row>
 
-        <div className="about m-2">
-          <h1 className="text-center">ABOUT US</h1>
-          <p className="my-2">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
-            vitae nisi in nulla fermentum commodo. Integer quis magna sit amet
-            libero commodo dapibus. Phasellus sit amet odio vel purus auctor
-            tincidunt. Vivamus sollicitudin, velit non laoreet cursus, sapien
-            ante convallis nunc, et fermentum velit arcu a elit. Duis in est
-            libero. Cras auctor, erat vitae viverra consectetur, ante sapien
-            suscipit ex, a gravida felis ligula et massa.
-          </p>
-        </div>
+          <Row className="about mb-5">
+            <Col className="text-center">
+              <h1>ABOUT US</h1>
+              <p className="my-3">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                Praesent vitae nisi in nulla fermentum commodo. Integer quis
+                magna sit amet libero commodo dapibus. Phasellus sit amet odio
+                vel purus auctor tincidunt. Vivamus sollicitudin, velit non
+                laoreet cursus, sapien ante convallis nunc, et fermentum velit
+                arcu a elit. Duis in est libero. Cras auctor, erat vitae viverra
+                consectetur, ante sapien suscipit ex, a gravida felis ligula et
+                massa.
+              </p>
+            </Col>
+          </Row>
 
-        <div className="contact-us m-2">
-          <h1 className="text-center mt-5">Contact Us</h1>
-          <form>
-            <div className="mb-3">
-              <label htmlFor="name" className="form-label">
-                Name
-              </label>
-              <input type="text" className="form-control" id="name" required />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="email" className="form-label">
-                Email
-              </label>
-              <input
-                type="email"
-                className="form-control"
-                id="email"
-                required
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="message" className="form-label">
-                Message
-              </label>
-              <textarea
-                className="form-control"
-                id="message"
-                rows="4"
-                required
-              ></textarea>
-            </div>
-
-            <div className="d-flex justify-content-center">
-              <button type="submit" className="btn btn-danger">
-                Send Message
-              </button>
-            </div>
-          </form>
-        </div>
+          <Row className="contact-us mb-5">
+            <Col className="text-center">
+              <h1>Contact Us</h1>
+              <Form className="mt-4">
+                <Form.Group controlId="name" className="mb-3">
+                  <Form.Label>Name</Form.Label>
+                  <Form.Control type="text" required />
+                </Form.Group>
+                <Form.Group controlId="email" className="mb-3">
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control type="email" required />
+                </Form.Group>
+                <Form.Group controlId="message" className="mb-3">
+                  <Form.Label>Message</Form.Label>
+                  <Form.Control as="textarea" rows={4} required />
+                </Form.Group>
+                <div className="d-flex justify-content-center">
+                  <Button variant="danger" type="submit">
+                    Send Message
+                  </Button>
+                </div>
+              </Form>
+            </Col>
+          </Row>
+        </Container>
+        <FooterUser />
       </main>
-      <FooterUser />
     </div>
   );
 };
