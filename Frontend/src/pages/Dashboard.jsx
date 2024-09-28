@@ -5,7 +5,6 @@ import { MdLiveHelp } from "react-icons/md";
 import CardPreview from "../components/CardPreview.jsx";
 import { Link } from "react-router-dom";
 import axios from "axios";
-// import './Dashboard.css'; // Import the CSS file
 
 const Dashboard = () => {
   const [totalRegistered, setTotalRegistered] = useState("");
@@ -49,7 +48,7 @@ const Dashboard = () => {
     <Container className="mt-4">
       <Row className="g-4 justify-content-center">
         <Col xs={12} sm={6} md={6} lg={6}>
-          <Link to="/barangay" className="text-decoration-none">
+          <Link to="/admin/barangay" className="text-decoration-none">
             <CardPreview
               cardTitle="Barangay"
               cardBody="Total: 18"
@@ -59,17 +58,17 @@ const Dashboard = () => {
           </Link>
         </Col>
         <Col xs={12} sm={6} md={6} lg={6}>
-          <Link to="/registered_pwd" className="text-decoration-none">
+          <Link to="/admin/registered_pwd" className="text-decoration-none">
             <CardPreview
               cardTitle="Registered PWD"
               cardBody={`Total: ${totalRegistered}`}
-              ImageIcon={() => <FaWheelchair className="icon-hover" />} // Apply the hover class
+              ImageIcon={() => <FaWheelchair className="icon-hover" />}
               style={cardStyle}
             />
           </Link>
         </Col>
         <Col xs={12} sm={6} md={6} lg={6}>
-          <Link to="/facilities" className="text-decoration-none">
+          <Link to="/admin/facilities" className="text-decoration-none">
             <CardPreview
               cardTitle="Facilities"
               cardBody="Anti/Pro"

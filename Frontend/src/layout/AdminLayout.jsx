@@ -2,7 +2,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 
-const MainLayout = () => {
+const AdminLayout = () => {
   return (
     <div className="d-flex flex-column flex-md-row vh-100">
       <div className="h-100">
@@ -15,4 +15,4 @@ const MainLayout = () => {
   );
 };
 
-export default MainLayout;
+export default AdminLayout;

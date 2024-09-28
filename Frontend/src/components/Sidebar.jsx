@@ -15,7 +15,7 @@ import {
 const Sidebar = () => {
   const { auth, logout } = useAuth();
   const { user } = auth;
-  const [isUserManagementOpen, setIsUserManagementOpen] = useState(false); // State to handle dropdown
+  const [isUserManagementOpen, setIsUserManagementOpen] = useState(false);
 
   const handleLogout = () => {
     Swal.fire({
@@ -72,7 +72,7 @@ const Sidebar = () => {
       </CDBSidebarHeader>
       <CDBSidebarContent className="d-flex flex-column">
         <CDBSidebarMenu className="flex-fill">
-          <Link to="/">
+          <Link to="/admin/dashboard">
             <CDBSidebarMenuItem
               icon="th-large"
               style={menuItemStyle}
@@ -111,8 +111,7 @@ const Sidebar = () => {
             Notifications
           </CDBSidebarMenuItem>
 
-          <Link to="/registration">
-            {/* Updated PWD Registration Icon */}
+          <Link to="/admin/registration">
             <CDBSidebarMenuItem
               icon="file-alt"
               style={menuItemStyle}
@@ -132,7 +131,7 @@ const Sidebar = () => {
             </CDBSidebarMenuItem>
           </Link>
 
-          <Link to="/graph_report">
+          <Link to="/admin/graph_report">
             {/* Updated Graphical Report Icon */}
             <CDBSidebarMenuItem
               icon="chart-bar"
@@ -175,7 +174,7 @@ const Sidebar = () => {
             </CDBSidebarMenuItem>
             {isUserManagementOpen && (
               <div style={{ paddingLeft: "20px" }}>
-                <Link to="/add_user">
+                <Link to="/admin/add_user">
                   <CDBSidebarMenuItem
                     icon="user-plus"
                     style={menuItemStyle}
@@ -194,7 +193,7 @@ const Sidebar = () => {
                     Add Employee
                   </CDBSidebarMenuItem>
                 </Link>
-                <Link to="/registered_users">
+                <Link to="/admin/registered_users">
                   <CDBSidebarMenuItem
                     icon="users"
                     style={menuItemStyle}

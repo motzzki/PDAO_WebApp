@@ -3,7 +3,6 @@ import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import hehe from "../images/hehe.jpg";
 import { Row, Col } from "react-bootstrap";
-import Footer from "../components/Footer";
 import FooterUser from "../components/UserFooter";
 
 const cardsData = Array.from({ length: 30 }, (_, index) => ({
@@ -15,8 +14,6 @@ const cardsData = Array.from({ length: 30 }, (_, index) => ({
 const UserFacilities = () => {
   return (
     <div>
-      <UserHeader />
-
       <div className="m-2 userFacility">
         <h1 className="text-center m-4">Facilities</h1>
         <Row xs={2} md={4} lg={5} className="g-4">

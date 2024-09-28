@@ -1,69 +1,59 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode"; // Ensure jwt-decode is imported correctly
 
 const AuthContext = createContext();
-
 export const useAuth = () => useContext(AuthContext);
 
 const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [auth, setAuth] = useState({
     token: localStorage.getItem("accessToken") || null,
     isAuthenticated: !!localStorage.getItem("accessToken"),
     user: null,
   });
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     if (auth.token) {
-      const decodedToken = jwtDecode(auth.token);
-      setAuth((prev) => ({
-        ...prev,
-        user: {
-          first_name: decodedToken.first_name,
-          user_group: decodedToken.user_group,
-        },
-      }));
+      const decodedUser = jwtDecode(auth.token);
+      setAuth((prev) => ({ ...prev, user: decodedUser }));
+    } else {
+      setAuth((prev) => ({ ...prev, user: null }));
+    }
+  }, [auth.token]);
 
-      // Redirect based on user_group
-      if (decodedToken.user_group === 1) {
-        navigate("/user-page");
-      } else if (
-        decodedToken.user_group === 2 ||
-        decodedToken.user_group === 3
-      ) {
-        navigate("/admin-page");
+  useEffect(() => {
+    if (auth.isAuthenticated && auth.user) {
+      if (auth.user.user_groups === 3) {
+        navigate("/user");
+      } else if ([1, 2].includes(auth.user.user_groups)) {
+        navigate("/admin");
       }
     }
-  }, [auth.token, navigate]);
+  }, [auth.isAuthenticated, auth.user]);
 
   const refreshAuthToken = async () => {
     const refreshToken = localStorage.getItem("refreshToken");
     if (!refreshToken) throw new Error("No refresh token available");
 
-    const response = await axios.post(
-      "http://localhost:8000/api/authUser/token",
-      { refreshToken }
-    );
-
-    handleToken(response.data.accessToken, refreshToken);
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/authUser/token",
+        { refreshToken }
+      );
+      handleToken(response.data.accessToken, refreshToken);
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      logout();
+    }
   };
 
   const handleToken = (accessToken, refreshToken) => {
     localStorage.setItem("accessToken", accessToken);
     localStorage.setItem("refreshToken", refreshToken);
-
-    const decodedToken = jwtDecode(accessToken);
-    setAuth({
-      token: accessToken,
-      isAuthenticated: true,
-      user: {
-        first_name: decodedToken.first_name,
-        user_group: decodedToken.user_group,
-      },
-    });
+    const decodedUser = jwtDecode(accessToken);
+    setAuth({ token: accessToken, isAuthenticated: true, user: decodedUser });
   };
 
   const clearToken = () => {
@@ -79,28 +69,13 @@ const AuthProvider = ({ children }) => {
         { username, password },
         { headers: { "Content-Type": "application/json" } }
       );
-
-      const { accessToken, refreshToken } = response.data;
-      handleToken(accessToken, refreshToken);
-
-      // Redirect based on user_group
-      const decodedToken = jwtDecode(accessToken);
-
-      if (decodedToken.user_group === 1) {
-        navigate("/user-page");
-      } else if (
-        decodedToken.user_group === 2 ||
-        decodedToken.user_group === 3
-      ) {
-        navigate("/admin-page");
-      }
-
+      handleToken(response.data.accessToken, response.data.refreshToken);
       return "success";
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        throw new Error("Incorrect username or password");
-      }
-      throw new Error("An error occurred during login");
+      console.error("Login error:", error);
+      const errorMessage =
+        error.response?.data?.error || "An error occurred during login";
+      throw new Error(errorMessage);
     }
   };
 
@@ -110,10 +85,12 @@ const AuthProvider = ({ children }) => {
   };
 
   const isAdmin = () =>
-    auth.user?.user_group === 2 || auth.user?.user_group === 3;
+    auth.user?.user_groups === 1 || auth.user?.user_groups === 2;
 
   return (
-    <AuthContext.Provider value={{ auth, login, logout, isAdmin }}>
+    <AuthContext.Provider
+      value={{ auth, login, logout, isAdmin, refreshAuthToken }}
+    >
       {children}
     </AuthContext.Provider>
   );

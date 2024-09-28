@@ -5,6 +5,10 @@ import express from "express";
 
 const router = express.Router();
 
+import { config } from "dotenv";
+
+config();
+
 router.post("/register", async (req, res) => {
   const { username, password, role } = req.body;
 
@@ -101,29 +105,26 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
-  // Validate input
   if (!username || !password) {
     return res.status(400).json({ error: "All fields are required" });
   }
 
   try {
-    // Check the employees table for staff and admin groups
     const [employeeRows] = await pool.query(
       `SELECT userId, accountId, password, user_group 
-      FROM tblusers join user_groups on userId = group_id 
+      FROM tblusers LEFT JOIN user_groups ON userId = group_id 
       WHERE accountId = ?`,
       [username]
     );
 
-    // Check the tblusers table if no employee was found
     const [userRows] = await pool.query(
-      `select employeeId, username, password, user_group from employees 
-      left join user_groups on group_id = employeeId 
-      where username = ?`,
+      `SELECT employeeId, username, password, user_group 
+       FROM employees 
+       LEFT JOIN user_groups ON group_id = employeeId 
+       WHERE username = ?`,
       [username]
     );
 
-    // Combine the results
     const user =
       employeeRows.length > 0
         ? employeeRows[0]
@@ -131,31 +132,22 @@ router.post("/login", async (req, res) => {
         ? userRows[0]
         : null;
 
-    // If user is not found
     if (!user) {
       return res.status(400).json({ error: "Invalid username or password" });
     }
 
-    // Check password
     let passwordMatch = false;
 
-    // If the user password is hashed, compare it
-    if (user.password) {
-      // Assuming if password starts with $2y$ (bcrypt hash)
-      if (user.password.startsWith("$2b$")) {
-        passwordMatch = await bcrypt.compare(password, user.password);
-      } else {
-        // For plain-text password
-        passwordMatch = password === user.password;
-      }
+    if (user.password.startsWith("$2b$")) {
+      passwordMatch = await bcrypt.compare(password, user.password);
+    } else {
+      passwordMatch = password === user.password;
     }
 
-    // If password does not match
     if (!passwordMatch) {
       return res.status(400).json({ error: "Invalid username or password" });
     }
 
-    // Generate access token
     const accessToken = jwt.sign(
       {
         id: user.employeeId || user.userId,
@@ -166,7 +158,6 @@ router.post("/login", async (req, res) => {
       { expiresIn: "1d" }
     );
 
-    // Generate refresh token
     const refreshToken = jwt.sign(
       {
         id: user.employeeId || user.userId,
@@ -177,13 +168,16 @@ router.post("/login", async (req, res) => {
       { expiresIn: "3d" }
     );
 
-    console.log("User Logged In:", {
-      id: user.id,
-      username: user.username,
-      user_group: user.user_group,
+    res.status(200).json({
+      accessToken,
+      refreshToken,
+      user: {
+        id: user.employeeId || user.userId,
+        username: user.username || user.accountId,
+        user_groups: user.user_group,
+      },
     });
-
-    res.status(200).json({ accessToken, refreshToken });
+    console.log(user);
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -205,10 +199,9 @@ router.post("/token", (req, res) => {
 
     const accessToken = jwt.sign(
       {
-        id: user.id,
-        first_name: user.first_name,
-        username: user.username,
-        role: user.role,
+        id: user.employeeId || user.userId,
+        username: user.username || user.accountId,
+        user_groups: user.user_group,
       },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }

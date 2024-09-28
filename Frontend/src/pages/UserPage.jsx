@@ -6,7 +6,6 @@ import hehe from "../images/hehe.jpg";
 const UserPage = () => {
   return (
     <div className="userpage-container">
-      <UserHeader />
       <main>
         <div className="user-header m-2">
           <img

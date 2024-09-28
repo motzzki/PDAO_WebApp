@@ -22,7 +22,6 @@ const GraphReport = () => {
     }
   };
 
-  // Fetch disability data
   const fetchDisabilityData = async () => {
     try {
       const response = await axios.get(
@@ -43,7 +42,7 @@ const GraphReport = () => {
   const barangayChartOptions = {
     series: [
       {
-        name:"",
+        name: "",
         data: barangayData.map((data) => data.Registered),
       },
     ],

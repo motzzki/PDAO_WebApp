@@ -33,33 +33,29 @@ const Login = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
-  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
-    setIsLoading(true);
+    setError(""); // Clear previous errors
+    setIsLoading(true); // Set loading state
 
     try {
-      const result = await login(username, password);
+      await login(username, password);
 
-      if (result === "success") {
-        Toast.fire({
-          icon: "success",
-          title: "Signed in successfully",
-        });
-      } else {
-        setError(result);
-      }
-    } catch {
+      Toast.fire({
+        icon: "success",
+        title: "Signed in successfully",
+      });
+    } catch (error) {
+      setError("Incorrect Details...");
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Incorrect Details...",
+        text: error.message || "An unexpected error occurred.",
         width: "26em",
       });
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Reset loading state
     }
   };
 
