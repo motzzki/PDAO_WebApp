@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import axios from "axios";
+import searchIcon from "../images/search.svg"; // Make sure the path is correct
 
 const TABLE_HEAD = ["Barangay", "Registered PWD"];
 
@@ -10,6 +11,7 @@ function capitalizeFirstLetter(string) {
 
 const Barangay = () => {
   const [barangayInfo, setBarangayInfo] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetchBarangayInfo();
@@ -26,8 +28,27 @@ const Barangay = () => {
     }
   };
 
+  const filteredBarangayInfo = barangayInfo.filter((infos) =>
+    capitalizeFirstLetter(infos.barangay)
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div style={styles.tableContainer}>
+      <div style={styles.header}>
+        <h1 style={styles.title}>Barangay</h1>
+        <div style={styles.searchWrapper}>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={styles.searchBar}
+          />
+          <img src={searchIcon} alt="search" style={styles.searchIcon} />
+        </div>
+      </div>
       <Table striped bordered hover responsive style={styles.table}>
         <thead>
           <tr>
@@ -39,7 +60,7 @@ const Barangay = () => {
           </tr>
         </thead>
         <tbody>
-          {barangayInfo?.map((infos) => (
+          {filteredBarangayInfo?.map((infos) => (
             <tr
               key={infos.barangay}
               style={styles.tableRow}
@@ -63,6 +84,36 @@ const styles = {
     borderRadius: '10px',
     boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.05)',
   },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between', // Space between title and search bar
+    alignItems: 'center', // Center align items vertically
+    marginBottom: '20px',
+  },
+  title: {
+    textAlign: 'left',
+    fontSize: '24px',
+  },
+  searchWrapper: {
+    position: 'relative',
+    width: '200px', // Adjust width as needed
+  },
+  searchBar: {
+    padding: '10px',
+    borderRadius: '5px',
+    border: '1px solid #ccc',
+    width: '100%',
+    paddingRight: '30px', // Add padding to avoid overlap with the icon
+  },
+  searchIcon: {
+    position: 'absolute',
+    right: '10px',
+    top: '50%',
+    transform: 'translateY(-50%)',
+    width: '20px',
+    height: '20px',
+    cursor: 'pointer',
+  },
   table: {
     borderCollapse: 'collapse',
     width: '100%',
@@ -70,8 +121,8 @@ const styles = {
     overflow: 'hidden',
   },
   tableHead: {
-    backgroundColor: '#e0e0e0', // light gray background for table headers
-    color: '#333', // dark text color for good contrast
+    backgroundColor: '#e0e0e0',
+    color: '#333',
     textAlign: 'center',
     fontWeight: 'bold',
     padding: '12px',
@@ -79,11 +130,8 @@ const styles = {
   tableRow: {
     textAlign: 'center',
     padding: '10px',
-    backgroundColor: '#ffffff', // white background for rows
+    backgroundColor: '#ffffff',
     transition: 'background-color 0.3s',
-  },
-  tableRowHover: {
-    backgroundColor: '#f1f1f1', // light grey hover effect
   },
 };
 

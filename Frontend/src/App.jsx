@@ -13,11 +13,14 @@ import RegisteredUsers from "./pages/RegisteredUsers.jsx";
 import Facilities from "./pages/Facilities.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
 import UserPage from "./pages/UserPage.jsx";
+import AddHelp from "./pages/AddHelp.jsx";
 
 import UserFacilities from "./pages/UserFacilities.jsx";
 import AdminLayout from "./layout/AdminLayout.jsx";
 import UserLayout from "./layout/UserLayout.jsx";
 import ProtectedRoute from "./layout/ProtectedRoute.jsx";
+import PwdInfo from "./pages/PwdInfo.jsx";
+
 
 function App() {
   return (
@@ -44,6 +47,7 @@ function App() {
         <Route path="add_user" element={<AddUser />} />
         <Route path="registered_users" element={<RegisteredUsers />} />
         <Route path="facilities" element={<Facilities />} />
+        <Route path="addhelp" element={<AddHelp />} />
       </Route>
 
       <Route
@@ -57,6 +61,7 @@ function App() {
         <Route index element={<UserPage />} />
         <Route path="user_page" element={<UserPage />} />
         <Route path="user_facilities" element={<UserFacilities />} />
+        <Route path="pwdinfo" element={<PwdInfo />} />
       </Route>
     </Routes>
   );

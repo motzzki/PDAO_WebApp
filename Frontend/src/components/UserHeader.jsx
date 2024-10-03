@@ -1,5 +1,5 @@
 import React from "react";
-import { Navbar, Container, Nav } from "react-bootstrap";
+import { Navbar, Container, Nav, OverlayTrigger, Tooltip } from "react-bootstrap";
 import { GoBell } from "react-icons/go";
 import { FiInfo } from "react-icons/fi";
 import { MdOutlineLogout } from "react-icons/md";
@@ -55,37 +55,65 @@ const UserHeader = () => {
         <Navbar.Toggle aria-controls="navbar-nav" />
         <Navbar.Collapse id="navbar-nav" className="justify-content-end">
           <Nav className="align-items-center">
-            <Nav.Link as={Link} to="/user" className="mx-2 text-white">
-              Home
-            </Nav.Link>
-            <Nav.Link
-              as={Link}
-              to="/user/user_facilities"
-              className="mx-2 text-white"
+            <OverlayTrigger
+              placement="bottom"
+              overlay={<Tooltip id="tooltip-home">Home</Tooltip>}
             >
-              Facilities
-            </Nav.Link>
+              <Nav.Link as={Link} to="/user" className="mx-2 text-white">
+                Home
+              </Nav.Link>
+            </OverlayTrigger>
+
+            <OverlayTrigger
+              placement="bottom"
+              overlay={<Tooltip id="tooltip-facilities">Facilities</Tooltip>}
+            >
+              <Nav.Link as={Link} to="/user/user_facilities" className="mx-2 text-white">
+                Facilities
+              </Nav.Link>
+            </OverlayTrigger>
+
             <Nav.Link
               href="#notifications"
               className="mx-2 text-white"
               style={{ fontSize: "1.5rem" }}
             >
-              <GoBell />
+              <OverlayTrigger
+                placement="bottom"
+                overlay={<Tooltip id="tooltip-notification">Notification</Tooltip>}
+              >
+                <span>
+                  <GoBell />
+                </span>
+              </OverlayTrigger>
             </Nav.Link>
-            <Nav.Link
-              href="#info"
-              className="mx-2 text-white"
-              style={{ fontSize: "1.5rem" }}
+
+            <OverlayTrigger
+              placement="bottom"
+              overlay={<Tooltip id="tooltip-info">View Profile Information</Tooltip>}
             >
-              <FiInfo />
-            </Nav.Link>
-            <Nav.Link
-              onClick={handleLogout}
-              className="mx-2 text-white"
-              style={{ fontSize: "1.5rem" }}
+              <Nav.Link
+                as={Link}
+                to="/user/pwdinfo"
+                className="mx-2 text-white"
+                style={{ fontSize: "1.5rem" }}
+              >
+                <FiInfo />
+              </Nav.Link>
+            </OverlayTrigger>
+
+            <OverlayTrigger
+              placement="bottom"
+              overlay={<Tooltip id="tooltip-logout">Logout</Tooltip>}
             >
-              <MdOutlineLogout />
-            </Nav.Link>
+              <Nav.Link
+                onClick={handleLogout}
+                className="mx-2 text-white"
+                style={{ fontSize: "1.5rem" }}
+              >
+                <MdOutlineLogout />
+              </Nav.Link>
+            </OverlayTrigger>
           </Nav>
         </Navbar.Collapse>
       </Container>

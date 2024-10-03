@@ -1,5 +1,5 @@
 import React from "react";
-import { Tabs, Tab, Container, Row, Col } from "react-bootstrap";
+import { Tabs, Tab, Container, Row, Col, Button } from "react-bootstrap";
 import CardFacilities from "../components/CardFacilities";
 import rose from "../images/rosepwd.jpg";
 import ron from "../images/ron.jpg";
@@ -58,8 +58,13 @@ const Facilities = () => {
     );
   };
 
+  const handleAddFacility = () => {
+    // Functionality for adding a facility goes here
+    alert("Add Facility button clicked!");
+  };
+
   return (
-    <Container className="my-4">
+    <Container className="my-4" style={{ position: "relative" }}>
       <Tabs defaultActiveKey="proFriendly" id="facilities-tab" className="mb-3">
         <Tab eventKey="proFriendly" title="Pro-Friendly">
           {renderCardList(cardData.proFriendly)}
@@ -68,6 +73,11 @@ const Facilities = () => {
           {renderCardList(cardData.antiFriendly)}
         </Tab>
       </Tabs>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
+        <Button variant="primary" onClick={handleAddFacility}>
+          Add Facility
+        </Button>
+      </div>
     </Container>
   );
 };

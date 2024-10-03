@@ -5,10 +5,10 @@ import bgLogo from "../images/bg_pdao.jpg";
 import Logo from "../images/logopdao.jpg";
 import iconLogo from "../images/iconuser.svg";
 import lockLogo from "../images/lock.svg";
-
+import eyeLogo from "../images/eye.svg"; 
+import eyeOffLogo from "../images/eye-off.svg"; 
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
-import Spinner from "react-bootstrap/Spinner";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 
@@ -32,22 +32,25 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
-    setIsLoading(true); // Set loading state
+    setError("");
+    setIsLoading(true);
 
     try {
       await login(username, password);
-
       Toast.fire({
         icon: "success",
         title: "Signed in successfully",
       });
     } catch (error) {
       setError("Incorrect Details...");
+      setUsername("");
+      setPassword("");
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -55,8 +58,16 @@ const Login = () => {
         width: "26em",
       });
     } finally {
-      setIsLoading(false); // Reset loading state
+      setIsLoading(false);
     }
+  };
+
+  const handleClose = () => {
+    // Clear fields or navigate away
+    setUsername("");
+    setPassword("");
+    // Optionally, navigate to another route
+    // navigate("/"); // Uncomment to redirect to home or another route
   };
 
   return (
@@ -69,7 +80,15 @@ const Login = () => {
       />
       <div className="position-absolute top-0 start-0 w-100 h-100 bg-black opacity-50" />
 
-      <Card className="w-25 bg-white bg-opacity-75 p-4 shadow-lg backdrop-blur-sm">
+      <Card className="w-25 bg-white bg-opacity-75 p-4 shadow-lg backdrop-blur-sm position-relative">
+        <button 
+          className="btn btn-close position-absolute top-0 end-0" 
+          onClick={handleClose} 
+          aria-label="Close"
+          style={{ backgroundColor: 'red', border: 'none', color: 'white' }} // Set background color to red
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
         <div className="d-flex justify-content-center mb-4">
           <img
             src={Logo}
@@ -107,13 +126,23 @@ const Login = () => {
                 />
               </InputGroup.Text>
               <Form.Control
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
               />
+              <InputGroup.Text
+                onClick={() => setShowPassword(!showPassword)}
+                style={{ cursor: "pointer" }}
+              >
+                <img
+                  src={showPassword ? eyeLogo : eyeOffLogo}
+                  alt="Toggle password visibility"
+                  style={{ width: "20px", height: "20px" }}
+                />
+              </InputGroup.Text>
             </InputGroup>
             <Button
               className="w-100 mt-4 fs-5"

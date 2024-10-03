@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode"; // Ensure jwt-decode is imported correctly
+import { jwtDecode } from "jwt-decode"; 
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
@@ -56,6 +56,23 @@ const AuthProvider = ({ children }) => {
     setAuth({ token: accessToken, isAuthenticated: true, user: decodedUser });
   };
 
+  const getLoggedUser = async () => {
+    if (!auth.isAuthenticated || !auth.user) throw new Error("User not authenticated");
+    try {
+      const response = await axios.get(`http://localhost:8000/api/pwdInfo/logged_user/${auth.user.id}`, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`, 
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching logged user info:", error.response ? error.response.data : error.message);
+      throw new Error("Failed to fetch user info");
+    }
+  };
+  
+  
+
   const clearToken = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
@@ -89,7 +106,7 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ auth, login, logout, isAdmin, refreshAuthToken }}
+      value={{ auth, login, logout, isAdmin, refreshAuthToken, getLoggedUser }}
     >
       {children}
     </AuthContext.Provider>
