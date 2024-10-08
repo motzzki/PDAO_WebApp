@@ -57,5 +57,54 @@ router.get("/get_total_registered", async (req, res) => {
     conn.release();
   }
 });
+// PAKI mERGE ANG ENDPOINT NG GRAPH
+router.get("/distributed_disability", async (req, res) => {
+  try {
+    conn = await pool.getConnection();
+    const [results] = await conn.query(`
+SELECT 
+    tbladdress.barangay, 
+    disabilities.disability_status,
+    COUNT(disabilities.user_id) AS user_count
+FROM 
+    tbladdress
+JOIN 
+    disabilities ON disabilities.user_id = tbladdress.user_id
+GROUP BY 
+    tbladdress.barangay, disabilities.disability_status;
+      `);
+
+    res.json(results);
+  } catch (err) {
+    console.error("Error fetching Distribution:", err);
+    res.status(500).json({ error: "Error fetching Distribution" });
+  } finally {
+    conn.release();
+  }
+});
+
+router.get("/monthly-enlist", async (req, res) => {
+  try {
+    conn = await pool.getConnection();
+    const [results] = await conn.query(`
+              SELECT 
+          DATE_FORMAT(created_at, '%M %Y') AS month, 
+          COUNT(*) AS user_count
+      FROM 
+          tblusers
+      GROUP BY 
+          month
+      ORDER BY 
+          MIN(created_at)
+              `);
+
+    res.json(results);
+  } catch (err) {
+    console.error("Error fetching Monthly Users:", err);
+    res.status(500).json({ error: "Error fetching Monthly Users" });
+  } finally {
+    conn.release();
+  }
+});
 
 export default router;

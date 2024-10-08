@@ -12,17 +12,17 @@ import rose from "../images/rose.jpg";
 
 const teamMembers = [
   {
-    imgsrc: `${ron}`,
+    imgsrc: `https://placehold.co/300x300/000000/FFF`,
     name: "Ronovir",
     bio: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi at sunt numquam blanditiis voluptas, ratione impedit distinctio nemo nobis cumque dignissimos saepe delectus a id laboriosam dolor tenetur odio cum.",
   },
   {
-    imgsrc: `${jim}`,
+    imgsrc: `https://placehold.co/300x300/000000/FFF`,
     name: "Jim",
     bio: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi at sunt numquam blanditiis voluptas, ratione impedit distinctio nemo nobis cumque dignissimos saepe delectus a id laboriosam dolor tenetur odio cum.",
   },
   {
-    imgsrc: `${rose}`,
+    imgsrc: `https://placehold.co/300x300/000000/FFF`,
     name: "Rose",
     bio: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi at sunt numquam blanditiis voluptas, ratione impedit distinctio nemo nobis cumque dignissimos saepe delectus a id laboriosam dolor tenetur odio cum.",
   },

@@ -9,7 +9,6 @@ const cardData = {
     {
       title: "Card 1",
       text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit.",
-      imgSrc: ron,
     },
     {
       title: "Card 2",
@@ -50,7 +49,7 @@ const Facilities = () => {
             <CardFacilities
               cardTitle={card.title}
               cardText={card.text}
-              cardImg={card.imgSrc}
+              cardImg={`https://placehold.co/300x300/000000/FFF`}
             />
           </Col>
         ))}
@@ -73,7 +72,13 @@ const Facilities = () => {
           {renderCardList(cardData.antiFriendly)}
         </Tab>
       </Tabs>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "20px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginTop: "20px",
+        }}
+      >
         <Button variant="primary" onClick={handleAddFacility}>
           Add Facility
         </Button>

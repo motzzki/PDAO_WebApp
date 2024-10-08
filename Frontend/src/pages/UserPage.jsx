@@ -10,7 +10,7 @@ const UserPage = () => {
         <Container>
           <Row className="user-header mb-4">
             <Image
-              src={hehe}
+              src={`https://placehold.co/600x300/000000/FFF`}
               fluid
               className="w-100 h-100"
               style={{ objectFit: "cover" }}

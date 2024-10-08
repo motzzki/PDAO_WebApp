@@ -1,11 +1,8 @@
 import React, { useState } from "react";
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
-import FloatingLabel from "react-bootstrap/FloatingLabel";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
+import { Button, Card, FloatingLabel, Form, Row, Col } from "react-bootstrap";
+
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const Registration = () => {
   const [firstName, setFirstName] = useState("");
@@ -89,7 +86,13 @@ const Registration = () => {
         // Check for 201 status code
         throw new Error("Failed to add user");
       } else {
-        alert("Added Successfully");
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "User Registered",
+          showConfirmButton: false,
+          timer: 1500,
+        });
         setFirstName("");
         setAddress("");
         setAge("");
@@ -146,6 +149,7 @@ const Registration = () => {
                   placeholder="First Name"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
+                  required
                 />
               </FloatingLabel>
             </Col>
@@ -156,6 +160,7 @@ const Registration = () => {
                   placeholder="Last Name"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
+                  required
                 />
               </FloatingLabel>
             </Col>
@@ -166,6 +171,7 @@ const Registration = () => {
                   placeholder="Middle Name"
                   value={middleName}
                   onChange={(e) => setMiddleName(e.target.value)}
+                  required
                 />
               </FloatingLabel>
             </Col>
@@ -194,6 +200,7 @@ const Registration = () => {
                   type="date"
                   placeholder="Date of Birth"
                   onChange={(e) => setDateOfBirth(e.target.value)}
+                  required
                 />
               </Form.Group>
             </Col>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Row, Col, Container, Tabs, Tab } from "react-bootstrap";
-import CardFacilities from "../components/CardFacilities"; // Ensure you import CardFacilities
+import CardFacilities from "../components/CardFacilities";
 import rose from "../images/rosepwd.jpg";
 import ron from "../images/ron.jpg";
 
@@ -50,7 +50,7 @@ const UserFacilities = () => {
             <CardFacilities
               cardTitle={card.title}
               cardText={card.text}
-              cardImg={card.imgSrc}
+              cardImg={`https://placehold.co/300x300/000000/FFF`}
             />
           </Col>
         ))}
@@ -61,7 +61,11 @@ const UserFacilities = () => {
   return (
     <Container className="my-4">
       <h2 className="text-center mb-4">Facilities</h2>
-      <Tabs defaultActiveKey="proFriendly" id="facilities-tabs" className="mb-3">
+      <Tabs
+        defaultActiveKey="proFriendly"
+        id="facilities-tabs"
+        className="mb-3"
+      >
         <Tab eventKey="proFriendly" title="Pro-Friendly">
           {renderCardList(cardData.proFriendly)}
         </Tab>

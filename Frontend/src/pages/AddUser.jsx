@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Card, Row, Col, FloatingLabel, Form, Button } from "react-bootstrap";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const AddUser = () => {
   const [firstName, setFirstName] = useState("");
@@ -53,7 +54,13 @@ const AddUser = () => {
       if (response.status !== 201) {
         throw new Error("Failed to add user");
       } else {
-        alert("Added Successfully");
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "User Registered",
+          showConfirmButton: false,
+          timer: 1500,
+        });
         clearForm();
       }
     } catch (err) {
