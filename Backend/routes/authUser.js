@@ -211,4 +211,27 @@ router.post("/token", (req, res) => {
   });
 });
 
+router.get("/get-employee/:Id", async (req, res) => {
+  const { Id } = req.params;
+  const conn = await pool.getConnection();
+  try {
+    const [employee] = await conn.query(
+      `select firstname, lastname, user_group
+    from employees where employeeId = ?`,
+      [Id]
+    );
+
+    if (employee.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.json(employee[0]);
+  } catch (err) {
+    console.error("Error fetching Infos:", err);
+    res.status(500).json({ error: "Error fetching Infos" });
+  } finally {
+    conn.release();
+  }
+});
+
 export default router;

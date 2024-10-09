@@ -1,7 +1,16 @@
 import React from "react";
 import FooterUser from "../components/UserFooter";
 import hehe from "../images/hehe.jpg";
-import { Container, Row, Col, Button, Form, Image } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Form,
+  Image,
+  Badge,
+  Card,
+} from "react-bootstrap";
 
 const UserPage = () => {
   return (
@@ -20,71 +29,100 @@ const UserPage = () => {
 
           <Row className="userinfo mb-5">
             <Col lg={8} md={6} className="px-3">
-              <h1 className="text-center">Welcome to the User Page</h1>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Praesent vitae nisi in nulla fermentum commodo. Integer quis
-                magna sit amet libero commodo dapibus. Phasellus sit amet odio
-                vel purus auctor tincidunt. Vivamus sollicitudin, velit non
-                laoreet cursus, sapien ante convallis nunc, et fermentum velit
-                arcu a elit. Duis in est libero. Cras auctor, erat vitae viverra
-                consectetur, ante sapien suscipit ex, a gravida felis ligula et
-                massa.
+              <h1 className="text-center open-sans-bold mb-3">
+                RA No. 7277: Magna Carta for Disabled Persons
+              </h1>
+              <p className="open-sans-regular fs-5">
+                Republic Act No. 7277, otherwise known as the Magna Carta for
+                Disabled Persons, was enacted to ensure that persons with
+                disabilities have the same rights as all individuals. This
+                measure promotes their full participation and integration into
+                society. The law clearly articulates the government’s
+                responsibility to guarantee equal opportunities and access to
+                health services for persons with disabilities.
               </p>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Praesent vitae nisi in nulla fermentum commodo. Integer quis
-                magna sit amet libero commodo dapibus. Phasellus sit amet odio
-                vel purus auctor tincidunt. Vivamus sollicitudin, velit non
-                laoreet cursus, sapien ante convallis nunc, et fermentum velit
-                arcu a elit. Duis in est libero. Cras auctor, erat vitae viverra
-                consectetur, ante sapien suscipit ex, a gravida felis ligula et
-                massa.
+              <p className="open-sans-regular fs-5">
+                However, the ideals and goals outlined in Republic Act No.
+                7277—such as providing a comprehensive range of accessible
+                services—cannot be fully realized without establishing an office
+                in every local government unit to address the needs of persons
+                with disabilities. Hence, the creation of the Persons with
+                Disabilities Affairs Office (PDAO) in every province, city, and
+                municipality is essential.
               </p>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Praesent vitae nisi in nulla fermentum commodo. Integer quis
-                magna sit amet libero commodo dapibus. Phasellus sit amet odio
-                vel purus auctor tincidunt. Vivamus sollicitudin, velit non
-                laoreet cursus, sapien ante convallis nunc, et fermentum velit
-                arcu a elit. Duis in est libero. Cras auctor, erat vitae viverra
-                consectetur, ante sapien suscipit ex, a gravida felis ligula et
-                massa.
+              <p className="open-sans-regular fs-5">
+                This office will formulate a master plan to institutionalize a
+                national health program for persons with disabilities, aiming to
+                enhance the delivery of health services to be more comprehensive
+                and efficient. Currently, no office exists to cater specifically
+                to the needs of persons with disabilities within local
+                government units. In summary, this bill seeks to establish a
+                PDAO in every province, city, and municipality.
               </p>
             </Col>
             <Col lg={4} md={6} className="my-3">
-              <Image src={hehe} fluid alt="Responsive" />
+              <Card className="mb-4">
+                <Card.Img variant="top" src="holder.js/100px180" />
+                <Card.Body>
+                  <Card.Title>Card Title</Card.Title>
+                  <Card.Text>
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                    Officia voluptates magnam tempora omnis saepe ducimus
+                    corrupti distinctio voluptate dolorem, asperiores
+                    consequuntur maiores impedit qui tempore!
+                  </Card.Text>
+                  <Button variant="primary">Go somewhere</Button>
+                </Card.Body>
+              </Card>
+              <Card className="mb-4">
+                <Card.Img variant="top" src="holder.js/100px180" />
+                <Card.Body>
+                  <Card.Title>Card Title</Card.Title>
+                  <Card.Text>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                    Labore minus laudantium mollitia neque enim totam quidem
+                    voluptatibus maiores corrupti, non, dolore minima ex,
+                    suscipit delectus.
+                  </Card.Text>
+                  <Button variant="primary">Go somewhere</Button>
+                </Card.Body>
+              </Card>
             </Col>
           </Row>
 
           <Row className="about mb-5">
             <Col className="text-center">
-              <h1>ABOUT US</h1>
-              <p className="my-3">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Praesent vitae nisi in nulla fermentum commodo. Integer quis
-                magna sit amet libero commodo dapibus. Phasellus sit amet odio
-                vel purus auctor tincidunt. Vivamus sollicitudin, velit non
-                laoreet cursus, sapien ante convallis nunc, et fermentum velit
-                arcu a elit. Duis in est libero. Cras auctor, erat vitae viverra
-                consectetur, ante sapien suscipit ex, a gravida felis ligula et
-                massa.
+              <h1>About Us</h1>
+              <p className="my-3 open-sans-regular fs-5">
+                The Persons with Disabilities Affairs Office (PDAO) is dedicated
+                to promoting the rights and welfare of persons with disabilities
+                (PWDs) in our community. Our mission is to foster an inclusive
+                environment where PWDs can fully participate in society, access
+                essential services, and lead empowered lives.
+              </p>
+              <p className="my-3 open-sans-regular fs-5">
+                We advocate for their needs, facilitate programs for education
+                and employment, and work closely with local government and
+                organizations to ensure that PWDs receive the support they
+                deserve. Together, we strive to break barriers and create a
+                society that values and respects every individual.
               </p>
             </Col>
           </Row>
 
           <Row className="contact-us mb-5">
             <Col className="text-center">
-              <h1>Contact Us</h1>
+              <h1 className="mb-3">Contact Us</h1>
+              <h4 className="open-sans-regular">
+                <Badge bg="danger">pdaocabuyaocity2024@gmail.com</Badge>
+              </h4>
+              <h4>
+                <Badge bg="danger">
+                  P. Burgos St. (in front of St. Claire Church) Brgy. Poblacion
+                  Uno 4025 Cabuyao, Philippines
+                </Badge>
+              </h4>
               <Form className="mt-4">
-                <Form.Group controlId="name" className="mb-3">
-                  <Form.Label>Name</Form.Label>
-                  <Form.Control type="text" required />
-                </Form.Group>
-                <Form.Group controlId="email" className="mb-3">
-                  <Form.Label>Email</Form.Label>
-                  <Form.Control type="email" required />
-                </Form.Group>
                 <Form.Group controlId="message" className="mb-3">
                   <Form.Label>Message</Form.Label>
                   <Form.Control as="textarea" rows={4} required />

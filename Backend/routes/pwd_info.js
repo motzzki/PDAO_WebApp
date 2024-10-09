@@ -19,27 +19,32 @@ router.get("/pwd_info", async (req, res) => {
   }
 });
 
-
 router.get("/logged_user/:userId", async (req, res) => {
-  const {userId} = req.params
+  const { userId } = req.params;
   try {
     conn = await pool.getConnection();
 
-    const [infos] = await conn.query(`SELECT first_name, middle_name, last_name, email, age, gender, date_of_birth, blood_type, contact_num,
-  disability_status, cause_status, civilStatus, educational_status, employment_status, occupation_name, house_address, barangay 
-  FROM tblusers
-  JOIN disabilities on disability_id = userId
-  JOIN tbl_civilstatus on civil_id = userId
-  JOIN tbl_cause_of_disability on cause_id = userId
-  JOIN tbl_educational_background on education_id = userId
-  JOIN tbl_employment_status on status_id = userId
-  JOIN tbl_occupations on occupation_id = userId
-  JOIN tbladdress on address_id = userId
-  WHERE userId = ?`, [userId]);
+    const [infos] = await conn.query(
+      `SELECT u.userId, u.first_name, u.middle_name, u.last_name, u.email, u.age, u.gender, 
+       u.date_of_birth, u.blood_type, u.contact_num,
+       d.disability_status, c.cause_status, cs.civilStatus, 
+       eb.educational_status, es.employment_status, o.occupation_name, 
+       a.house_address, a.barangay 
+            FROM tblusers u
+            LEFT JOIN disabilities d ON d.user_id = u.userId
+            LEFT JOIN tbl_civilstatus cs ON cs.user_id = u.userId
+            LEFT JOIN tbl_cause_of_disability c ON c.user_id = u.userId
+            LEFT JOIN tbl_educational_background eb ON eb.user_id = u.userId
+            LEFT JOIN tbl_employment_status es ON es.user_id = u.userId
+            LEFT JOIN tbl_occupations o ON o.user_id = u.userId
+            LEFT JOIN tbladdress a ON a.user_id = u.userId
+            WHERE u.userId = ?`,
+      [userId]
+    );
 
-  if (infos.length === 0) {
-    return res.status(404).json({ error: "User not found" });
-  }
+    if (infos.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
 
     res.json(infos[0]);
   } catch (err) {
@@ -49,9 +54,6 @@ router.get("/logged_user/:userId", async (req, res) => {
     conn.release();
   }
 });
-
-
-
 
 router.get("/pwd_details/:userId", async (req, res) => {
   const { userId } = req.params;

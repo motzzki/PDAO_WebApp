@@ -28,7 +28,7 @@ router.get("/get_disability", async (req, res) => {
   try {
     conn = await pool.getConnection();
     const [disabilities] =
-      await conn.query(`select disability_status, count(user_id) as Num
+      await conn.query(`select disability_status, count(user_id) as Num 
                             from tblusers
                             join disabilities on disabilities.user_id = userId
                             group by disability_status`);

@@ -20,7 +20,9 @@ import AdminLayout from "./layout/AdminLayout.jsx";
 import UserLayout from "./layout/UserLayout.jsx";
 import ProtectedRoute from "./layout/ProtectedRoute.jsx";
 import PwdInfo from "./pages/PwdInfo.jsx";
-
+import StaffLayout from "./layout/StaffLayout.jsx";
+import StaffDashboard from "./pages/StaffDashboard.jsx";
+import StaffSidebar from "./components/StaffSidebar.jsx";
 
 function App() {
   return (
@@ -46,6 +48,24 @@ function App() {
         <Route path="barangay" element={<Barangay />} />
         <Route path="add_user" element={<AddUser />} />
         <Route path="registered_users" element={<RegisteredUsers />} />
+        <Route path="facilities" element={<Facilities />} />
+        <Route path="addhelp" element={<AddHelp />} />
+      </Route>
+
+      <Route
+        path="/staff/*"
+        element={
+          <ProtectedRoute>
+            <StaffLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<StaffDashboard />} />
+        <Route path="dashboard" element={<StaffSidebar />} />
+        <Route path="graph_report" element={<GraphReport />} />
+        <Route path="registration" element={<Registration />} />
+        <Route path="registered_pwd" element={<RegisteredPwd />} />
+        <Route path="barangay" element={<Barangay />} />
         <Route path="facilities" element={<Facilities />} />
         <Route path="addhelp" element={<AddHelp />} />
       </Route>

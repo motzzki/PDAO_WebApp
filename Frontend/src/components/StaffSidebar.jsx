@@ -13,7 +13,7 @@ import {
   CDBSidebarMenuItem,
 } from "cdbreact";
 
-const Sidebar = () => {
+const StaffSidebar = () => {
   const { logout, getEmployee } = useAuth();
   const [isUserManagementOpen, setIsUserManagementOpen] = useState(false);
 
@@ -79,7 +79,6 @@ const Sidebar = () => {
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
     color: "red", // Add hover text color here
   };
-
   return (
     <CDBSidebar className="d-flex flex-column vh-100 open-sans-bold bg-danger">
       <CDBSidebarHeader prefix={<i className="fa fa-bars" />}>
@@ -110,7 +109,7 @@ const Sidebar = () => {
         )}
         <hr />
         <CDBSidebarMenu className="flex-fill">
-          <Link to="/admin">
+          <Link to="/staff">
             <CDBSidebarMenuItem
               icon="th-large"
               style={menuItemStyle}
@@ -148,7 +147,7 @@ const Sidebar = () => {
             Notifications
           </CDBSidebarMenuItem>
 
-          <Link to="/admin/registration">
+          <Link to="/staff/registration">
             <CDBSidebarMenuItem
               icon="file-alt"
               style={menuItemStyle}
@@ -168,7 +167,7 @@ const Sidebar = () => {
             </CDBSidebarMenuItem>
           </Link>
 
-          <Link to="/admin/graph_report">
+          <Link to="/staff/graph_report">
             {/* Updated Graphical Report Icon */}
             <CDBSidebarMenuItem
               icon="chart-bar"
@@ -188,70 +187,6 @@ const Sidebar = () => {
               Graphical Report
             </CDBSidebarMenuItem>
           </Link>
-
-          {/* User Management Dropdown */}
-          <div>
-            <CDBSidebarMenuItem
-              icon="user"
-              style={menuItemStyle}
-              onClick={() => setIsUserManagementOpen(!isUserManagementOpen)} // Toggle dropdown
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor =
-                  hoverStyle.backgroundColor;
-                e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
-                e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "";
-                e.currentTarget.style.boxShadow = "";
-                e.currentTarget.style.color = ""; // Revert text color on hover end
-              }}
-            >
-              User Management
-            </CDBSidebarMenuItem>
-            {isUserManagementOpen && (
-              <div style={{ paddingLeft: "20px" }}>
-                <Link to="/admin/add_user">
-                  <CDBSidebarMenuItem
-                    icon="user-plus"
-                    style={menuItemStyle}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor =
-                        hoverStyle.backgroundColor;
-                      e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
-                      e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "";
-                      e.currentTarget.style.boxShadow = "";
-                      e.currentTarget.style.color = ""; // Revert text color on hover end
-                    }}
-                  >
-                    Add Employee
-                  </CDBSidebarMenuItem>
-                </Link>
-                <Link to="/admin/registered_users">
-                  <CDBSidebarMenuItem
-                    icon="users"
-                    style={menuItemStyle}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor =
-                        hoverStyle.backgroundColor;
-                      e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
-                      e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "";
-                      e.currentTarget.style.boxShadow = "";
-                      e.currentTarget.style.color = ""; // Revert text color on hover end
-                    }}
-                  >
-                    Registered Employee
-                  </CDBSidebarMenuItem>
-                </Link>
-              </div>
-            )}
-          </div>
         </CDBSidebarMenu>
 
         {/* Updated Logout Icon */}
@@ -277,4 +212,4 @@ const Sidebar = () => {
   );
 };
 
-export default Sidebar;
+export default StaffSidebar;

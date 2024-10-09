@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { jwtDecode } from "jwt-decode"; 
+import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
@@ -27,8 +27,10 @@ const AuthProvider = ({ children }) => {
     if (auth.isAuthenticated && auth.user) {
       if (auth.user.user_groups === 3) {
         navigate("/user");
-      } else if ([1, 2].includes(auth.user.user_groups)) {
+      } else if (auth.user.user_groups === 1) {
         navigate("/admin");
+      } else {
+        navigate("/staff");
       }
     }
   }, [auth.isAuthenticated, auth.user]);
@@ -57,21 +59,60 @@ const AuthProvider = ({ children }) => {
   };
 
   const getLoggedUser = async () => {
-    if (!auth.isAuthenticated || !auth.user) throw new Error("User not authenticated");
+    if (!auth.isAuthenticated || !auth.user)
+      throw new Error("User not authenticated");
     try {
-      const response = await axios.get(`http://localhost:8000/api/pwdInfo/logged_user/${auth.user.id}`, {
-        headers: {
-          Authorization: `Bearer ${auth.token}`, 
-        },
-      });
+      const response = await axios.get(
+        `http://localhost:8000/api/pwdInfo/logged_user/${auth.user.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${auth.token}`,
+          },
+        }
+      );
       return response.data;
     } catch (error) {
-      console.error("Error fetching logged user info:", error.response ? error.response.data : error.message);
+      console.error(
+        "Error fetching logged user info:",
+        error.response ? error.response.data : error.message
+      );
       throw new Error("Failed to fetch user info");
     }
   };
-  
-  
+
+  const getEmployee = async () => {
+    if (!auth.isAuthenticated || !auth.user)
+      throw new Error("Employee not authenticated");
+    try {
+      const response = await axios.get(
+        `http://localhost:8000/api/authUser/get-employee/${auth.user.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${auth.token}`,
+          },
+        }
+      );
+      const employeeData = response.data;
+
+      let userRole;
+      if (employeeData.user_group === 1) {
+        userRole = "Administrator";
+      } else if (employeeData.user_group === 2) {
+        userRole = "Staff";
+      }
+
+      return {
+        ...employeeData,
+        role: userRole,
+      };
+    } catch (error) {
+      console.error(
+        "Error fetching logged user info:",
+        error.response ? error.response.data : error.message
+      );
+      throw new Error("Failed to fetch user info");
+    }
+  };
 
   const clearToken = () => {
     localStorage.removeItem("accessToken");
@@ -106,7 +147,15 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ auth, login, logout, isAdmin, refreshAuthToken, getLoggedUser }}
+      value={{
+        auth,
+        login,
+        logout,
+        isAdmin,
+        refreshAuthToken,
+        getLoggedUser,
+        getEmployee,
+      }}
     >
       {children}
     </AuthContext.Provider>

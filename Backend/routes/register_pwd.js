@@ -15,7 +15,6 @@ router.post("/register_pwd", async (req, res) => {
     last_name,
     contact_num,
     email,
-    username,
     password,
     age,
     gender,

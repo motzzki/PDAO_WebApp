@@ -1,7 +1,15 @@
-import React from "react";
-import { Navbar, Container, Nav, OverlayTrigger, Tooltip } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import {
+  Navbar,
+  Container,
+  Nav,
+  OverlayTrigger,
+  Tooltip,
+  Badge,
+} from "react-bootstrap";
 import { GoBell } from "react-icons/go";
 import { FiInfo } from "react-icons/fi";
+import profile from "../images/profile.svg";
 import { MdOutlineLogout } from "react-icons/md";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
@@ -9,7 +17,27 @@ import logo from "../images/logopdao.jpg";
 import { useAuth } from "../layout/AuthContext.jsx";
 
 const UserHeader = () => {
-  const { logout } = useAuth();
+  const { logout, getLoggedUser } = useAuth();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [profileData, setProfileData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      setLoading(true); // Start loading
+      setError(null); // Clear previous errors
+      try {
+        const data = await getLoggedUser();
+        setProfileData(data);
+      } catch (err) {
+        setError(err.message || "Error loading user data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [getLoggedUser]);
 
   const handleLogout = () => {
     Swal.fire({
@@ -35,7 +63,6 @@ const UserHeader = () => {
       }
     });
   };
-
   return (
     <Navbar expand="lg" className="bg-dark navbar-dark sticky-top shadow-sm">
       <Container>
@@ -50,8 +77,19 @@ const UserHeader = () => {
             className="rounded-circle"
             style={{ width: "50px", height: "50px", marginRight: "10px" }}
           />
-          PDAO
         </Navbar.Brand>
+        <div className="d-flex align-items-center text-white open-sans-bold fs-5">
+          {loading ? (
+            "Loading..."
+          ) : error ? (
+            <span>Error loading profile</span>
+          ) : (
+            `${profileData.first_name} ${profileData.last_name}`
+          )}
+          <Badge className="ms-3" bg="light" text="dark">
+            Registered
+          </Badge>
+        </div>
         <Navbar.Toggle aria-controls="navbar-nav" />
         <Navbar.Collapse id="navbar-nav" className="justify-content-end">
           <Nav className="align-items-center">
@@ -68,19 +106,24 @@ const UserHeader = () => {
               placement="bottom"
               overlay={<Tooltip id="tooltip-facilities">Facilities</Tooltip>}
             >
-              <Nav.Link as={Link} to="/user/user_facilities" className="mx-2 text-white">
+              <Nav.Link
+                as={Link}
+                to="/user/user_facilities"
+                className="mx-2 text-white"
+              >
                 Facilities
               </Nav.Link>
             </OverlayTrigger>
 
             <Nav.Link
-              href="#notifications"
               className="mx-2 text-white"
               style={{ fontSize: "1.5rem" }}
             >
               <OverlayTrigger
                 placement="bottom"
-                overlay={<Tooltip id="tooltip-notification">Notification</Tooltip>}
+                overlay={
+                  <Tooltip id="tooltip-notification">Notification</Tooltip>
+                }
               >
                 <span>
                   <GoBell />
@@ -90,7 +133,7 @@ const UserHeader = () => {
 
             <OverlayTrigger
               placement="bottom"
-              overlay={<Tooltip id="tooltip-info">View Profile Information</Tooltip>}
+              overlay={<Tooltip id="tooltip-info">View Profile</Tooltip>}
             >
               <Nav.Link
                 as={Link}
