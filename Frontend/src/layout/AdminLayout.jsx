@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 
 const AdminLayout = () => {
   return (
-    <div className="d-flex flex-column flex-md-row vh-100">
+    <div className="d-flex flex-column flex-md-row vh-100 bg-custom">
       <div className="h-100">
         <Sidebar />
       </div>

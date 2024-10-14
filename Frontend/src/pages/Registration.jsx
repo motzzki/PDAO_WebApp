@@ -305,9 +305,8 @@ const Registration = () => {
                   <option value="mental">Mental Disability</option>
                   <option value="learning">Learning Disability</option>
                   <option value="hearing">Hearing Disability</option>
-                  <option value="orthopedic">
-                    Orthopedic Disability (Musculoskeletal)
-                  </option>
+                  <option value="physical">Physical Disability</option>
+                  <option value="intellectual">Intellectual Disability</option>
                 </Form.Select>
               </FloatingLabel>
             </Col>

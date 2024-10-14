@@ -41,7 +41,7 @@ const Dashboard = () => {
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
-    margin: "10px", // Space between cards
+    margin: "10px",
   };
 
   return (
@@ -78,13 +78,13 @@ const Dashboard = () => {
           </Link>
         </Col>
         <Col xs={12} sm={6} md={6} lg={6}>
-        <Link to="/admin/addhelp" className="text-decoration-none">
-          <CardPreview
-            cardTitle="Help"
-            cardBody="Click here for help!"
-            ImageIcon={() => <MdLiveHelp className="icon-hover" />} // Apply the hover class
-            style={cardStyle}
-          />
+          <Link to="/admin/addhelp" className="text-decoration-none">
+            <CardPreview
+              cardTitle="Help"
+              cardBody="Click here for help!"
+              ImageIcon={() => <MdLiveHelp className="icon-hover" />} // Apply the hover class
+              style={cardStyle}
+            />
           </Link>
         </Col>
       </Row>

@@ -4,7 +4,7 @@ import StaffSidebar from "../components/StaffSidebar";
 
 const StaffLayout = () => {
   return (
-    <div className="d-flex flex-column flex-md-row vh-100">
+    <div className="d-flex flex-column flex-md-row vh-100 bg-custom">
       <div className="h-100">
         <StaffSidebar />
       </div>
