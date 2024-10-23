@@ -22,6 +22,8 @@ const RegisteredUsers = () => {
   const [registeredUsers, setRegisteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
+ 
+
   useEffect(() => {
     fetchRegistered();
   }, []);

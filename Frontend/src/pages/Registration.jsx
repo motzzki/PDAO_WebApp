@@ -24,6 +24,20 @@ const Registration = () => {
   const [address, setAddress] = useState("");
   const [occupation, setOccupation] = useState("");
 
+  const blockNumbers = (e) => {
+    if (!/[a-zA-Z\s]/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+  
+  const blockLetters = (e) => {
+    if (!/[0-9]/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+  
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -149,6 +163,7 @@ const Registration = () => {
                   placeholder="First Name"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
+                  onKeyPress={blockNumbers}
                   required
                 />
               </FloatingLabel>
@@ -160,6 +175,7 @@ const Registration = () => {
                   placeholder="Last Name"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
+                  onKeyPress={blockNumbers}
                   required
                 />
               </FloatingLabel>
@@ -171,6 +187,7 @@ const Registration = () => {
                   placeholder="Middle Name"
                   value={middleName}
                   onChange={(e) => setMiddleName(e.target.value)}
+                  onKeyPress={blockNumbers}
                   required
                 />
               </FloatingLabel>
@@ -215,6 +232,7 @@ const Registration = () => {
                   placeholder="Mobile Number"
                   value={contactNum}
                   onChange={(e) => setContactNum(e.target.value)}
+                  onKeyPress={blockLetters}
                 />
               </FloatingLabel>
             </Col>
@@ -238,6 +256,7 @@ const Registration = () => {
                   placeholder="Nationality"
                   value={nationality}
                   onChange={(e) => setNationality(e.target.value)}
+                  onKeyPress={blockNumbers}
                 />
               </FloatingLabel>
             </Col>
@@ -281,6 +300,7 @@ const Registration = () => {
                   placeholder="Occupation"
                   value={occupation}
                   onChange={(e) => setOccupation(e.target.value)}
+                  onKeyPress={blockNumbers}
                 />
               </FloatingLabel>
             </Col>

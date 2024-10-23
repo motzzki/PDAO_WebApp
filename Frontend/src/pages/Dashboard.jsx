@@ -31,9 +31,9 @@ const Dashboard = () => {
 
   const cardStyle = {
     width: "100%",
-    maxWidth: "300px",
-    height: "200px",
-    padding: "15px",
+    maxWidth: "400px", // Increased from 300px to 400px
+    height: "250px", // Increased from 200px to 250px
+    padding: "20px", // Increased padding for better spacing
     backgroundColor: "#f8f9fa",
     borderRadius: "10px",
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
@@ -41,11 +41,12 @@ const Dashboard = () => {
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
-    margin: "10px",
+    margin: "15px", // Increased margin for better spacing between cards
   };
+  
 
   return (
-    <Container className="mt-4">
+    <Container className="mt-5">
       <Row className="g-4 justify-content-center">
         <Col xs={12} sm={6} md={6} lg={6}>
           <Link to="/admin/barangay" className="text-decoration-none">
