@@ -136,3 +136,35 @@ div.footer {
 .help-container h3 {
   margin-bottom: 10px;
 }
+
+.image-upload-box {
+  border: 2px dashed #007bff; /* Bootstrap primary color */
+  border-radius: 5px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+}
+
+.image-input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0; /* Hide the file input */
+  cursor: pointer; /* Change cursor to pointer */
+}
+
+.upload-instructions {
+  text-align: center;
+  color: #6c757d; /* Bootstrap secondary color */
+}
+
+.card-img-fixed {
+  width: 100%; /* Or set a specific width, e.g., 300px */
+  height: 200px; /* Set a fixed height or auto */
+  object-fit: cover; /* This will crop the image to fill the space */
+}

@@ -1,12 +1,17 @@
 import express, { json } from "express";
 import cors from "cors";
 import { config } from "dotenv";
-
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import { createRequire } from "module";
 config();
 
 const app = express();
 const port = process.env.PORT || 8000;
+const require = createRequire(import.meta.url);
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 app.use(json());
 app.use(cors());
 
@@ -33,6 +38,7 @@ app.use("/api/registerPwd", registerPwd);
 app.use("/api/pwdInfo", pwdInfo);
 app.use("/api/barangay", barangay);
 app.use("/api/user_management", user_management);
+app.use("/uploads", express.static(join(__dirname, "./assets/uploads")));
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

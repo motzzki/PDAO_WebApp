@@ -1,5 +1,7 @@
 import pool from "../db.js";
 import express from "express";
+import formidable from "formidable";
+import fs from "fs/promises";
 
 const router = express.Router();
 let conn;
@@ -85,6 +87,110 @@ router.get("/pwd_details/:userId", async (req, res) => {
     res.status(500).json({ message: "Database query failed" });
   } finally {
     conn.release();
+  }
+});
+
+const upload = (req, res) => {
+  return new Promise((resolve, reject) => {
+    const form = formidable({
+      multiples: false,
+      keepExtensions: true, // Keep file extension
+    });
+
+    form.parse(req, (err, fields, files) => {
+      if (err) return reject(err);
+      resolve({ fields, files });
+    });
+  });
+};
+
+router.post("/facilities", async (req, res) => {
+  try {
+    const { fields, files } = await upload(req, res);
+
+    console.log("Parsed Fields:", fields); // Log fields
+    console.log("Parsed Files:", files);
+
+    const facility_name = fields.facility_name[0];
+    const location = fields.location[0];
+    const flag = fields.flag[0];
+    const accessibility_features = fields.accessibility_features[0];
+
+    // Validate required fields
+    if (!facility_name || !location || !flag || !accessibility_features) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    const picture = files.picture[0]; // Get the uploaded file
+
+    // Ensure the uploaded file was saved correctly
+    if (!picture || !picture.filepath) {
+      return res.status(400).json({ error: "Picture is required" });
+    }
+
+    // Read the old path and prepare new file name and path
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const newFileName = `image-${uniqueSuffix}-${picture.newFilename}`;
+    const newPath = `assets/uploads/${newFileName}`;
+
+    // Move the file to the new path
+    await fs.rename(picture.filepath, newPath);
+
+    conn = await pool.getConnection();
+
+    const sql = `
+      INSERT INTO facilities (facility_name, location, flag, accessibility_features, picture)
+      VALUES (?, ?, ?, ?, ?)
+    `;
+
+    const [result] = await conn.query(sql, [
+      facility_name,
+      location,
+      flag, // Store the flag value
+      accessibility_features,
+      newPath, // Store the new path in the database
+    ]);
+
+    res
+      .status(201)
+      .json({ message: "Facility added successfully", id: result.insertId });
+  } catch (err) {
+    console.error("Error adding facility:", err);
+    res.status(500).json({ error: "Error adding facility" });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+router.get("/get-facilities", async (req, res) => {
+  try {
+    conn = await pool.getConnection();
+    const sql = `SELECT facility_name, location, flag, accessibility_features, picture FROM facilities`;
+
+    const [facilities] = await conn.query(sql);
+
+    // Check if facilities were found
+    if (facilities.length === 0) {
+      return res.status(404).json({ message: "No facilities found." });
+    }
+
+    // Prefix the relative path with the base URL
+    const facilitiesWithFullPath = facilities.map((facility) => {
+      return {
+        ...facility,
+        picture: `http://localhost:8000/uploads/${facility.picture
+          .split("/")
+          .pop()}`, // Assuming picture is stored as a relative path
+      };
+    });
+
+    // Respond with the facilities data
+    res.status(200).json(facilitiesWithFullPath);
+  } catch (err) {
+    console.error("Error fetching facilities:", err);
+    res.status(500).json({ error: "Error fetching facilities" });
+  } finally {
+    if (conn) conn.release(); // Release the database connection
   }
 });
 

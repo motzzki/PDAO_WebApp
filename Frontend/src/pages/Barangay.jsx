@@ -79,67 +79,67 @@ const Barangay = () => {
 
 const styles = {
   tableContainer: {
-    padding: '20px',
-    backgroundColor: '#f8f9fa',
-    borderRadius: '10px',
-    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.05)',
+    padding: "20px",
+    backgroundColor: "#f8f9fa",
+    borderRadius: "10px",
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.05)",
   },
   header: {
-    display: 'flex',
-    justifyContent: 'space-between', // Space between title and search bar
-    alignItems: 'center', // Center align items vertically
-    marginBottom: '20px',
+    display: "flex",
+    justifyContent: "space-between", // Space between title and search bar
+    alignItems: "center", // Center align items vertically
+    marginBottom: "20px",
   },
   title: {
-    textAlign: 'left',
-    fontSize: '24px',
+    textAlign: "left",
+    fontSize: "24px",
   },
   searchWrapper: {
-    position: 'relative',
-    width: '200px', // Adjust width as needed
+    position: "relative",
+    width: "200px", // Adjust width as needed
   },
   searchBar: {
-    padding: '10px',
-    borderRadius: '5px',
-    border: '1px solid #ccc',
-    width: '100%',
-    paddingRight: '30px', // Add padding to avoid overlap with the icon
+    padding: "10px",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+    width: "100%",
+    paddingRight: "30px", // Add padding to avoid overlap with the icon
   },
   searchIcon: {
-    position: 'absolute',
-    right: '10px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    width: '20px',
-    height: '20px',
-    cursor: 'pointer',
+    position: "absolute",
+    right: "10px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    width: "20px",
+    height: "20px",
+    cursor: "pointer",
   },
   table: {
-    borderCollapse: 'collapse',
-    width: '100%',
-    borderRadius: '10px',
-    overflow: 'hidden',
+    borderCollapse: "collapse",
+    width: "100%",
+    borderRadius: "10px",
+    overflow: "hidden",
   },
   tableHead: {
-    backgroundColor: '#e0e0e0',
-    color: '#333',
-    textAlign: 'center',
-    fontWeight: 'bold',
-    padding: '12px',
+    backgroundColor: "#e0e0e0",
+    color: "#333",
+    textAlign: "center",
+    fontWeight: "bold",
+    padding: "12px",
   },
   tableRow: {
-    textAlign: 'center',
-    padding: '10px',
-    backgroundColor: '#ffffff',
-    transition: 'background-color 0.3s',
+    textAlign: "center",
+    padding: "10px",
+    backgroundColor: "#ffffff",
+    transition: "background-color 0.3s",
   },
 };
 
 const onRowHover = (e) => {
-  e.currentTarget.style.backgroundColor = '#f1f1f1'; // light grey on hover
+  e.currentTarget.style.backgroundColor = "#f1f1f1"; // light grey on hover
 };
 const onRowLeave = (e) => {
-  e.currentTarget.style.backgroundColor = '#ffffff'; // reset to white
+  e.currentTarget.style.backgroundColor = "#ffffff"; // reset to white
 };
 
 export default Barangay;

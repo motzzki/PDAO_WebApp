@@ -1,11 +1,10 @@
 import React from "react";
-import { Button, Card, Col } from "react-bootstrap";
-import rose from "../images/rosepwd.jpg";
+import { Button, Card } from "react-bootstrap";
 
 const CardFacilities = ({ cardTitle, cardText, cardImg }) => {
   return (
     <Card>
-      <Card.Img variant="top" src={cardImg} />
+      <Card.Img variant="top" src={cardImg} className="card-img-fixed" />
       <Card.Body>
         <Card.Title>{cardTitle}</Card.Title>
         <Card.Text>{cardText}</Card.Text>
