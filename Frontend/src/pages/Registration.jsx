@@ -135,6 +135,14 @@ const Registration = () => {
     setEmployment("");
   };
 
+  // const handleNumber = (e, setValue) => {
+  //   const value = e.target.value;
+  //   const regex = /^[0-9]*$/;
+  //   if (regex.test(value) || value === "") {
+  //     setValue(value);
+  //   }
+  // };
+
   return (
     <Card>
       <Card.Header className="open-sans-bold fs-3">Add PWD</Card.Header>

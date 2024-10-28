@@ -54,7 +54,9 @@ const RegisteredUsers = () => {
   return (
     <div style={styles.tableContainer}>
       <div style={styles.searchContainer}>
-        <h1 style={styles.header}>Registered Employee</h1>
+        <h1 className="fs-3 open-sans-bold" style={styles.header}>
+          Registered Employee
+        </h1>
         <div style={styles.searchWrapper}>
           <input
             type="text"
@@ -67,7 +69,7 @@ const RegisteredUsers = () => {
         </div>
       </div>
       <Table striped bordered hover responsive style={styles.table}>
-        <thead>
+        <thead className="fs-5 open-sans-bold">
           <tr>
             {TABLE_HEAD.map((head) => (
               <th key={head} style={styles.tableHead}>
@@ -76,7 +78,7 @@ const RegisteredUsers = () => {
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="fs-5 open-sans-regular">
           {filteredUsers.length > 0 ? (
             filteredUsers.map((employee) => (
               <tr

@@ -3,7 +3,7 @@ import Table from "react-bootstrap/Table";
 import axios from "axios";
 import moment from "moment";
 import eye from "../images/eye.svg";
-import searchIcon from "../images/search.svg"; 
+import searchIcon from "../images/search.svg";
 import PwdPreview from "../components/modal/PwdPreview";
 
 const TABLE_HEAD = [
@@ -25,11 +25,11 @@ const RegisteredPwd = () => {
   const [registeredPwd, setRegisteredPwd] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showPwd, setShowPwd] = useState(false);
-  const [selectedPwd, setSelectedPwd] = useState(null); 
+  const [selectedPwd, setSelectedPwd] = useState(null);
   const [hoveredUserId, setHoveredUserId] = useState(null); // State for tooltip visibility
 
   const handleShow = (infos) => {
-    setSelectedPwd(infos); 
+    setSelectedPwd(infos);
     setShowPwd(true);
   };
 
@@ -41,7 +41,9 @@ const RegisteredPwd = () => {
 
   const fetchRegistered = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/pwdInfo/pwd_info`);
+      const response = await axios.get(
+        `http://localhost:8000/api/pwdInfo/pwd_info`
+      );
       setRegisteredPwd(response.data);
     } catch (error) {
       console.error("Error fetching PWD information:", error);
@@ -57,7 +59,9 @@ const RegisteredPwd = () => {
   return (
     <div style={styles.tableContainer}>
       <div style={styles.searchContainer}>
-        <h1 style={styles.header}>Registered PWD</h1>
+        <h1 className="fs-2 open-sans-bold" style={styles.header}>
+          Registered PWD
+        </h1>
         <div style={styles.searchWrapper}>
           <input
             type="text"
@@ -70,7 +74,7 @@ const RegisteredPwd = () => {
         </div>
       </div>
       <Table striped bordered hover responsive style={styles.table}>
-        <thead>
+        <thead className="fs-5 open-sans-bold">
           <tr>
             {TABLE_HEAD.map((head) => (
               <th key={head} style={styles.tableHead}>
@@ -79,9 +83,9 @@ const RegisteredPwd = () => {
             ))}
           </tr>
         </thead>
-        <tbody>
+        <tbody className="fs-5 open-sans-regular">
           {filteredPwd.map((infos) => (
-            <tr key={infos.userId} style={styles.tableRow}>
+            <tr key={infos.userId} style={styles.tableRow} className="">
               <td>{infos.userId}</td>
               <td>{infos.first_name}</td>
               <td>{infos.middle_name}</td>
@@ -96,7 +100,7 @@ const RegisteredPwd = () => {
               <td style={{ position: "relative" }}>
                 <img
                   src={eye}
-                  onClick={() => handleShow(infos)} 
+                  onClick={() => handleShow(infos)}
                   onMouseEnter={() => setHoveredUserId(infos.userId)} // Show tooltip
                   onMouseLeave={() => setHoveredUserId(null)} // Hide tooltip
                   style={{ cursor: "pointer" }}
@@ -115,7 +119,7 @@ const RegisteredPwd = () => {
         <PwdPreview
           show={showPwd}
           handleClose={handleClose}
-          userId={selectedPwd.userId} 
+          userId={selectedPwd.userId}
         />
       )}
     </div>
