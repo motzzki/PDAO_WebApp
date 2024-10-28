@@ -14,6 +14,12 @@ const AddUser = () => {
   const [username, setUsername] = useState("");
   const [userGroup, setUserGroup] = useState("");
 
+  const blockNumbers = (e) => {
+    if (!/[a-zA-Z\s]/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -74,6 +80,7 @@ const AddUser = () => {
     setLastName("");
     setGender("");
     setUserGroup("");
+    setUsername("");
     setDateOfBirth("");
     setContactNum("");
     setEmail("");
@@ -95,6 +102,7 @@ const AddUser = () => {
                   placeholder="First Name"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
+                  onKeyPress={blockNumbers}
                   required
                 />
               </FloatingLabel>
@@ -106,6 +114,7 @@ const AddUser = () => {
                   placeholder="Middle Name"
                   value={middleName}
                   onChange={(e) => setMiddleName(e.target.value)}
+                  onKeyPress={blockNumbers}
                 />
               </FloatingLabel>
             </Col>
@@ -116,6 +125,7 @@ const AddUser = () => {
                   placeholder="Last Name"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
+                  onKeyPress={blockNumbers}
                   required
                 />
               </FloatingLabel>

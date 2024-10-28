@@ -31,6 +31,7 @@ router.post("/register_pwd", async (req, res) => {
     civilStatus,
   } = req.body;
 
+  // Required field check
   if (
     !first_name ||
     !middle_name ||
@@ -46,10 +47,24 @@ router.post("/register_pwd", async (req, res) => {
     return res.status(400).json({ error: "All fields are required" });
   }
 
+  // Email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return res.status(400).json({ error: "Invalid email format" });
   }
+
+  // Validation to prevent numbers in name, nationality, and occupation
+  const noNumbersRegex = /^[A-Za-z\s]+$/;
+  if (
+    !noNumbersRegex.test(first_name) ||
+    !noNumbersRegex.test(middle_name) ||
+    !noNumbersRegex.test(last_name) ||
+    !noNumbersRegex.test(nationality) ||
+    (occupation_name && !noNumbersRegex.test(occupation_name)) // occupation_name can be optional, hence check
+  ) {
+    return res.status(400).json({ error: "Names, nationality, and occupation cannot contain numbers." });
+  }
+
   const connection = await pool.getConnection();
 
   try {
@@ -57,10 +72,6 @@ router.post("/register_pwd", async (req, res) => {
 
     const generatedPassword = password || generatePassword();
     const generateAccount = await generateAccountId();
-    // const hashedPassword = await bcrypt.hash(
-    //   password,
-    //   parseInt(process.env.SALT_ROUNDS)
-    // );
 
     const createdAt = new Date();
 

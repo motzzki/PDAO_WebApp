@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Card, Row, Col } from "react-bootstrap";
 import { useAuth } from "../layout/AuthContext";
+import HelpCard from "../components/HelpCard";
+import { MdOutlinePsychology } from "react-icons/md";
+import { cardData } from "../helpCardDate.jsx";
 
 const PwdInfo = () => {
   const { getLoggedUser } = useAuth();
@@ -73,6 +76,22 @@ const PwdInfo = () => {
   const leftBackgroundFields = backgroundFields.slice(0, midIndex);
   const rightBackgroundFields = backgroundFields.slice(midIndex);
 
+  const disabilityType = profileData.disability_status || "N/A";
+
+  const helpCardData = cardData[disabilityType]
+    ? {
+        title: cardData[disabilityType].title,
+        img: cardData[disabilityType].img,
+        text: cardData[disabilityType].text,
+        link: cardData[disabilityType].link,
+      }
+    : {
+        title: "No Help Available",
+        img: cardData.img,
+        text: "No information available for this disability type.",
+        link: "#",
+      };
+
   return (
     <div className="d-grid gap-5">
       <div className="container">
@@ -140,19 +159,13 @@ const PwdInfo = () => {
       </div>
 
       <div className="container">
-        <Card className="shadow-lg border-0 rounded ">
-          <Card.Header className="bg-danger text-white text-center py-3">
-            <h4 className="open-sans-bold">Help!</h4>
-          </Card.Header>
-          <Card.Body>
-            <h1>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Temporibus, veniam corporis! Labore iure dolorem provident officia
-              et quisquam voluptatibus, mollitia accusantium voluptate eum ipsa.
-              Corporis quos reprehenderit facilis necessitatibus eveniet!
-            </h1>
-          </Card.Body>
-        </Card>
+        <h1 className="text-center open-sans-bold mb-3">Help</h1>
+        <HelpCard
+          title={helpCardData.title}
+          img={helpCardData.img}
+          text={helpCardData.text}
+          link={helpCardData.link}
+        />
       </div>
     </div>
   );

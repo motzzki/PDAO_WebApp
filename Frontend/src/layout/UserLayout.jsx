@@ -10,7 +10,7 @@ const UserLayout = () => {
         <UserHeader />
       </header>
 
-      <main>
+      <main className="bg-custom">
         <Outlet />
       </main>
     </div>
