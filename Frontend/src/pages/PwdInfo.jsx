@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Card, Row, Col } from "react-bootstrap";
 import { useAuth } from "../layout/AuthContext";
 import HelpCard from "../components/HelpCard";
-import { MdOutlinePsychology } from "react-icons/md";
 import { cardData } from "../helpCardDate.jsx";
 
 const PwdInfo = () => {
@@ -15,7 +14,6 @@ const PwdInfo = () => {
     const fetchUserData = async () => {
       try {
         const data = await getLoggedUser();
-
         setProfileData(data);
       } catch (err) {
         setError(err.message);
@@ -71,11 +69,6 @@ const PwdInfo = () => {
     { label: "House Address", value: profileData.house_address || "N/A" },
   ];
 
-  // Split the background fields into two equal columns
-  const midIndex = Math.ceil(backgroundFields.length / 2);
-  const leftBackgroundFields = backgroundFields.slice(0, midIndex);
-  const rightBackgroundFields = backgroundFields.slice(midIndex);
-
   const disabilityType = profileData.disability_status || "N/A";
 
   const helpCardData = cardData[disabilityType]
@@ -96,62 +89,48 @@ const PwdInfo = () => {
     <div className="d-grid gap-5">
       <div className="container">
         <Card className="shadow-lg border-0 rounded mt-3">
-          <Card.Header className="bg-danger text-white text-center py-4">
+          <Card.Header className="outer-card text-white text-center py-4">
             <h4 className="mb-0 open-sans-bold">My Profile</h4>
           </Card.Header>
           <Card.Body>
-            <Row>
-              <Col sm={6} className="mb-4 fs-5">
-                {profileFields.slice(0, 5).map((field, index) => (
-                  <div key={index} className="mb-3">
-                    <strong className="open-sans-bold">{field.label}:</strong>{" "}
-                    <span className="text-muted open-sans-regular">
-                      {field.value}
-                    </span>
-                  </div>
-                ))}
+            <Row className="d-flex">
+              <Col md={6} className="mb-4">
+                <Card className="inner-card flex-grow-1">
+                  <Card.Header className="custom-danger text-white py-3">
+                    <h5 className="mb-0">Personal Information</h5>
+                  </Card.Header>
+                  <Card.Body>
+                    {profileFields.map((field, index) => (
+                      <div key={index} className="mb-3">
+                        <strong className="open-sans-bold">
+                          {field.label}:
+                        </strong>{" "}
+                        <span className="text-muted open-sans-regular">
+                          {field.value}
+                        </span>
+                      </div>
+                    ))}
+                  </Card.Body>
+                </Card>
               </Col>
-              <Col sm={6} className="mb-4 fs-5">
-                {profileFields.slice(5).map((field, index) => (
-                  <div key={index} className="mb-3">
-                    <strong>{field.label}:</strong>{" "}
-                    <span className="text-muted open-sans-regular">
-                      {field.value}
-                    </span>
-                  </div>
-                ))}
-              </Col>
-            </Row>
-          </Card.Body>
-        </Card>
-      </div>
-
-      <div className="container">
-        <Card className="shadow-lg border-0 rounded ">
-          <Card.Header className="bg-danger text-white text-center py-3">
-            <h4 className="open-sans-bold">Background Status</h4>
-          </Card.Header>
-          <Card.Body>
-            <Row>
-              <Col sm={6} className="mb-4 fs-5">
-                {leftBackgroundFields.map((field, index) => (
-                  <p key={index}>
-                    <strong className="">{field.label}:</strong>{" "}
-                    <span className="text-muted open-sans-regular">
-                      {field.value}
-                    </span>
-                  </p>
-                ))}
-              </Col>
-              <Col sm={6} className="mb-4 fs-5">
-                {rightBackgroundFields.map((field, index) => (
-                  <p key={index}>
-                    <strong>{field.label}:</strong>{" "}
-                    <span className="text-muted open-sans-regular">
-                      {field.value}
-                    </span>
-                  </p>
-                ))}
+              <Col md={6} className="mb-4">
+                <Card className="inner-card flex-grow-1">
+                  <Card.Header className="custom-danger text-white py-3">
+                    <h5 className="mb-0">Background Status</h5>
+                  </Card.Header>
+                  <Card.Body>
+                    {backgroundFields.map((field, index) => (
+                      <div key={index} className="mb-3">
+                        <strong className="open-sans-bold">
+                          {field.label}:
+                        </strong>{" "}
+                        <span className="text-muted open-sans-regular">
+                          {field.value}
+                        </span>
+                      </div>
+                    ))}
+                  </Card.Body>
+                </Card>
               </Col>
             </Row>
           </Card.Body>

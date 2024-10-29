@@ -8,7 +8,7 @@ import {
   Badge,
 } from "react-bootstrap";
 import { GoBell } from "react-icons/go";
-import { FiInfo } from "react-icons/fi";
+import { FiUser } from "react-icons/fi";
 import profile from "../images/profile.svg";
 import { MdOutlineLogout } from "react-icons/md";
 import { Link } from "react-router-dom";
@@ -64,7 +64,7 @@ const UserHeader = () => {
     });
   };
   return (
-    <Navbar expand="lg" className="bg-dark navbar-dark sticky-top shadow-sm">
+    <Navbar expand="lg" className="bg-danger sticky-top shadow-sm">
       <Container>
         <Navbar.Brand
           as={Link}
@@ -87,7 +87,7 @@ const UserHeader = () => {
             `${profileData.first_name} ${profileData.last_name}`
           )}
           <Badge className="ms-3" bg="light" text="dark">
-            Registered
+            REGISTERED
           </Badge>
         </div>
         <Navbar.Toggle aria-controls="navbar-nav" />
@@ -141,7 +141,7 @@ const UserHeader = () => {
                 className="mx-2 text-white"
                 style={{ fontSize: "1.5rem" }}
               >
-                <FiInfo />
+                <FiUser />
               </Nav.Link>
             </OverlayTrigger>
 

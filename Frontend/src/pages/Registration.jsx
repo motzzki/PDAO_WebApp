@@ -29,14 +29,12 @@ const Registration = () => {
       e.preventDefault();
     }
   };
-  
+
   const blockLetters = (e) => {
     if (!/[0-9]/.test(e.key)) {
       e.preventDefault();
     }
   };
-  
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -158,58 +156,60 @@ const Registration = () => {
   // };
 
   return (
-    <Card>
-      <Card.Header className="open-sans-bold fs-3">Add PWD</Card.Header>
-      <Card.Body className="open-sans-regular">
-        <Form className="my-2" onSubmit={handleSubmit}>
-          {/* Name Fields */}
+    <Card className="shadow-lg rounded">
+      <Card.Header className="bg-danger text-white fs-4 text-center">
+        Add PWD
+      </Card.Header>
+      <Card.Body>
+        <Form onSubmit={handleSubmit}>
           <Row className="mb-3">
-            <Col md={4}>
+            <Col md={6}>
               <FloatingLabel controlId="floatingFirstName" label="First Name">
                 <Form.Control
                   type="text"
                   placeholder="First Name"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  onKeyPress={blockNumbers}
                   required
+                  className="form-control-custom"
                 />
               </FloatingLabel>
             </Col>
-            <Col md={4}>
+            <Col md={6}>
               <FloatingLabel controlId="floatingLastName" label="Last Name">
                 <Form.Control
                   type="text"
                   placeholder="Last Name"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  onKeyPress={blockNumbers}
                   required
+                  className="form-control-custom"
                 />
               </FloatingLabel>
             </Col>
-            <Col md={4}>
+          </Row>
+
+          <Row className="mb-3">
+            <Col md={6}>
               <FloatingLabel controlId="floatingMiddleName" label="Middle Name">
                 <Form.Control
                   type="text"
                   placeholder="Middle Name"
                   value={middleName}
                   onChange={(e) => setMiddleName(e.target.value)}
-                  onKeyPress={blockNumbers}
                   required
+                  className="form-control-custom"
                 />
               </FloatingLabel>
             </Col>
-          </Row>
-
-          {/* Sex and Date of Birth */}
-          <Row className="mb-3">
             <Col md={6}>
-              <FloatingLabel controlId="floatingSex" label="Gender">
+              <FloatingLabel controlId="floatingGender" label="Gender">
                 <Form.Select
                   aria-label="Gender"
                   value={gender}
                   onChange={(e) => setGender(e.target.value)}
+                  required
+                  className="form-control-custom"
                 >
                   <option value="">Select Gender</option>
                   <option value="male">Male</option>
@@ -218,43 +218,46 @@ const Registration = () => {
                 </Form.Select>
               </FloatingLabel>
             </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Date of Birth</Form.Label>
-                <Form.Control
-                  type="date"
-                  placeholder="Date of Birth"
-                  onChange={(e) => setDateOfBirth(e.target.value)}
-                  required
-                />
-              </Form.Group>
-            </Col>
           </Row>
 
-          {/* Mobile Number, Email Address, and Nationality */}
           <Row className="mb-3">
-            <Col md={4}>
-              <FloatingLabel controlId="floatingMobile" label="Mobile Number">
+            <Col md={6}>
+              <FloatingLabel controlId="floatingDOB" label="Date of Birth">
                 <Form.Control
-                  type="number"
-                  placeholder="Mobile Number"
-                  value={contactNum}
-                  onChange={(e) => setContactNum(e.target.value)}
-                  onKeyPress={blockLetters}
+                  type="date"
+                  value={dateOfBirth}
+                  onChange={(e) => setDateOfBirth(e.target.value)}
+                  required
+                  className="form-control-custom"
                 />
               </FloatingLabel>
             </Col>
-            <Col md={4}>
+            <Col md={6}>
+              <FloatingLabel controlId="floatingContact" label="Mobile Number">
+                <Form.Control
+                  type="text"
+                  placeholder="Mobile Number"
+                  value={contactNum}
+                  onChange={(e) => setContactNum(e.target.value)}
+                  className="form-control-custom"
+                />
+              </FloatingLabel>
+            </Col>
+          </Row>
+
+          <Row className="mb-3">
+            <Col md={6}>
               <FloatingLabel controlId="floatingEmail" label="Email Address">
                 <Form.Control
                   type="email"
                   placeholder="Email Address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="form-control-custom"
                 />
               </FloatingLabel>
             </Col>
-            <Col md={4}>
+            <Col md={6}>
               <FloatingLabel
                 controlId="floatingNationality"
                 label="Nationality"
@@ -264,30 +267,31 @@ const Registration = () => {
                   placeholder="Nationality"
                   value={nationality}
                   onChange={(e) => setNationality(e.target.value)}
-                  onKeyPress={blockNumbers}
+                  className="form-control-custom"
                 />
               </FloatingLabel>
             </Col>
           </Row>
 
-          {/* Age, Blood Type, and Occupation */}
           <Row className="mb-3">
-            <Col md={4}>
+            <Col md={6}>
               <FloatingLabel controlId="floatingAge" label="Age">
                 <Form.Control
                   type="number"
                   placeholder="Age"
                   value={age}
                   onChange={(e) => setAge(e.target.value)}
+                  className="form-control-custom"
                 />
               </FloatingLabel>
             </Col>
-            <Col md={4}>
+            <Col md={6}>
               <FloatingLabel controlId="floatingBloodType" label="Blood Type">
                 <Form.Select
                   aria-label="Blood Type"
                   value={bloodType}
                   onChange={(e) => setBloodType(e.target.value)}
+                  className="form-control-custom"
                 >
                   <option value="">Select Blood Type</option>
                   <option value="a-positive">A+</option>
@@ -301,30 +305,19 @@ const Registration = () => {
                 </Form.Select>
               </FloatingLabel>
             </Col>
-            <Col md={4}>
-              <FloatingLabel controlId="floatingOccupation" label="Occupation">
-                <Form.Control
-                  type="text"
-                  placeholder="Occupation"
-                  value={occupation}
-                  onChange={(e) => setOccupation(e.target.value)}
-                  onKeyPress={blockNumbers}
-                />
-              </FloatingLabel>
-            </Col>
           </Row>
 
-          {/* Disability Type, Civil Status, Barangay, and Disability Cause */}
           <Row className="mb-3">
             <Col md={6}>
               <FloatingLabel
-                controlId="floatingDisabilityType"
+                controlId="floatingDisability"
                 label="Type of Disability"
               >
                 <Form.Select
                   aria-label="Type of Disability"
                   value={disability}
                   onChange={(e) => setDisability(e.target.value)}
+                  className="form-control-custom"
                 >
                   <option value="">Select Disability Type</option>
                   <option value="psychosocial">Psychosocial Disability</option>
@@ -347,132 +340,120 @@ const Registration = () => {
                   aria-label="Civil Status"
                   value={civilStatus}
                   onChange={(e) => setCivilStatus(e.target.value)}
+                  className="form-control-custom"
                 >
                   <option value="">Select Civil Status</option>
                   <option value="single">Single</option>
                   <option value="married">Married</option>
-                  <option value="widowed">Widowed</option>
                   <option value="divorced">Divorced</option>
+                  <option value="widowed">Widowed</option>
                 </Form.Select>
               </FloatingLabel>
             </Col>
           </Row>
 
           <Row className="mb-3">
-            <Col md={4}>
-              <FloatingLabel controlId="floatingBarangay" label="Barangay">
-                <Form.Select
-                  aria-label="Barangay"
-                  value={barangay}
-                  onChange={(e) => setBarangay(e.target.value)}
-                >
-                  <option value="">Select Barangay</option>
-                  <option value="baclaran">Baclaran</option>
-                  <option value="banaybanay">Banaybanay</option>
-                  <option value="banlic">Banlic</option>
-                  <option value="bigaa">Bigaa</option>
-                  <option value="butong">Butong</option>
-                  <option value="casile">Casile</option>
-                  <option value="diezmo">Diezmo</option>
-                  <option value="gulod">Gulod</option>
-                  <option value="mamatid">Mamatid</option>
-                  <option value="marinig">Marinig</option>
-                  <option value="niugan">Niugan</option>
-                  <option value="pittland">Pittland</option>
-                  <option value="poblacion-uno">Poblacion Uno</option>
-                  <option value="poblacion-dos">Poblacion Dos</option>
-                  <option value="poblacion-tres">Poblacion Tres</option>
-                  <option value="pulo">Pulo</option>
-                  <option value="sala">Sala</option>
-                  <option value="san-isidro">San Isidro</option>
-                </Form.Select>
-              </FloatingLabel>
-            </Col>
-            <Col md={4}>
+            <Col md={6}>
               <FloatingLabel
-                controlId="floatingSelectDisabilityCause"
+                controlId="floatingCause"
                 label="Cause of Disability"
               >
-                <Form.Select
-                  aria-label="Cause of Disability"
+                <Form.Control
+                  type="text"
+                  placeholder="Cause of Disability"
                   value={cause}
                   onChange={(e) => setCause(e.target.value)}
-                >
-                  <option value="">Select cause</option>
-                  <option value="inborn">Inborn</option>
-                  <option value="acquired">Acquired</option>
-                </Form.Select>
+                  className="form-control-custom"
+                />
               </FloatingLabel>
             </Col>
-            <Col md={4}>
-              <FloatingLabel
-                controlId="floatingEducationalAttainment"
-                label="Educational Attainment"
-              >
-                <Form.Select
-                  aria-label="Educational Attainment"
-                  value={education}
-                  onChange={(e) => setEducation(e.target.value)}
-                >
-                  <option value="">Select Educational Attainment</option>
-                  <option value="none">None</option>
-                  <option value="kinder">Kindergarten</option>
-                  <option value="elem">Elementary</option>
-                  <option value="junior-high">Junior High</option>
-                  <option value="senior-high">Senior High</option>
-                  <option value="college">College</option>
-                  <option value="vocational">Vocational</option>
-                  <option value="post-graduate">Post Graduate</option>
-                </Form.Select>
-              </FloatingLabel>
-            </Col>
-          </Row>
-
-          {/* Employment Status */}
-          <Row className="mb-3">
-            <Col md={12}>
-              <FloatingLabel
-                controlId="floatingSelectEmployment"
-                label="Employment Status"
-              >
-                <Form.Select
-                  aria-label="Employment Status"
-                  value={employment}
-                  onChange={(e) => setEmployment(e.target.value)}
-                >
-                  <option value="">Select Employment Status</option>
-                  <option value="employed">Employed</option>
-                  <option value="unemployed">Unemployed</option>
-                  <option value="self-employed">Self-Employed</option>
-                  <option value="student">Student</option>
-                </Form.Select>
-              </FloatingLabel>
-            </Col>
-          </Row>
-
-          {/* Address (Text Area) */}
-          <Row className="mb-3">
-            <Col md={12}>
-              <FloatingLabel controlId="floatingAddress" label="Address">
+            <Col md={6}>
+              <FloatingLabel controlId="floatingBarangay" label="Barangay">
                 <Form.Control
-                  as="textarea"
-                  placeholder="Address"
-                  rows={3}
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  type="text"
+                  placeholder="Barangay"
+                  value={barangay}
+                  onChange={(e) => setBarangay(e.target.value)}
+                  className="form-control-custom"
                 />
               </FloatingLabel>
             </Col>
           </Row>
 
-          <div className="d-flex justify-content-between mt-5">
-            <Button variant="secondary" type="button" onClick={clearForm}>
-              Clear
-            </Button>
-            <Button size="lg" variant="primary" type="submit">
-              Register
-            </Button>
-          </div>
+          <Row className="mb-3">
+            <Col md={6}>
+              <FloatingLabel controlId="floatingAddress" label="Address">
+                <Form.Control
+                  type="text"
+                  placeholder="Address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  className="form-control-custom"
+                />
+              </FloatingLabel>
+            </Col>
+            <Col md={6}>
+              <FloatingLabel controlId="floatingOccupation" label="Occupation">
+                <Form.Control
+                  type="text"
+                  placeholder="Occupation"
+                  value={occupation}
+                  onChange={(e) => setOccupation(e.target.value)}
+                  className="form-control-custom"
+                />
+              </FloatingLabel>
+            </Col>
+          </Row>
+
+          <Row className="mb-3">
+            <Col md={6}>
+              <FloatingLabel
+                controlId="floatingEducation"
+                label="Education Level"
+              >
+                <Form.Control
+                  type="text"
+                  placeholder="Education Level"
+                  value={education}
+                  onChange={(e) => setEducation(e.target.value)}
+                  className="form-control-custom"
+                />
+              </FloatingLabel>
+              <div className="text-center">
+                <Button
+                  variant="secondary"
+                  type="button"
+                  className="w-50 mx-auto mt-4"
+                  onClick={clearForm}
+                >
+                  Clear
+                </Button>
+              </div>
+            </Col>
+            <Col md={6}>
+              <FloatingLabel
+                controlId="floatingEmployment"
+                label="Employment Status"
+              >
+                <Form.Control
+                  type="text"
+                  placeholder="Employment Status"
+                  value={employment}
+                  onChange={(e) => setEmployment(e.target.value)}
+                  className="form-control-custom"
+                />
+              </FloatingLabel>
+              <div className="text-center">
+                <Button
+                  variant="danger"
+                  type="submit"
+                  className="w-50 mx-auto mt-4"
+                >
+                  Register
+                </Button>
+              </div>
+            </Col>
+          </Row>
         </Form>
       </Card.Body>
     </Card>

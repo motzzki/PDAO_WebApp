@@ -43,9 +43,13 @@
   height: auto; /* Maintain aspect ratio */
 }
 
-.bg-custom {
-  background-color: #f2f2f2;
+.mainbg-admin {
+  background-color: #dc35461c;
 }
+
+/* .bg-custom {
+  background-color: #f2f2f2;
+} */
 
 .navbar {
   padding: 1rem; /* Increase padding for larger navbar */
@@ -83,10 +87,6 @@ footer p {
 
 .icon-hover:hover {
   color: rgb(190, 46, 46); /* Color on hover */
-}
-
-.navbar {
-  background-color: rgb(190, 46, 46) !important;
 }
 
 .user-header {
@@ -168,3 +168,255 @@ div.footer {
   height: 200px; /* Set a fixed height or auto */
   object-fit: cover; /* This will crop the image to fill the space */
 }
+
+.card-container {
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-container:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-4px);
+}
+
+.card-img-fixed {
+  height: 200px;
+  object-fit: cover;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.card-body-custom {
+  padding: 16px;
+  text-align: center;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.card-text {
+  color: #777;
+  margin-bottom: 1rem;
+}
+
+.view-details-btn {
+  /* background-color: #007bff; */
+  border: none;
+  color: #fff;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.view-details-btn:hover {
+  background-color: #8a212b;
+}
+
+/* MODAL */
+
+.custom-modal .modal-content {
+  background-color: #fefefe;
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header-custom {
+  background-color: #f8f8f8;
+  border-bottom: none;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.modal-title-custom {
+  font-size: 1.5rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.modal-body-custom {
+  padding: 2rem;
+  color: #444;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.modal-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.modal-text {
+  color: #666;
+  margin: 0.5rem 0 0;
+}
+
+.edit-input {
+  border-radius: 8px;
+  border: 1px solid #d1d1d1;
+  padding: 0.5rem 1rem;
+  margin-top: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.img-preview {
+  width: 100%;
+  max-height: 350px;
+  border-radius: 8px;
+  margin-top: 1rem;
+  object-fit: cover;
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.upload-input {
+  margin-top: 0.8rem;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.modal-footer-custom {
+  padding: 1.5rem 2rem;
+  display: flex;
+  gap: 0.5rem;
+  border-top: none;
+  justify-content: flex-end;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+.btn-primary-custom,
+.btn-secondary-custom {
+  border-radius: 8px;
+  padding: 0.5rem 1.25rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary-custom {
+  background-color: #4a90e2;
+  color: #fff;
+  border: none;
+}
+
+.btn-primary-custom:hover {
+  background-color: #357ab8;
+}
+
+.btn-secondary-custom {
+  background-color: #aaa;
+  color: #fff;
+  border: none;
+}
+
+.btn-secondary-custom:hover {
+  background-color: #888;
+}
+
+.modal-label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+/* MODAL END */
+/* TAB */
+/* Custom tab container */
+.custom-tabs .nav-tabs {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: none;
+}
+
+/* Individual tab styling */
+.custom-tabs .nav-link {
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+  background-color: #8a212b;
+  transition: all 0.3s ease;
+  margin-right: 5px;
+}
+
+.custom-tabs .nav-link:hover {
+  color: white;
+  background-color: #ae2936;
+}
+
+.custom-tabs .nav-link.active {
+  color: #fff;
+  background-color: #dc3545;
+  box-shadow: 0px 4px 12px rgba(0, 123, 255, 0.2);
+}
+
+/* Tab content styling */
+.custom-tab {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Gap adjustment for row */
+/* .custom-tab .row.g-4 {
+  gap: 1.5rem;
+} */
+/* TAB END */
+
+/* User Profile */
+.outer-card {
+  background-color: #c82333;
+}
+
+.inner-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Ensure the card takes full height of the column */
+}
+
+.inner-card .card-body {
+  flex-grow: 1; /* Allow the body to grow and fill the available space */
+}
+
+.inner-card .open-sans-bold,
+.inner-card .text-muted {
+  font-size: 1.2rem; /* Adjust font size inside inner cards */
+}
+
+.custom-danger {
+  background-color: #c82333; /* Darker shade of Bootstrap danger */
+  font-size: 1.25rem; /* Adjust font size */
+}
+
+/* User Profile End */
+
+/* Registration */
+.form-control-custom {
+  border: 1px solid #ced4da; /* Standard border color */
+  border-radius: 0.5rem; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* .card-registration {
+  /* margin: 20px auto;  
+  max-width: 1200px; /* Limit card width
+} */
+
+.card-registration-header {
+  border-bottom: 2px solid #dc3545; /* Add a bottom border for emphasis */
+}
+
+/*  */

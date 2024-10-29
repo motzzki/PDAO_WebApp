@@ -1,76 +1,102 @@
-import React from "react";
-import { Row, Col, Container, Tabs, Tab } from "react-bootstrap";
-import CardFacilities from "../components/CardFacilities";
-import rose from "../images/rosepwd.jpg";
-import ron from "../images/ron.jpg";
-
-const cardData = {
-  proFriendly: [
-    {
-      title: "Card 1",
-      text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit.",
-      imgSrc: ron,
-    },
-    {
-      title: "Card 2",
-      text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit.",
-      imgSrc: ron,
-    },
-    {
-      title: "Card 3",
-      text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit.",
-      imgSrc: ron,
-    },
-  ],
-  antiFriendly: [
-    {
-      title: "Card 1",
-      text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit.",
-      imgSrc: rose,
-    },
-    {
-      title: "Card 2",
-      text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit.",
-      imgSrc: rose,
-    },
-    {
-      title: "Card 3",
-      text: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam sed eius ratione laborum! Nihil ex similique corporis modi ipsa sequi, nisi tempore aspernatur quam odit.",
-      imgSrc: rose,
-    },
-  ],
-};
+import React, { useState, useEffect } from "react";
+import { Row, Col, Container, Tabs, Tab, Form, Button } from "react-bootstrap";
+import UserCardFacilities from "../components/UserCardFacilities";
+import axios from "axios";
 
 const UserFacilities = () => {
-  const renderCardList = (cards) => {
-    return (
-      <Row className="g-4">
-        {cards.map((card, index) => (
-          <Col key={index} md={4}>
-            <CardFacilities
-              cardTitle={card.title}
-              cardText={card.text}
-              cardImg={`https://placehold.co/300x300/000000/FFF`}
-            />
-          </Col>
-        ))}
-      </Row>
-    );
+  const [facilities, setFacilities] = useState({
+    proFriendly: [],
+    antiFriendly: [],
+  });
+
+  const fetchFacilities = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/api/pwdInfo/get-facilities"
+      );
+      const facilitiesData = response.data;
+
+      const proFriendly = facilitiesData.filter(
+        (facility) => facility.flag.toString() === "1"
+      );
+      const antiFriendly = facilitiesData.filter(
+        (facility) => facility.flag.toString() === "0"
+      );
+
+      setFacilities({ proFriendly, antiFriendly });
+    } catch (error) {
+      console.error(
+        "Error fetching facilities:",
+        error.response?.data || error.message
+      );
+    }
   };
+
+  useEffect(() => {
+    fetchFacilities();
+  }, []);
+  // const renderCardList = (cards) => {
+  //   if (cards.length === 0) {
+  //     return <p>No facilities available.</p>; // Message when there are no facilities
+  //   }
+  //   return (
+  //     <Row className="g-4">
+  //       {cards.map((card, index) => (
+  //         <Col key={index} md={4}>
+  //           <CardFacilities
+  //             // cardTitle={card.facility_name} // Display facility name
+  //             // cardText={card.accessibility_features} // Display accessibility features
+  //             // cardImg={card.picture}
+  //             facility={card}
+  //           />
+  //         </Col>
+  //       ))}
+  //     </Row>
+  //   );
+  // };
 
   return (
     <Container className="my-4">
-      <h2 className="text-center mb-4">Facilities</h2>
+      <div className="d-flex justify-content-between mb-3">
+        <h1 className="open-sans-bold">Facilities</h1>
+        <div className="d-flex justify-content-end w-100">
+          <Form.Control
+            type="text"
+            placeholder="Search..."
+            className="me-3 w-25"
+          />
+        </div>
+      </div>
       <Tabs
         defaultActiveKey="proFriendly"
-        id="facilities-tabs"
-        className="mb-3"
+        id="facilities-tab"
+        className="custom-tabs mb-4"
       >
-        <Tab eventKey="proFriendly" title="Pro-Friendly">
-          {renderCardList(cardData.proFriendly)}
+        <Tab eventKey="proFriendly" title="Pro-Friendly" className="custom-tab">
+          <Row className="g-4">
+            {facilities.proFriendly.length === 0
+              ? "No Pro-Friendly Facilities Available."
+              : facilities.proFriendly.map((facility, index) => (
+                  <Col key={index} md={4}>
+                    <UserCardFacilities facility={facility} />
+                  </Col>
+                ))}
+          </Row>
         </Tab>
-        <Tab eventKey="antiFriendly" title="Anti-Friendly">
-          {renderCardList(cardData.antiFriendly)}
+        <Tab
+          eventKey="antiFriendly"
+          title="Anti-Friendly"
+          className="custom-tab"
+        >
+          <Row className="g-4">
+            {facilities.antiFriendly.length === 0
+              ? "No Anti-Friendly Facilities Available."
+              : facilities.antiFriendly.map((facility, index) => (
+                  <Col key={index} md={4}>
+                    <UserCardFacilities facility={facility} />
+                  </Col>
+                ))}
+          </Row>
         </Tab>
       </Tabs>
     </Container>

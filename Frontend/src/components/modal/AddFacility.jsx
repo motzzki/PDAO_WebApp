@@ -3,7 +3,7 @@ import { Button, Form, Modal, Image, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import "../../App.css"; // Assuming you have a CSS file for styles
 
-const AddFacility = ({ show, handleClose }) => {
+const AddFacility = ({ show, handleClose, onSave }) => {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [facilityName, setFacilityName] = useState("");
@@ -12,6 +12,14 @@ const AddFacility = ({ show, handleClose }) => {
   const [flag, setFlag] = useState("");
 
   const BASE_URL = "http://localhost:8000/api/pwdInfo";
+
+  const resetField = () => {
+    setImagePreview(null);
+    setFacilityName("");
+    setLocation("");
+    setAccessibilityFeatures("");
+    setFlag("");
+  };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -45,7 +53,8 @@ const AddFacility = ({ show, handleClose }) => {
       });
       console.log(response.data); // Handle success response
       handleClose();
-      window.location.reload();
+      resetField();
+      onSave();
     } catch (error) {
       console.error("Error adding facility:", error.response.data);
       // Handle error response
