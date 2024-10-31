@@ -23,6 +23,7 @@ import PwdInfo from "./pages/PwdInfo.jsx";
 import StaffLayout from "./layout/StaffLayout.jsx";
 import StaffDashboard from "./pages/StaffDashboard.jsx";
 import StaffSidebar from "./components/StaffSidebar.jsx";
+import HeatMap from "./pages/HeatMap.jsx";
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
         <Route path="registered_users" element={<RegisteredUsers />} />
         <Route path="facilities" element={<Facilities />} />
         <Route path="addhelp" element={<AddHelp />} />
+        <Route path="heatmap" element={<HeatMap />} />
       </Route>
 
       <Route
@@ -68,6 +70,7 @@ function App() {
         <Route path="barangay" element={<Barangay />} />
         <Route path="facilities" element={<Facilities />} />
         <Route path="addhelp" element={<AddHelp />} />
+        <Route path="heatmap" element={<HeatMap />} />
       </Route>
 
       <Route

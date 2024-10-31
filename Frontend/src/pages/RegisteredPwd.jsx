@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Table from "react-bootstrap/Table";
+import { Table, Pagination, FloatingLabel, Form } from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
 import eye from "../images/eye.svg";
@@ -26,7 +26,11 @@ const RegisteredPwd = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showPwd, setShowPwd] = useState(false);
   const [selectedPwd, setSelectedPwd] = useState(null);
-  const [hoveredUserId, setHoveredUserId] = useState(null); // State for tooltip visibility
+  const [hoveredUserId, setHoveredUserId] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1); // For pagination
+  const [totalPages, setTotalPages] = useState(1); // Total pages from server
+  const [barangay, setBarangay] = useState(""); // State to hold selected barangay
+  const [order, setOrder] = useState("asc"); // State to hold sorting order
 
   const handleShow = (infos) => {
     setSelectedPwd(infos);
@@ -36,15 +40,16 @@ const RegisteredPwd = () => {
   const handleClose = () => setShowPwd(false);
 
   useEffect(() => {
-    fetchRegistered();
-  }, []);
+    fetchRegistered(currentPage, barangay, order);
+  }, [currentPage, barangay, order]);
 
-  const fetchRegistered = async () => {
+  const fetchRegistered = async (page, barangay, order) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/pwdInfo/pwd_info`
+        `http://localhost:8000/api/pwdInfo/pwd_info?page=${page}&limit=15&barangay=${barangay}&order=${order}`
       );
-      setRegisteredPwd(response.data);
+      setRegisteredPwd(response.data.data);
+      setTotalPages(response.data.pagination.totalPages);
     } catch (error) {
       console.error("Error fetching PWD information:", error);
     }
@@ -56,21 +61,80 @@ const RegisteredPwd = () => {
       .includes(searchQuery.toLowerCase())
   );
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const renderPagination = () => {
+    let items = [];
+    for (let page = 1; page <= totalPages; page++) {
+      items.push(
+        <Pagination.Item
+          key={page}
+          active={page === currentPage}
+          onClick={() => handlePageChange(page)}
+        >
+          {page}
+        </Pagination.Item>
+      );
+    }
+    return items;
+  };
+
+  const options = [
+    "Banaybanay",
+    "Banlic",
+    "Baclaran",
+    "Bigaa",
+    "Butong",
+    "Casile",
+    "Diezmo",
+    "Gulod",
+    "Mamatid",
+    "Marinig",
+    "Niugan",
+    "Pittland",
+    "Poblacion-Dos",
+    "Poblacion-Uno",
+    "Poblacion-tres",
+    "Pulo",
+    "Sala",
+  ];
+
   return (
     <div style={styles.tableContainer}>
       <div style={styles.searchContainer}>
         <h1 className="fs-2 open-sans-bold" style={styles.header}>
           Registered PWD
         </h1>
-        <div style={styles.searchWrapper}>
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={styles.searchBar}
-          />
-          <img src={searchIcon} alt="search" style={styles.searchIcon} />
+        <div style={styles.selectContainer}>
+          <Form.Select
+            required
+            className="form-control-custom"
+            value={barangay}
+            onChange={(e) => {
+              setBarangay(e.target.value);
+              setCurrentPage(1); // Reset to page 1 when filtering
+            }}
+          >
+            <option value="">Sort by Barangay</option>
+            {options.map((barangayOption) => (
+              <option key={barangayOption} value={barangayOption}>
+                {barangayOption}
+              </option>
+            ))}
+          </Form.Select>
+
+          <div style={styles.searchWrapper}>
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={styles.searchBar}
+            />
+            <img src={searchIcon} alt="search" style={styles.searchIcon} />
+          </div>
         </div>
       </div>
       <Table striped bordered hover responsive style={styles.table}>
@@ -85,7 +149,7 @@ const RegisteredPwd = () => {
         </thead>
         <tbody className="fs-5 open-sans-regular">
           {filteredPwd.map((infos) => (
-            <tr key={infos.userId} style={styles.tableRow} className="">
+            <tr key={infos.userId} style={styles.tableRow}>
               <td>{infos.userId}</td>
               <td>{infos.first_name}</td>
               <td>{infos.middle_name}</td>
@@ -101,8 +165,8 @@ const RegisteredPwd = () => {
                 <img
                   src={eye}
                   onClick={() => handleShow(infos)}
-                  onMouseEnter={() => setHoveredUserId(infos.userId)} // Show tooltip
-                  onMouseLeave={() => setHoveredUserId(null)} // Hide tooltip
+                  onMouseEnter={() => setHoveredUserId(infos.userId)}
+                  onMouseLeave={() => setHoveredUserId(null)}
                   style={{ cursor: "pointer" }}
                   alt="view"
                 />
@@ -114,6 +178,10 @@ const RegisteredPwd = () => {
           ))}
         </tbody>
       </Table>
+
+      <Pagination className="d-flex justify-content-center mt-3">
+        {renderPagination()}
+      </Pagination>
 
       {selectedPwd && (
         <PwdPreview
@@ -136,23 +204,28 @@ const styles = {
   searchContainer: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between", // Adjust alignment
+    justifyContent: "space-between",
     marginBottom: "15px",
+  },
+  selectContainer: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px", // Add some space between the select and search input
   },
   header: {
     margin: 0,
-    fontSize: "20px", // Adjust font size as needed
+    fontSize: "20px",
   },
   searchWrapper: {
     position: "relative",
-    width: "200px", // Adjust width as needed
+    width: "200px",
   },
   searchBar: {
     padding: "10px",
     borderRadius: "5px",
     border: "1px solid #ccc",
     width: "100%",
-    paddingRight: "30px", // Add padding to avoid overlap with the icon
+    paddingRight: "30px",
   },
   searchIcon: {
     position: "absolute",

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Button, Card, Modal, Form } from "react-bootstrap";
 import "../App.css";
+import axios from "axios";
 
-const CardFacilities = ({ facility }) => {
+const CardFacilities = ({ facility, onSave }) => {
   const [show, setShow] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedFacility, setEditedFacility] = useState({ ...facility });
@@ -38,10 +39,39 @@ const CardFacilities = ({ facility }) => {
     }
   };
 
-  const handleSubmit = () => {
-    // Add function to submit the changes, e.g., updating the server
-    console.log("Submitted data:", editedFacility);
-    setIsEditing(false);
+  const handleSubmit = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("facility_name", editedFacility.facility_name);
+      formData.append("location", editedFacility.location);
+      formData.append("flag", editedFacility.flag);
+      formData.append(
+        "accessibility_features",
+        editedFacility.accessibility_features
+      );
+
+      // Add the image file if it was changed
+      if (editedFacility.picture instanceof File) {
+        formData.append("picture", editedFacility.picture);
+      }
+
+      await axios.put(
+        `http://localhost:8000/api/pwdInfo/facilities/${facility.facility_id}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setIsEditing(false);
+      handleClose();
+      onSave(); // Close the modal after successful update
+    } catch (error) {
+      console.error("Error updating facility:", error);
+      // Handle error (e.g., show a notification or alert)
+    }
   };
 
   return (
@@ -125,9 +155,11 @@ const CardFacilities = ({ facility }) => {
               <p className="modal-text">{facility.accessibility_features}</p>
             )}
           </Form.Group>
-          <Form.Group>
-            <Form.Label className="modal-label">Flag Status:</Form.Label>
-            {isEditing ? (
+          {isEditing && (
+            <Form.Group>
+              <Form.Label className="modal-label">
+                Pro/Anti-Friendly Status
+              </Form.Label>
               <Form.Control
                 as="select"
                 name="flag"
@@ -135,15 +167,12 @@ const CardFacilities = ({ facility }) => {
                 onChange={handleInputChange}
                 className="edit-input"
               >
-                <option value="1">Active</option>
-                <option value="0">Inactive</option>
+                <option value="1">Pro-Friendly</option>
+                <option value="0">Anti-Friendly</option>
               </Form.Control>
-            ) : (
-              <p className="modal-text">
-                {facility.flag ? "Active" : "Inactive"}
-              </p>
-            )}
-          </Form.Group>
+            </Form.Group>
+          )}
+
           <Form.Group>
             <Form.Label className="modal-label">Picture:</Form.Label>
             {isEditing ? (

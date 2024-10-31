@@ -404,7 +404,6 @@ const Registration = () => {
               </FloatingLabel>
             </Col>
           </Row>
-
           <Row className="mb-3">
             <Col md={6}>
               <FloatingLabel

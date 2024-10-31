@@ -10,14 +10,50 @@ router.get("/pwd_info", async (req, res) => {
   try {
     conn = await pool.getConnection();
 
-    const [infos] = await conn.query(`SELECT * FROM tblusers`);
+    const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
+    const limit = parseInt(req.query.limit, 10) || 15; // Default to 15 records per page
+    const offset = (page - 1) * limit;
 
-    res.json(infos);
+    // Get the barangay filtering parameter from the request
+    const barangay = req.query.barangay || null; // Accept barangay as query param
+
+    // Get the sorting parameter from the request; default is to sort by barangay
+    const order = req.query.order === "desc" ? "DESC" : "ASC"; // Ascending or descending
+
+    // Query with limit and offset for pagination, and filtering by barangay
+    const [infos] = await conn.query(
+      `SELECT *, barangay FROM tblusers 
+       LEFT JOIN tbladdress  ON user_id = userId
+       ${barangay ? "WHERE barangay = ?" : ""}
+       ORDER BY userId DESC 
+       LIMIT ? OFFSET ?`,
+      barangay ? [barangay, limit, offset] : [limit, offset]
+    );
+
+    // Get the total count for pagination
+    const [[{ total }]] = await conn.query(
+      `SELECT COUNT(*) as total FROM tblusers  
+       LEFT JOIN tbladdress  ON user_id = userId
+       ${barangay ? "WHERE barangay = ?" : ""}`,
+      barangay ? [barangay] : []
+    );
+
+    const totalPages = Math.ceil(total / limit);
+
+    res.json({
+      data: infos,
+      pagination: {
+        total,
+        currentPage: page,
+        totalPages,
+        limit,
+      },
+    });
   } catch (err) {
     console.error("Error fetching Infos:", err);
     res.status(500).json({ error: "Error fetching Infos" });
   } finally {
-    conn.release();
+    if (conn) conn.release();
   }
 });
 
@@ -162,10 +198,94 @@ router.post("/facilities", async (req, res) => {
   }
 });
 
+// Update a facility
+router.put("/facilities/:id", async (req, res) => {
+  const facilityId = req.params.id; // Get the facility ID from the URL
+  let conn;
+
+  try {
+    const { fields, files } = await upload(req, res);
+
+    console.log("Parsed Fields for Update:", fields); // Log fields
+    console.log("Parsed Files for Update:", files);
+
+    const facility_name = fields.facility_name[0];
+    const location = fields.location[0];
+    const flag = fields.flag[0];
+    const accessibility_features = fields.accessibility_features[0];
+
+    // Validate required fields
+    if (
+      !facilityId ||
+      !facility_name ||
+      !location ||
+      !flag ||
+      !accessibility_features
+    ) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+
+    let newPath = null;
+    if (files.picture) {
+      // Check if a new file was uploaded
+      const picture = files.picture[0];
+
+      // Ensure the uploaded file was saved correctly
+      if (!picture || !picture.filepath) {
+        return res.status(400).json({ error: "Picture is required" });
+      }
+
+      // Read the old path and prepare new file name and path
+      const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+      const newFileName = `image-${uniqueSuffix}-${picture.newFilename}`;
+      newPath = `assets/uploads/${newFileName}`;
+
+      // Move the file to the new path
+      await fs.rename(picture.filepath, newPath);
+    }
+
+    conn = await pool.getConnection();
+
+    // Update the SQL query
+    const sql = `
+      UPDATE facilities
+      SET facility_name = ?, location = ?, flag = ?, accessibility_features = ?${
+        newPath ? ", picture = ?" : ""
+      }
+      WHERE facility_id = ?
+    `;
+
+    const params = [
+      facility_name,
+      location,
+      flag,
+      accessibility_features,
+      facilityId,
+    ];
+
+    if (newPath) {
+      params.splice(4, 0, newPath); // Insert the new picture path if it exists
+    }
+
+    const [result] = await conn.query(sql, params);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Facility not found" });
+    }
+
+    res.status(200).json({ message: "Facility updated successfully" });
+  } catch (err) {
+    console.error("Error updating facility:", err);
+    res.status(500).json({ error: "Error updating facility" });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
 router.get("/get-facilities", async (req, res) => {
   try {
     conn = await pool.getConnection();
-    const sql = `SELECT facility_name, location, flag, accessibility_features, picture FROM facilities`;
+    const sql = `SELECT facility_id, facility_name, location, flag, accessibility_features, picture FROM facilities`;
 
     const [facilities] = await conn.query(sql);
 

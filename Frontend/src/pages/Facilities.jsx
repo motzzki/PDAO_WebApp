@@ -46,25 +46,6 @@ const Facilities = () => {
     fetchFacilities();
   }, []);
 
-  // const renderCardList = (cards) => {
-  //   if (cards.length === 0) {
-  //     return <p>No facilities available.</p>; // Message when there are no facilities
-  //   }
-  //   return (
-  //     <Row className="g-4">
-  //       {cards.map((card, index) => (
-  //         <Col key={index} md={4}>
-  //           <CardFacilities
-  //             cardTitle={card.facility_name} // Display facility name
-  //             cardText={card.location} // Display accessibility features
-  //             cardImg={card.picture} // Use the picture URL from the backend
-  //           />
-  //         </Col>
-  //       ))}
-  //     </Row>
-  //   );
-  // };
-
   return (
     <Container className="my-4">
       <div className="d-flex justify-content-between mb-3">
@@ -89,9 +70,12 @@ const Facilities = () => {
           <Row className="g-4">
             {facilities.proFriendly.length === 0
               ? "No Pro-Friendly Facilities Available."
-              : facilities.proFriendly.map((facility, index) => (
-                  <Col key={index} md={4}>
-                    <CardFacilities facility={facility} />
+              : facilities.proFriendly.map((facility) => (
+                  <Col key={facility.facility_id} md={4}>
+                    <CardFacilities
+                      facility={facility}
+                      onSave={fetchFacilities}
+                    />
                   </Col>
                 ))}
           </Row>
@@ -104,9 +88,12 @@ const Facilities = () => {
           <Row className="g-4">
             {facilities.antiFriendly.length === 0
               ? "No Anti-Friendly Facilities Available."
-              : facilities.antiFriendly.map((facility, index) => (
-                  <Col key={index} md={4}>
-                    <CardFacilities facility={facility} />
+              : facilities.antiFriendly.map((facility) => (
+                  <Col key={facility.facility_id} md={4}>
+                    <CardFacilities
+                      facility={facility}
+                      onSave={fetchFacilities}
+                    />
                   </Col>
                 ))}
           </Row>

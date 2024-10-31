@@ -187,6 +187,27 @@ const StaffSidebar = () => {
               Graphical Report
             </CDBSidebarMenuItem>
           </Link>
+
+          <Link to="/staff/heatmap">
+            {/* Updated Graphical Report Icon */}
+            <CDBSidebarMenuItem
+              icon="chart-bar"
+              style={menuItemStyle}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor =
+                  hoverStyle.backgroundColor;
+                e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
+                e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "";
+                e.currentTarget.style.boxShadow = "";
+                e.currentTarget.style.color = ""; // Revert text color on hover end
+              }}
+            >
+              Heatmap
+            </CDBSidebarMenuItem>
+          </Link>
         </CDBSidebarMenu>
 
         {/* Updated Logout Icon */}
