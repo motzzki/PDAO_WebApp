@@ -62,7 +62,9 @@ router.post("/register_pwd", async (req, res) => {
     !noNumbersRegex.test(nationality) ||
     (occupation_name && !noNumbersRegex.test(occupation_name)) // occupation_name can be optional, hence check
   ) {
-    return res.status(400).json({ error: "Names, nationality, and occupation cannot contain numbers." });
+    return res.status(400).json({
+      error: "Names, nationality, and occupation cannot contain numbers.",
+    });
   }
 
   const connection = await pool.getConnection();
@@ -75,8 +77,11 @@ router.post("/register_pwd", async (req, res) => {
 
     const createdAt = new Date();
 
+    const expiredId = new Date(createdAt);
+    expiredId.setFullYear(expiredId.getFullYear() + 5);
+
     const [userResult] = await connection.query(
-      "INSERT INTO tblusers (first_name, middle_name, last_name, contact_num, email, accountId, password, age, gender, date_of_birth, blood_type, created_at, nationality) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO tblusers (first_name, middle_name, last_name, contact_num, email, accountId, password, age, gender, date_of_birth, blood_type, created_at, expired_id, nationality) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         first_name,
         middle_name,
@@ -90,6 +95,7 @@ router.post("/register_pwd", async (req, res) => {
         date_of_birth,
         blood_type,
         createdAt,
+        expiredId,
         nationality,
       ]
     );

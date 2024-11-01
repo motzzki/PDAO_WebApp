@@ -24,6 +24,7 @@ import StaffLayout from "./layout/StaffLayout.jsx";
 import StaffDashboard from "./pages/StaffDashboard.jsx";
 import StaffSidebar from "./components/StaffSidebar.jsx";
 import HeatMap from "./pages/HeatMap.jsx";
+import EmployeeNotification from "./pages/EmployeeNotification.jsx";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
         <Route path="facilities" element={<Facilities />} />
         <Route path="addhelp" element={<AddHelp />} />
         <Route path="heatmap" element={<HeatMap />} />
+        <Route path="notif" element={<EmployeeNotification />} />
       </Route>
 
       <Route
@@ -71,6 +73,7 @@ function App() {
         <Route path="facilities" element={<Facilities />} />
         <Route path="addhelp" element={<AddHelp />} />
         <Route path="heatmap" element={<HeatMap />} />
+        <Route path="notif" element={<EmployeeNotification />} />
       </Route>
 
       <Route

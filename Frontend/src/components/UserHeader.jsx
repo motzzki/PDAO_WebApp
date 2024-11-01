@@ -7,7 +7,6 @@ import {
   Tooltip,
   Badge,
 } from "react-bootstrap";
-import { GoBell } from "react-icons/go";
 import { FiUser } from "react-icons/fi";
 import profile from "../images/profile.svg";
 import { MdOutlineLogout } from "react-icons/md";
@@ -15,6 +14,7 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import logo from "../images/logopdao.jpg";
 import { useAuth } from "../layout/AuthContext.jsx";
+import Notifications from "./Notifications.jsx";
 
 const UserHeader = () => {
   const { logout, getLoggedUser } = useAuth();
@@ -28,6 +28,7 @@ const UserHeader = () => {
       setError(null); // Clear previous errors
       try {
         const data = await getLoggedUser();
+
         setProfileData(data);
       } catch (err) {
         setError(err.message || "Error loading user data");
@@ -115,7 +116,10 @@ const UserHeader = () => {
               </Nav.Link>
             </OverlayTrigger>
 
-            <Nav.Link
+            {profileData && profileData.userId && (
+              <Notifications userType={"user"} userId={profileData.userId} />
+            )}
+            {/* <Nav.Link
               className="mx-2 text-white"
               style={{ fontSize: "1.5rem" }}
             >
@@ -129,7 +133,7 @@ const UserHeader = () => {
                   <GoBell />
                 </span>
               </OverlayTrigger>
-            </Nav.Link>
+            </Nav.Link> */}
 
             <OverlayTrigger
               placement="bottom"

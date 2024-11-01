@@ -314,4 +314,15 @@ router.get("/get-facilities", async (req, res) => {
   }
 });
 
+// API endpoint to get previous notifications
+// router.get("/api/notifications", (req, res) => {
+//   const query = "SELECT * FROM notifications ORDER BY timestamp DESC";
+//   db.query(query, (err, results) => {
+//     if (err) {
+//       return res.status(500).json({ error: "Error fetching notifications" });
+//     }
+//     res.json(results);
+//   });
+// });
+
 export default router;
