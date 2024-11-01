@@ -43,7 +43,16 @@ const Dashboard = () => {
     textAlign: "center",
     margin: "15px", // Increased margin for better spacing between cards
   };
-  
+  //STAFF
+  // nicka123
+  // 7IdGLnYiIQ
+
+  //ADMIN
+  // angelo123
+  // pHXbqKKhL3
+
+  // 2184164
+  // LIyDEtN9N8
 
   return (
     <Container className="mt-5">

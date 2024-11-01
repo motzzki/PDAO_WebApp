@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Card, FloatingLabel, Form, Row, Col } from "react-bootstrap";
-
+import Select from "react-select";
 import axios from "axios";
 import Swal from "sweetalert2";
 
@@ -154,6 +154,33 @@ const Registration = () => {
   //     setValue(value);
   //   }
   // };
+  const handleChange = (selectedOption) => {
+    if (selectedOption) {
+      setBarangay(selectedOption.value); // Set only the value
+    } else {
+      setBarangay(""); // Reset if no option is selected
+    }
+  };
+
+  const options = [
+    { value: "Banaybanay", label: "Banaybanay" },
+    { value: "Banlic", label: "Banlic" },
+    { value: "Baclaran", label: "Baclaran" },
+    { value: "Bigaa", label: "Bigaa" },
+    { value: "Butong", label: "Butong" },
+    { value: "Casile", label: "Casile" },
+    { value: "Diezmo", label: "Diezmo" },
+    { value: "Gulod", label: "Gulod" },
+    { value: "Mamatid", label: "Mamatid" },
+    { value: "Marinig", label: "Marinig" },
+    { value: "Niugan", label: "Niugan" },
+    { value: "Pittland", label: "Pittland" },
+    { value: "Poblacion-Dos", label: "Poblacion-Dos" },
+    { value: "Poblacion-Uno", label: "Poblacion-Uno" },
+    { value: "Poblacion-Tres", label: "Poblacion-Tres" },
+    { value: "Pulo", label: "Pulo" },
+    { value: "Sala", label: "Sala" },
+  ];
 
   return (
     <Card className="shadow-lg rounded">
@@ -358,25 +385,40 @@ const Registration = () => {
                 controlId="floatingCause"
                 label="Cause of Disability"
               >
-                <Form.Control
-                  type="text"
+                <Form.Select
                   placeholder="Cause of Disability"
                   value={cause}
                   onChange={(e) => setCause(e.target.value)}
                   className="form-control-custom"
-                />
+                >
+                  <option>Select Cause</option>
+                  <option value="acquired">Acquired</option>
+                  <option value="inborn">Inborn</option>
+                </Form.Select>
               </FloatingLabel>
             </Col>
             <Col md={6}>
-              <FloatingLabel controlId="floatingBarangay" label="Barangay">
-                <Form.Control
-                  type="text"
-                  placeholder="Barangay"
-                  value={barangay}
-                  onChange={(e) => setBarangay(e.target.value)}
-                  className="form-control-custom"
-                />
-              </FloatingLabel>
+              <Select
+                options={options}
+                value={
+                  options.find((option) => option.value === barangay) || null
+                } // Set the selected option
+                onChange={handleChange} // Use the custom handleChange function
+                placeholder="Select Barangay"
+                className="basic-single form-control-custom"
+                classNamePrefix="select"
+                isSearchable // Allow searching
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    minHeight: "56px", // Set minimum height for the control
+                  }),
+                  menu: (base) => ({
+                    ...base,
+                    zIndex: 100, // Ensure the dropdown is above other elements
+                  }),
+                }}
+              />
             </Col>
           </Row>
 
@@ -410,13 +452,20 @@ const Registration = () => {
                 controlId="floatingEducation"
                 label="Education Level"
               >
-                <Form.Control
-                  type="text"
+                <Form.Select
                   placeholder="Education Level"
                   value={education}
                   onChange={(e) => setEducation(e.target.value)}
                   className="form-control-custom"
-                />
+                >
+                  <option>Select Education</option>
+                  <option value="vocational">Vocational</option>
+                  <option value="college">College</option>
+                  <option value="senior-high">Senior-high</option>
+                  <option value="junior-high">Junior-high</option>
+                  <option value="elementary">Elementary</option>
+                  <option value="kinder">Kinder</option>
+                </Form.Select>
               </FloatingLabel>
               <div className="text-center">
                 <Button
@@ -434,13 +483,18 @@ const Registration = () => {
                 controlId="floatingEmployment"
                 label="Employment Status"
               >
-                <Form.Control
-                  type="text"
+                <Form.Select
                   placeholder="Employment Status"
                   value={employment}
                   onChange={(e) => setEmployment(e.target.value)}
                   className="form-control-custom"
-                />
+                >
+                  <option>Select Employment</option>
+                  <option value="self-employed">Self-Employed</option>
+                  <option value="employed">Employed</option>
+                  <option value="unemployed">Unemployed</option>
+                  <option value="student">Student</option>
+                </Form.Select>
               </FloatingLabel>
               <div className="text-center">
                 <Button

@@ -11,7 +11,7 @@ router.get("/pwd_info", async (req, res) => {
     conn = await pool.getConnection();
 
     const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
-    const limit = parseInt(req.query.limit, 10) || 15; // Default to 15 records per page
+    const limit = parseInt(req.query.limit, 10) || 10; // Default to 15 records per page
     const offset = (page - 1) * limit;
 
     // Get the barangay filtering parameter from the request

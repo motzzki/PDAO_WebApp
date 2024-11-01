@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { MapContainer, TileLayer, GeoJSON, Popup } from "react-leaflet";
+import { MapContainer, GeoJSON, useMap } from "react-leaflet";
 import "leaflet.heat";
 import axios from "axios";
-import { barangayBoundaries } from "../Cabuyao"; // Ensure this path is correct
+import L from "leaflet";
+import { barangayBoundaries } from "../Cabuyao";
 
 const HeatMap = () => {
   const [heatmapData, setHeatmapData] = useState([]);
@@ -17,12 +18,14 @@ const HeatMap = () => {
 
         if (response.status === 200) {
           const barangayInfo = response.data;
+
+          // Prepare heatmap data based on fetched barangay info
           const heatData = barangayInfo.map((barangay) => {
             const coordinates = getBarangayCoordinates(barangay.barangay);
             return [
               coordinates.lat,
               coordinates.lng,
-              barangay.Registered / 100, // Adjust the registered count as needed
+              barangay.Registered / 100, // Adjust the intensity
             ];
           });
 
@@ -45,11 +48,10 @@ const HeatMap = () => {
     );
 
     if (feature) {
-      // Get the first point in the polygon
       const coordinates = feature.geometry.coordinates[0][0];
       return {
-        lat: coordinates[1],
-        lng: coordinates[0],
+        lat: coordinates[1], // latitude
+        lng: coordinates[0], // longitude
       };
     }
 
@@ -59,46 +61,82 @@ const HeatMap = () => {
   const onEachFeature = (feature, layer) => {
     layer.on({
       click: () => {
-        // Create a popup showing the barangay name
         layer.bindPopup(feature.properties.NAME_3).openPopup();
+      },
+      mouseover: (e) => {
+        const layer = e.target;
+        layer.setStyle({
+          color: "orange",
+          weight: 3,
+          fillOpacity: 0.5,
+        });
+        layer.openPopup();
+      },
+      mouseout: (e) => {
+        const layer = e.target;
+        layer.setStyle({
+          color: "red",
+          weight: 2,
+          fillOpacity: 0.2,
+        });
+        layer.closePopup();
       },
     });
   };
 
+  const HeatmapLayer = ({ data }) => {
+    const map = useMap();
+
+    useEffect(() => {
+      if (data.length > 0) {
+        const heat = L.heatLayer(data, {
+          radius: 25,
+          blur: 15,
+          maxZoom: 17,
+          gradient: {
+            0.2: "blue",
+            0.4: "lime",
+            0.6: "yellow",
+            0.8: "orange",
+            1: "red",
+          },
+        });
+        heat.addTo(map);
+
+        return () => {
+          map.removeLayer(heat);
+        };
+      }
+    }, [data, map]);
+
+    return null;
+  };
+
+  const FitBoundsToPolygon = () => {
+    const map = useMap();
+
+    useEffect(() => {
+      const bounds = L.geoJSON(barangayBoundaries).getBounds();
+      map.fitBounds(bounds);
+    }, [map]);
+
+    return null;
+  };
+
   return (
     <MapContainer
-      center={[14.247142, 121.136673]}
       zoom={13}
+      minZoom={13}
       style={{ height: "100vh", width: "100%" }}
+      dragging={false}
     >
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
       <GeoJSON
         data={barangayBoundaries}
-        style={{ color: "red", weight: 2 }}
+        style={{ color: "red", weight: 2, fillOpacity: 0.2 }}
         onEachFeature={onEachFeature}
       />
-      <div id="heatmap" />
-      {heatmapData.length > 0 && (
-        <div>
-          <script>
-            {`L.heatLayer(${JSON.stringify(heatmapData)}, {
-              radius: 25,
-              blur: 15,
-              maxZoom: 17,
-              gradient: {
-                0.2: "blue",
-                0.4: "lime",
-                0.6: "yellow",
-                0.8: "orange",
-                1: "red",
-              },
-            }).addTo(map);`}
-          </script>
-        </div>
-      )}
+      <FitBoundsToPolygon />
+      {heatmapData.length > 0 && <HeatmapLayer data={heatmapData} />}
       {error && (
         <div style={{ color: "red", textAlign: "center" }}>{error}</div>
       )}

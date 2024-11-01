@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Pagination, FloatingLabel, Form } from "react-bootstrap";
+import { Card, Table, Pagination, FloatingLabel, Form } from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
 import eye from "../images/eye.svg";
@@ -46,7 +46,7 @@ const RegisteredPwd = () => {
   const fetchRegistered = async (page, barangay, order) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/pwdInfo/pwd_info?page=${page}&limit=15&barangay=${barangay}&order=${order}`
+        `http://localhost:8000/api/pwdInfo/pwd_info?page=${page}&limit=7&barangay=${barangay}&order=${order}`
       );
       setRegisteredPwd(response.data.data);
       setTotalPages(response.data.pagination.totalPages);
@@ -102,86 +102,113 @@ const RegisteredPwd = () => {
   ];
 
   return (
-    <div style={styles.tableContainer}>
-      <div style={styles.searchContainer}>
-        <h1 className="fs-2 open-sans-bold" style={styles.header}>
-          Registered PWD
-        </h1>
-        <div style={styles.selectContainer}>
-          <Form.Select
-            required
-            className="form-control-custom"
-            value={barangay}
-            onChange={(e) => {
-              setBarangay(e.target.value);
-              setCurrentPage(1); // Reset to page 1 when filtering
-            }}
-          >
-            <option value="">Sort by Barangay</option>
-            {options.map((barangayOption) => (
-              <option key={barangayOption} value={barangayOption}>
-                {barangayOption}
-              </option>
-            ))}
-          </Form.Select>
+    <>
+      <Card>
+        <Card.Body>
+          <div style={styles.searchContainer}>
+            <h1 className="fs-2 open-sans-bold" style={styles.header}>
+              Registered PWD
+            </h1>
+            <div
+              style={styles.selectContainer}
+              className="d-flex justify-content-between align-items-center mb-3"
+            >
+              <Form.Select
+                required
+                className="form-control-custom w-auto"
+                value={barangay}
+                onChange={(e) => {
+                  setBarangay(e.target.value);
+                  setCurrentPage(1);
+                }}
+              >
+                <option value="">Sort by Barangay</option>
+                {options.map((barangayOption) => (
+                  <option key={barangayOption} value={barangayOption}>
+                    {barangayOption}
+                  </option>
+                ))}
+              </Form.Select>
 
-          <div style={styles.searchWrapper}>
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              style={styles.searchBar}
-            />
-            <img src={searchIcon} alt="search" style={styles.searchIcon} />
-          </div>
-        </div>
-      </div>
-      <Table striped bordered hover responsive style={styles.table}>
-        <thead className="fs-5 open-sans-bold">
-          <tr>
-            {TABLE_HEAD.map((head) => (
-              <th key={head} style={styles.tableHead}>
-                {head}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="fs-5 open-sans-regular">
-          {filteredPwd.map((infos) => (
-            <tr key={infos.userId} style={styles.tableRow}>
-              <td>{infos.userId}</td>
-              <td>{infos.first_name}</td>
-              <td>{infos.middle_name}</td>
-              <td>{infos.last_name}</td>
-              <td>{infos.contact_num}</td>
-              <td>{infos.email}</td>
-              <td>{infos.age}</td>
-              <td>{infos.gender}</td>
-              <td>{moment(infos.date_of_birth).format("MMM DD, YYYY")}</td>
-              <td>{infos.blood_type}</td>
-              <td>{infos.nationality}</td>
-              <td style={{ position: "relative" }}>
-                <img
-                  src={eye}
-                  onClick={() => handleShow(infos)}
-                  onMouseEnter={() => setHoveredUserId(infos.userId)}
-                  onMouseLeave={() => setHoveredUserId(null)}
-                  style={{ cursor: "pointer" }}
-                  alt="view"
+              <div
+                style={styles.searchWrapper}
+                className="position-relative w-100"
+              >
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={styles.searchBar}
                 />
-                {hoveredUserId === infos.userId && (
-                  <div style={styles.tooltip}>See Details</div>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+                <img
+                  src={searchIcon}
+                  alt="search"
+                  style={{
+                    position: "absolute",
+                    right: "10px",
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    width: "20px",
+                    height: "20px",
+                    cursor: "pointer",
+                  }}
+                />
+              </div>
+            </div>
+          </div>
 
-      <Pagination className="d-flex justify-content-center mt-3">
-        {renderPagination()}
-      </Pagination>
+          <Table striped bordered hover responsive>
+            <thead className="fs-5 open-sans-bold">
+              <tr>
+                {TABLE_HEAD.map((head) => (
+                  <th key={head} className="text-center">
+                    {head}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="fs-5 open-sans-regular">
+              {filteredPwd.map((infos) => (
+                <tr key={infos.userId} className="hover-table-row">
+                  <td className="text-center">{infos.userId}</td>
+                  <td className="text-left">{infos.first_name}</td>
+                  <td className="text-left">{infos.middle_name}</td>
+                  <td className="text-left">{infos.last_name}</td>
+                  <td className="text-center">{infos.contact_num}</td>
+                  <td className="text-left">{infos.email}</td>
+                  <td className="text-center">{infos.age}</td>
+                  <td className="text-center">{infos.gender}</td>
+                  <td className="text-center">
+                    {moment(infos.date_of_birth).format("MMM DD, YYYY")}
+                  </td>
+                  <td className="text-center">{infos.blood_type}</td>
+                  <td className="text-left">{infos.nationality}</td>
+                  <td className="text-center">
+                    <img
+                      src={eye}
+                      onClick={() => handleShow(infos)}
+                      onMouseEnter={() => setHoveredUserId(infos.userId)}
+                      onMouseLeave={() => setHoveredUserId(null)}
+                      style={{
+                        cursor: "pointer",
+                        width: "20px",
+                        height: "20px",
+                      }}
+                      alt={`View details for ${infos.first_name} ${infos.last_name}`}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+
+          <Pagination className="d-flex justify-content-center mt-3">
+            {renderPagination()}
+          </Pagination>
+        </Card.Body>
+      </Card>
 
       {selectedPwd && (
         <PwdPreview
@@ -190,17 +217,11 @@ const RegisteredPwd = () => {
           userId={selectedPwd.userId}
         />
       )}
-    </div>
+    </>
   );
 };
 
 const styles = {
-  tableContainer: {
-    padding: "20px",
-    backgroundColor: "#f8f9fa",
-    borderRadius: "10px",
-    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.05)",
-  },
   searchContainer: {
     display: "flex",
     alignItems: "center",
@@ -235,37 +256,6 @@ const styles = {
     width: "20px",
     height: "20px",
     cursor: "pointer",
-  },
-  table: {
-    borderCollapse: "collapse",
-    width: "100%",
-    borderRadius: "10px",
-    overflow: "hidden",
-  },
-  tableHead: {
-    backgroundColor: "#e0e0e0",
-    color: "#333",
-    textAlign: "center",
-    fontWeight: "bold",
-    padding: "12px",
-  },
-  tableRow: {
-    textAlign: "center",
-    padding: "10px",
-    backgroundColor: "#ffffff",
-    transition: "background-color 0.3s",
-  },
-  tooltip: {
-    position: "absolute",
-    bottom: "25px",
-    left: "50%",
-    transform: "translateX(-50%)",
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    color: "white",
-    padding: "5px 10px",
-    borderRadius: "5px",
-    fontSize: "12px",
-    zIndex: 10,
   },
 };
 
