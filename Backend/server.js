@@ -1,29 +1,30 @@
+// server.js
+
 import express, { json } from "express";
 import http from "http";
 import cors from "cors";
 import { config } from "dotenv";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
-import { createRequire } from "module";
-import { Server } from "socket.io";
-import moment from "moment-timezone";
 import cron from "node-cron";
+import moment from "moment-timezone";
+import setupSocket from "./socket.js";
+import { getIO } from "./socket.js";
+import pool from "./db.js";
+
 config();
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: "*" },
-});
 const port = process.env.PORT || 8000;
-const require = createRequire(import.meta.url);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 app.use(json());
 app.use(cors());
 
-import pool from "./db.js";
+// Initialize WebSocket connections
+const io = setupSocket(server);
 
 (async () => {
   try {
@@ -34,174 +35,206 @@ import pool from "./db.js";
   }
 })();
 
-//ROUTES
+// REST API ROUTES
 import authUser from "./routes/authUser.js";
 import registerPwd from "./routes/register_pwd.js";
 import pwdInfo from "./routes/pwd_info.js";
 import barangay from "./routes/barangay.js";
 import user_management from "./routes/user_management.js";
-//
+import notification from "./routes/notification.js";
+
 app.use("/api/authUser", authUser);
 app.use("/api/registerPwd", registerPwd);
 app.use("/api/pwdInfo", pwdInfo);
 app.use("/api/barangay", barangay);
 app.use("/api/user_management", user_management);
+app.use("/api/notification", notification);
 app.use("/uploads", express.static(join(__dirname, "./assets/uploads")));
 
-// API endpoints to get notifications for users and employees
-app.get("/api/notifications/user/:userId", async (req, res) => {
-  const userId = req.params.userId;
-  const query =
-    "SELECT * FROM notifications_users WHERE userId = ? ORDER BY timestamp DESC";
-  try {
-    const [results] = await pool.query(query, [userId]);
-    res.json(results);
-  } catch (err) {
-    console.error("Error fetching user notifications:", err);
-    res.status(500).json({ error: "Error fetching user notifications" });
-  }
-});
+// API endpoints for notifications
 
-// Get employee notifications
-app.get("/api/notifications/employee/:employeeId", async (req, res) => {
-  const employeeId = req.params.employeeId;
-  const query =
-    "SELECT * FROM notifications_employees WHERE employeeId = ? ORDER BY timestamp DESC";
-  try {
-    const [results] = await pool.query(query, [employeeId]);
-    res.json(results);
-  } catch (err) {
-    console.error("Error fetching employee notifications:", err);
-    res.status(500).json({ error: "Error fetching employee notifications" });
-  }
-});
-
-// WebSocket connection
-io.on("connection", (socket) => {
-  console.log("A user connected:", socket.id);
-
-  // Handle new user notifications
-  socket.on("newUserNotification", async (data) => {
-    const insertQuery =
-      "INSERT INTO notifications_users (message, userId) VALUES (?, ?)";
-    try {
-      const [result] = await pool.query(insertQuery, [
-        data.message,
-        data.userId,
-      ]);
-      const [rows] = await pool.query(
-        "SELECT * FROM notifications_users WHERE notifId = ?",
-        [result.insertId]
-      );
-      io.emit("receiveUserNotification", rows[0]);
-    } catch (err) {
-      console.error("Error handling new user notification:", err);
-    }
-  });
-
-  // Handle new employee notifications
-  socket.on("newEmployeeNotification", async (data) => {
-    const insertQuery =
-      "INSERT INTO notifications_employees (message, employeeId) VALUES (?, ?)";
-    try {
-      const [result] = await pool.query(insertQuery, [
-        data.message,
-        data.employeeId,
-      ]);
-      const [rows] = await pool.query(
-        "SELECT * FROM notifications_employees WHERE notifId = ?",
-        [result.insertId]
-      );
-      io.emit("receiveEmployeeNotification", rows[0]);
-    } catch (err) {
-      console.error("Error handling new employee notification:", err);
-    }
-  });
-
-  socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
-  });
-});
-
-export const newNotification = (userId, userType, message) => {
-  if (userType === "user") {
-    const query =
-      "INSERT INTO notifications_users (message, userId) VALUES (?, ?)";
-    pool.query(query, [message, userId], (err, result) => {
-      if (err) {
-        console.error("Error saving user notification:", err);
-        return res.status(500).json({ error: "Failed to create notification" });
-      }
-
-      pool.query(
-        "SELECT * FROM notifications_users WHERE notifId = ?",
-        [result.insertId],
-        (err, rows) => {
-          if (err) {
-            console.error("Error retrieving saved user notification:", err);
-            return res
-              .status(500)
-              .json({ error: "Failed to retrieve notification" });
-          }
-
-          const newNotification = rows[0];
-          io.emit("receiveUserNotification", newNotification); // Emit to all connected clients
-          res.json({ success: true, notification: newNotification });
-        }
-      );
-    });
-  } else if (userType === "employee") {
-    const query =
-      "INSERT INTO notifications_employees (message, employeeId) VALUES (?, ?)";
-    pool.query(query, [message, userId], (err, result) => {
-      if (err) {
-        console.error("Error saving employee notification:", err);
-        return res.status(500).json({ error: "Failed to create notification" });
-      }
-
-      pool.query(
-        "SELECT * FROM notifications_employees WHERE notifId = ?",
-        [result.insertId],
-        (err, rows) => {
-          if (err) {
-            console.error("Error retrieving saved employee notification:", err);
-            return res
-              .status(500)
-              .json({ error: "Failed to retrieve notification" });
-          }
-
-          const newNotification = rows[0];
-          io.emit("receiveEmployeeNotification", newNotification); // Emit to all connected clients
-          res.json({ success: true, notification: newNotification });
-        }
-      );
-    });
-  }
-};
-
+// Notification cron job
+// "*/1 * * * *",
+// 0 6 * * *
 cron.schedule(
   "0 6 * * *",
-  () => {
-    // Get the current date in Manila time
-    const today = moment().tz("Asia/Manila").format("YYYY-MM-DD");
+  async () => {
+    const today = moment().tz("Asia/Manila").format("MM-DD");
 
-    const query = "SELECT * FROM tblusers WHERE DATE(date_of_birth) = ?";
+    // Query to get users whose birthdays are today
+    const todayBirthdayQuery = `
+      SELECT userId, first_name, last_name, DATE_FORMAT(date_of_birth, '%m-%d') AS dob
+      FROM tblusers
+      WHERE DATE_FORMAT(date_of_birth, '%m-%d') = ?
+    `;
 
-    pool.query(query, [today], (err, results) => {
-      if (err) {
-        console.error("Error fetching users with birthdays:", err);
-        return;
-      }
+    const expiredIdQuery = `
+      SELECT 
+        userId,
+        first_name,
+        last_name,
+        NULL AS date_of_birth,
+        created_at,
+        'expired_id' AS notification_type
+      FROM 
+        tblusers
+      WHERE 
+        DATE_ADD(created_at, INTERVAL 5 YEAR) BETWEEN DATE_SUB(NOW(), INTERVAL 30 DAY) AND NOW()
+    `;
 
-      // Handle the results
-      if (results.length > 0) {
-        results.forEach((user) => {
-          console.log(`Happy Birthday to ${user.name}!`);
+    try {
+      // Handle birthday notifications
+      const [todayResults] = await pool.query(todayBirthdayQuery, [today]);
+
+      if (todayResults.length > 0) {
+        todayResults.forEach(async (user) => {
+          const messageToUser = `Today is your birthday, ${user.first_name} ${user.last_name}! Happy Birthday!`;
+
+          const notifUserQuery = `
+            INSERT INTO notifications_users (message, userId, type)
+            VALUES (?, ?, 'birthday')
+          `;
+
+          try {
+            const [resultUser] = await pool.query(notifUserQuery, [
+              messageToUser,
+              user.userId,
+            ]);
+            const newNotificationUser = {
+              notifId: resultUser.insertId,
+              message: messageToUser,
+              userId: user.userId,
+              type: "birthday",
+              timestamp: new Date(),
+            };
+
+            // Emit notification for the user
+            getIO().emit("birthdayNotification", newNotificationUser);
+            console.log(
+              `Birthday notification created for ${user.first_name} ${user.last_name} (User)`
+            );
+            console.log(newNotificationUser);
+          } catch (err) {
+            console.error("Error creating user birthday notification:", err);
+          }
+
+          const messageToEmployee = `Today is ${user.first_name} ${user.last_name}'s birthday!`;
+          const notifEmployeeQuery = `
+            INSERT INTO notifications_employees (message, userId, type)
+            VALUES (?, ?, 'birthday') 
+            ON DUPLICATE KEY UPDATE message = VALUES(message)
+          `;
+
+          try {
+            const [resultEmployee] = await pool.query(notifEmployeeQuery, [
+              messageToEmployee,
+              user.userId,
+            ]);
+            const newNotificationEmployee = {
+              notifId: resultEmployee.insertId,
+              message: messageToEmployee,
+              userId: user.userId,
+              type: "birthday",
+              timestamp: new Date(),
+            };
+
+            // Emit notification for the employee
+            getIO().emit(
+              "employeeBirthdayNotification",
+              newNotificationEmployee
+            );
+            console.log(
+              `Birthday notification created for ${user.first_name} ${user.last_name} (Employee)`
+            );
+            console.log(newNotificationEmployee);
+          } catch (err) {
+            console.error(
+              "Error creating employee birthday notification:",
+              err
+            );
+          }
         });
       } else {
-        console.log("No users have birthdays today.");
+        console.log("No birthdays today.");
       }
-    });
+
+      // Handle expired ID notifications
+      const [expiredResults] = await pool.query(expiredIdQuery);
+      if (expiredResults.length > 0) {
+        expiredResults.forEach(async (user) => {
+          const messageToUser = `Your ID will expire soon, ${user.first_name} ${user.last_name}. Please renew it!`;
+
+          const notifUserQuery = `
+            INSERT INTO notifications_users (message, userId, type)
+            VALUES (?, ?, 'expired_id')
+          `;
+
+          try {
+            const [resultUser] = await pool.query(notifUserQuery, [
+              messageToUser,
+              user.userId,
+            ]);
+            const newNotificationUser = {
+              notifId: resultUser.insertId,
+              message: messageToUser,
+              userId: user.userId,
+              type: "expired_id",
+              timestamp: new Date(),
+            };
+
+            // Emit notification for the user
+            getIO().emit("expiredIdNotification", newNotificationUser);
+            console.log(
+              `Expired ID notification created for ${user.first_name} ${user.last_name} (User)`
+            );
+            console.log(newNotificationUser);
+          } catch (err) {
+            console.error("Error creating user expired ID notification:", err);
+          }
+
+          // Create notification for employees regarding the user's expiring ID
+          const messageToEmployee = `The ID of ${user.first_name} ${user.last_name} will expire soon.`;
+          const notifEmployeeQuery = `
+            INSERT INTO notifications_employees (message, userId, type)
+            VALUES (?, ?, 'expired_id') 
+            ON DUPLICATE KEY UPDATE message = VALUES(message)
+          `;
+
+          try {
+            const [resultEmployee] = await pool.query(notifEmployeeQuery, [
+              messageToEmployee,
+              user.userId, // Ensure this references the correct employeeId if necessary
+            ]);
+            const newNotificationEmployee = {
+              notifId: resultEmployee.insertId,
+              message: messageToEmployee,
+              userId: user.userId,
+              type: "expired_id",
+              timestamp: new Date(),
+            };
+
+            // Emit notification for the employee
+            getIO().emit(
+              "employeeExpiredIdNotification",
+              newNotificationEmployee
+            );
+            console.log(
+              `Expired ID notification created for employee regarding ${user.first_name} ${user.last_name}`
+            );
+            console.log(newNotificationEmployee);
+          } catch (err) {
+            console.error(
+              "Error creating employee expired ID notification:",
+              err
+            );
+          }
+        });
+      } else {
+        console.log("No expiring IDs today.");
+      }
+    } catch (err) {
+      console.error("Error fetching notifications:", err);
+    }
   },
   {
     scheduled: true,

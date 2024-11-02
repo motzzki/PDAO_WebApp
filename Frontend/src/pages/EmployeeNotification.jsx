@@ -1,43 +1,66 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
+import axios from "axios";
+import moment from "moment";
+
+const BASE_URL = "http://localhost:8000/api/notification";
 
 const EmployeeNotification = () => {
-  const expiredIds = [
-    { id: 1, userName: "John Doe", expirationDate: "2024-10-31" },
-    { id: 2, userName: "Jane Smith", expirationDate: "2024-11-15" },
-    { id: 3, userName: "Alice Johnson", expirationDate: "2024-11-20" },
-    // Add more sample data to demonstrate scrolling
-    { id: 4, userName: "Bob Brown", expirationDate: "2024-12-01" },
-    { id: 5, userName: "Emma Watson", expirationDate: "2024-12-10" },
-    { id: 6, userName: "Liam Neeson", expirationDate: "2024-12-15" },
-    { id: 7, userName: "Noah Wilson", expirationDate: "2024-12-20" },
-    { id: 7, userName: "Noah Wilson", expirationDate: "2024-12-20" },
-    { id: 7, userName: "Noah Wilson", expirationDate: "2024-12-20" },
-    { id: 7, userName: "Noah Wilson", expirationDate: "2024-12-20" },
-  ];
+  const [expiredIds, setExpiredIds] = useState([]);
+  const [birthdays, setBirthdays] = useState([]);
+  const [errorExpired, setErrorExpired] = useState(null);
+  const [errorBirthday, setErrorBirthday] = useState(null);
 
-  const birthdays = [
-    { id: 1, userName: "Mark Brown", birthday: "2024-11-05" },
-    { id: 2, userName: "Samantha White", birthday: "2024-11-12" },
-    { id: 3, userName: "Steve Wilson", birthday: "2024-11-20" },
-    // Add more sample data to demonstrate scrolling
-    { id: 4, userName: "Olivia Brown", birthday: "2024-11-25" },
-    { id: 5, userName: "Isabella Smith", birthday: "2024-12-01" },
-    { id: 6, userName: "Mason Johnson", birthday: "2024-12-10" },
-    { id: 7, userName: "Sophia Lee", birthday: "2024-12-15" },
-    { id: 7, userName: "Sophia Lee", birthday: "2024-12-15" },
-    { id: 7, userName: "Sophia Lee", birthday: "2024-12-15" },
-    { id: 7, userName: "Sophia Lee", birthday: "2024-12-15" },
-    { id: 7, userName: "Sophia Lee", birthday: "2024-12-15" },
-    { id: 7, userName: "Sophia Lee", birthday: "2024-12-15" },
-    { id: 7, userName: "Sophia Lee", birthday: "2024-12-15" },
-  ];
+  // Function to fetch notifications
+  const fetchNotifications = async (type) => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/employeenotif?type=${type}`
+      );
+      return response.data;
+    } catch (err) {
+      console.error("Error fetching notifications:", err);
+      if (err.response && err.response.status === 404) {
+        return [];
+      }
+      throw new Error("Could not fetch notifications");
+    }
+  };
+
+  useEffect(() => {
+    const fetchAllNotifications = async () => {
+      try {
+        const expiredIdNotifications = await fetchNotifications("expired_id");
+        setExpiredIds(expiredIdNotifications);
+        if (expiredIdNotifications.length === 0) {
+          setErrorExpired("No expired IDs found.");
+        } else {
+          setErrorExpired(null);
+        }
+
+        const birthdayNotifications = await fetchNotifications("birthday");
+        setBirthdays(birthdayNotifications);
+        if (birthdayNotifications.length === 0) {
+          setErrorBirthday("No upcoming birthdays found.");
+        } else {
+          setErrorBirthday(null);
+        }
+      } catch (error) {
+        console.error("Error during fetching notifications:", error);
+      }
+    };
+
+    fetchAllNotifications();
+  }, []);
 
   return (
     <div className="container">
       <h2 className="open-sans-bold mb-3">Admin Notifications</h2>
 
-      {/* Table for Expired IDs */}
+      {/* Display error messages */}
+      {errorExpired && <p className="text-danger">{errorExpired}</p>}
+      {errorBirthday && <p className="text-danger">{errorBirthday}</p>}
+
       <h3>Expired IDs</h3>
       <div className="mb-5" style={{ maxHeight: "22rem", overflowY: "auto" }}>
         <Table striped bordered hover>
@@ -51,10 +74,10 @@ const EmployeeNotification = () => {
           <tbody>
             {expiredIds.length > 0 ? (
               expiredIds.map((item) => (
-                <tr key={item.id}>
-                  <td>{item.id}</td>
-                  <td>{item.userName}</td>
-                  <td>{item.expirationDate}</td>
+                <tr key={item.notifId}>
+                  <td>{item.userId}</td>
+                  <td>{item.message}</td>
+                  <td>{moment(item.timestamp).format("MMM DD, YYYY")}</td>
                 </tr>
               ))
             ) : (
@@ -68,7 +91,6 @@ const EmployeeNotification = () => {
         </Table>
       </div>
 
-      {/* Table for Birthdays */}
       <h3>Upcoming Birthdays</h3>
       <div style={{ maxHeight: "22rem", overflowY: "auto" }}>
         <Table striped bordered hover>
@@ -82,10 +104,10 @@ const EmployeeNotification = () => {
           <tbody>
             {birthdays.length > 0 ? (
               birthdays.map((user) => (
-                <tr key={user.id}>
-                  <td>{user.id}</td>
-                  <td>{user.userName}</td>
-                  <td>{user.birthday}</td>
+                <tr key={user.notifId}>
+                  <td>{user.userId}</td>
+                  <td>{user.message}</td>
+                  <td>{moment(user.timestamp).format("MMM DD, YYYY")}</td>
                 </tr>
               ))
             ) : (

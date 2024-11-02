@@ -47,8 +47,8 @@ const Facilities = () => {
   }, []);
 
   return (
-    <Container className="my-4">
-      <div className="d-flex justify-content-between mb-3">
+    <Container>
+      <div className="d-flex justify-content-between mb-3 pt-5">
         <h1 className="open-sans-bold">Facilities</h1>
         <div className="d-flex justify-content-end w-100">
           <Form.Control
