@@ -193,7 +193,7 @@ const Sidebar = () => {
           <Link to="/admin/heatmap">
             {/* Updated Graphical Report Icon */}
             <CDBSidebarMenuItem
-              icon="chart-bar"
+              icon="map-marked-alt"
               style={menuItemStyle}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor =
