@@ -68,19 +68,22 @@ cron.schedule(
       WHERE DATE_FORMAT(date_of_birth, '%m-%d') = ?
     `;
 
+    // New expired ID query incorporating the requirement to notify 30 days prior and on the expiration date
     const expiredIdQuery = `
-      SELECT 
-        userId,
-        first_name,
-        last_name,
-        NULL AS date_of_birth,
-        created_at,
-        'expired_id' AS notification_type
+        SELECT 
+    userId,
+    first_name,
+    last_name,
+    expired_id,
+    CASE 
+        WHEN expired_id = CURDATE() THEN 'notify_on_expiration'
+        WHEN expired_id BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'notify_before'
+    END AS notification_type
       FROM 
-        tblusers
+          tblusers
       WHERE 
-        DATE_ADD(created_at, INTERVAL 5 YEAR) BETWEEN DATE_SUB(NOW(), INTERVAL 30 DAY) AND NOW()
-    `;
+          expired_id BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY);
+          `;
 
     try {
       // Handle birthday notifications
@@ -158,27 +161,38 @@ cron.schedule(
         console.log("No birthdays today.");
       }
 
-      // Handle expired ID notifications
+      // Handle expired ID notifications using the new query
       const [expiredResults] = await pool.query(expiredIdQuery);
       if (expiredResults.length > 0) {
         expiredResults.forEach(async (user) => {
-          const messageToUser = `Your ID will expire soon, ${user.first_name} ${user.last_name}. Please renew it!`;
+          let messageToUser;
+          let messageToEmployee;
 
+          if (user.notification_type === "notify_before") {
+            messageToUser = `Your ID will expire in 30 days, ${user.first_name} ${user.last_name}. Please renew it!`;
+            messageToEmployee = `The ID of ${user.first_name} ${user.last_name} will expire soon.`;
+          } else if (user.notification_type === "notify_on_expiration") {
+            messageToUser = `Your ID has expired today, ${user.first_name} ${user.last_name}. Please renew it immediately!`;
+            messageToEmployee = `The ID of ${user.first_name} ${user.last_name} has expired today.`;
+          }
+
+          // User notification
           const notifUserQuery = `
             INSERT INTO notifications_users (message, userId, type)
-            VALUES (?, ?, 'expired_id')
+            VALUES (?, ?, ?)
           `;
 
           try {
             const [resultUser] = await pool.query(notifUserQuery, [
               messageToUser,
               user.userId,
+              user.notification_type,
             ]);
             const newNotificationUser = {
               notifId: resultUser.insertId,
               message: messageToUser,
               userId: user.userId,
-              type: "expired_id",
+              type: user.notification_type,
               timestamp: new Date(),
             };
 
@@ -192,11 +206,10 @@ cron.schedule(
             console.error("Error creating user expired ID notification:", err);
           }
 
-          // Create notification for employees regarding the user's expiring ID
-          const messageToEmployee = `The ID of ${user.first_name} ${user.last_name} will expire soon.`;
+          // Employee notification
           const notifEmployeeQuery = `
             INSERT INTO notifications_employees (message, userId, type)
-            VALUES (?, ?, 'expired_id') 
+            VALUES (?, ?, ?) 
             ON DUPLICATE KEY UPDATE message = VALUES(message)
           `;
 
@@ -204,12 +217,13 @@ cron.schedule(
             const [resultEmployee] = await pool.query(notifEmployeeQuery, [
               messageToEmployee,
               user.userId, // Ensure this references the correct employeeId if necessary
+              user.notification_type,
             ]);
             const newNotificationEmployee = {
               notifId: resultEmployee.insertId,
               message: messageToEmployee,
               userId: user.userId,
-              type: "expired_id",
+              type: user.notification_type,
               timestamp: new Date(),
             };
 

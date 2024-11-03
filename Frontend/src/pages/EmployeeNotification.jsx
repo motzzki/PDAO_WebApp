@@ -6,9 +6,9 @@ import moment from "moment";
 const BASE_URL = "http://localhost:8000/api/notification";
 
 const EmployeeNotification = () => {
-  const [expiredIds, setExpiredIds] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const [birthdays, setBirthdays] = useState([]);
-  const [errorExpired, setErrorExpired] = useState(null);
+  const [errorNotifications, setErrorNotifications] = useState(null);
   const [errorBirthday, setErrorBirthday] = useState(null);
 
   // Function to fetch notifications
@@ -30,15 +30,29 @@ const EmployeeNotification = () => {
   useEffect(() => {
     const fetchAllNotifications = async () => {
       try {
-        const expiredIdNotifications = await fetchNotifications("expired_id");
-        setExpiredIds(expiredIdNotifications);
-        if (expiredIdNotifications.length === 0) {
-          setErrorExpired("No expired IDs found.");
+        const expiredIdNotifications = await fetchNotifications(
+          "notify_before"
+        );
+        const expirationNotifications = await fetchNotifications(
+          "notify_on_expiration"
+        );
+        const birthdayNotifications = await fetchNotifications("birthday");
+
+        // Combine expired ID notifications
+        setNotifications([
+          ...expiredIdNotifications,
+          ...expirationNotifications,
+        ]);
+
+        if (
+          expiredIdNotifications.length === 0 &&
+          expirationNotifications.length === 0
+        ) {
+          setErrorNotifications("No expired IDs found.");
         } else {
-          setErrorExpired(null);
+          setErrorNotifications(null);
         }
 
-        const birthdayNotifications = await fetchNotifications("birthday");
         setBirthdays(birthdayNotifications);
         if (birthdayNotifications.length === 0) {
           setErrorBirthday("No upcoming birthdays found.");
@@ -53,13 +67,21 @@ const EmployeeNotification = () => {
     fetchAllNotifications();
   }, []);
 
+  // Filter notifications to show only those not older than 1 day (24 hours)
+  const filteredNotifications = notifications.filter((item) => {
+    const expirationDate = moment(item.timestamp);
+    const isOlderThanOneDay = expirationDate.diff(moment(), "days") < -1;
+    return !isOlderThanOneDay; // Only include notifications not older than 1 day
+  });
+
   return (
     <div className="container">
       <h2 className="open-sans-bold mb-3">Admin Notifications</h2>
 
-      {/* Display error messages */}
-      {errorExpired && <p className="text-danger">{errorExpired}</p>}
-      {errorBirthday && <p className="text-danger">{errorBirthday}</p>}
+      {/* Display error messages for expired IDs */}
+      {errorNotifications && (
+        <p className="text-danger">{errorNotifications}</p>
+      )}
 
       <h3>Expired IDs</h3>
       <div className="mb-5" style={{ maxHeight: "22rem", overflowY: "auto" }}>
@@ -72,8 +94,8 @@ const EmployeeNotification = () => {
             </tr>
           </thead>
           <tbody>
-            {expiredIds.length > 0 ? (
-              expiredIds.map((item) => (
+            {filteredNotifications.length > 0 ? (
+              filteredNotifications.map((item) => (
                 <tr key={item.notifId}>
                   <td>{item.userId}</td>
                   <td>{item.message}</td>
