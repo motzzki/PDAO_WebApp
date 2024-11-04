@@ -30,12 +30,8 @@ const EmployeeNotification = () => {
   useEffect(() => {
     const fetchAllNotifications = async () => {
       try {
-        const expiredIdNotifications = await fetchNotifications(
-          "notify_before"
-        );
-        const expirationNotifications = await fetchNotifications(
-          "notify_on_expiration"
-        );
+        const expiredIdNotifications = await fetchNotifications("notify_before");
+        const expirationNotifications = await fetchNotifications("notify_on_expiration");
         const birthdayNotifications = await fetchNotifications("birthday");
 
         // Combine expired ID notifications
@@ -75,22 +71,22 @@ const EmployeeNotification = () => {
   });
 
   return (
-    <div className="container">
-      <h2 className="open-sans-bold mb-3">Admin Notifications</h2>
+    <div style={styles.container}>
+      <h2 style={styles.header}>Admin Notifications</h2>
 
       {/* Display error messages for expired IDs */}
       {errorNotifications && (
-        <p className="text-danger">{errorNotifications}</p>
+        <p style={styles.errorText}>{errorNotifications}</p>
       )}
 
-      <h3>Expired IDs</h3>
-      <div className="mb-5" style={{ maxHeight: "22rem", overflowY: "auto" }}>
-        <Table striped bordered hover>
+      <h3 style={styles.subHeader}>Expired IDs</h3>
+      <div style={styles.tableContainer}>
+        <Table striped bordered hover responsive>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>User Name</th>
-              <th>Expiration Date</th>
+              <th style={styles.tableHead}>ID</th>
+              <th style={styles.tableHead}>User Name</th>
+              <th style={styles.tableHead}>Expiration Date</th>
             </tr>
           </thead>
           <tbody>
@@ -113,14 +109,14 @@ const EmployeeNotification = () => {
         </Table>
       </div>
 
-      <h3>Upcoming Birthdays</h3>
-      <div style={{ maxHeight: "22rem", overflowY: "auto" }}>
-        <Table striped bordered hover>
+      <h3 style={styles.subHeader}>Upcoming Birthdays</h3>
+      <div style={styles.tableContainer}>
+        <Table striped bordered hover responsive>
           <thead>
             <tr>
-              <th>ID</th>
-              <th>User Name</th>
-              <th>Birthday</th>
+              <th style={styles.tableHead}>ID</th>
+              <th style={styles.tableHead}>User Name</th>
+              <th style={styles.tableHead}>Birthday</th>
             </tr>
           </thead>
           <tbody>
@@ -144,6 +140,48 @@ const EmployeeNotification = () => {
       </div>
     </div>
   );
+};
+
+const styles = {
+  container: {
+    width: "100%",           // Full width for responsiveness
+    maxWidth: "1200px",       // Max width for wider layout
+    margin: "0 auto",         // Center alignment
+    padding: "20px",
+    backgroundColor: "#f8f9fa",
+    borderRadius: "12px",
+    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+  },
+  header: {
+    fontSize: "28px",
+    fontWeight: "bold",
+    color: "#333",
+    textAlign: "center",
+    marginBottom: "20px",
+  },
+  subHeader: {
+    fontSize: "22px",
+    fontWeight: "600",
+    color: "#333",
+    marginTop: "20px",
+  },
+  errorText: {
+    color: "#ff4d4d",
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: "10px",
+  },
+  tableContainer: {
+    maxHeight: "22rem",
+    overflowY: "auto",
+    marginBottom: "20px",
+  },
+  tableHead: {
+    backgroundColor: "#ff4d4d",
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
 };
 
 export default EmployeeNotification;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Table, Pagination, FloatingLabel, Form } from "react-bootstrap";
+import { Card, Table, Pagination, Form } from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
 import eye from "../images/eye.svg";
@@ -26,11 +26,10 @@ const RegisteredPwd = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showPwd, setShowPwd] = useState(false);
   const [selectedPwd, setSelectedPwd] = useState(null);
-  const [hoveredUserId, setHoveredUserId] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1); // For pagination
-  const [totalPages, setTotalPages] = useState(1); // Total pages from server
-  const [barangay, setBarangay] = useState(""); // State to hold selected barangay
-  const [order, setOrder] = useState("asc"); // State to hold sorting order
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [barangay, setBarangay] = useState("");
+  const [order, setOrder] = useState("asc");
 
   const handleShow = (infos) => {
     setSelectedPwd(infos);
@@ -103,24 +102,19 @@ const RegisteredPwd = () => {
 
   return (
     <>
-      <Card>
+      <Card style={styles.cardContainer}>
         <Card.Body>
           <div style={styles.searchContainer}>
-            <h1 className="fs-2 open-sans-bold" style={styles.header}>
-              Registered PWD
-            </h1>
-            <div
-              style={styles.selectContainer}
-              className="d-flex justify-content-between align-items-center mb-3"
-            >
+            <h1 style={styles.header}>Registered PWD</h1>
+            <div style={styles.selectContainer}>
               <Form.Select
                 required
-                className="form-control-custom w-auto"
                 value={barangay}
                 onChange={(e) => {
                   setBarangay(e.target.value);
                   setCurrentPage(1);
                 }}
+                style={styles.select}
               >
                 <option value="">Sort by Barangay</option>
                 {options.map((barangayOption) => (
@@ -130,13 +124,9 @@ const RegisteredPwd = () => {
                 ))}
               </Form.Select>
 
-              <div
-                style={styles.searchWrapper}
-                className="position-relative w-100"
-              >
+              <div style={styles.searchWrapper}>
                 <input
                   type="text"
-                  className="form-control"
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -145,58 +135,44 @@ const RegisteredPwd = () => {
                 <img
                   src={searchIcon}
                   alt="search"
-                  style={{
-                    position: "absolute",
-                    right: "10px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    width: "20px",
-                    height: "20px",
-                    cursor: "pointer",
-                  }}
+                  style={styles.searchIcon}
                 />
               </div>
             </div>
           </div>
 
           <Table striped bordered hover responsive>
-            <thead className="fs-5 open-sans-bold">
+            <thead>
               <tr>
                 {TABLE_HEAD.map((head) => (
-                  <th key={head} className="text-center">
+                  <th key={head} className="text-center" style={styles.tableHead}>
                     {head}
                   </th>
                 ))}
               </tr>
             </thead>
-            <tbody className="fs-5 open-sans-regular">
+            <tbody>
               {filteredPwd.map((infos) => (
-                <tr key={infos.userId} className="hover-table-row">
+                <tr key={infos.userId}>
                   <td className="text-center">{infos.userId}</td>
-                  <td className="text-left">{infos.first_name}</td>
-                  <td className="text-left">{infos.middle_name}</td>
-                  <td className="text-left">{infos.last_name}</td>
+                  <td>{infos.first_name}</td>
+                  <td>{infos.middle_name}</td>
+                  <td>{infos.last_name}</td>
                   <td className="text-center">{infos.contact_num}</td>
-                  <td className="text-left">{infos.email}</td>
+                  <td>{infos.email}</td>
                   <td className="text-center">{infos.age}</td>
                   <td className="text-center">{infos.gender}</td>
                   <td className="text-center">
                     {moment(infos.date_of_birth).format("MMM DD, YYYY")}
                   </td>
                   <td className="text-center">{infos.blood_type}</td>
-                  <td className="text-left">{infos.nationality}</td>
+                  <td>{infos.nationality}</td>
                   <td className="text-center">
                     <img
                       src={eye}
                       onClick={() => handleShow(infos)}
-                      onMouseEnter={() => setHoveredUserId(infos.userId)}
-                      onMouseLeave={() => setHoveredUserId(null)}
-                      style={{
-                        cursor: "pointer",
-                        width: "20px",
-                        height: "20px",
-                      }}
-                      alt={`View details for ${infos.first_name} ${infos.last_name}`}
+                      style={styles.eyeIcon}
+                      alt="View details"
                     />
                   </td>
                 </tr>
@@ -222,20 +198,31 @@ const RegisteredPwd = () => {
 };
 
 const styles = {
+  cardContainer: {
+    padding: "20px",
+    backgroundColor: "#f8f9fa",
+    borderRadius: "12px",
+    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+  },
   searchContainer: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: "15px",
   },
+  header: {
+    fontSize: "26px",
+    fontWeight: "bold",
+    color: "#333",
+    margin: 0,
+  },
   selectContainer: {
     display: "flex",
-    alignItems: "center",
-    gap: "10px", // Add some space between the select and search input
+    gap: "10px",
   },
-  header: {
-    margin: 0,
-    fontSize: "20px",
+  select: {
+    padding: "8px",
+    borderRadius: "5px",
   },
   searchWrapper: {
     position: "relative",
@@ -243,7 +230,7 @@ const styles = {
   },
   searchBar: {
     padding: "10px",
-    borderRadius: "5px",
+    borderRadius: "20px",
     border: "1px solid #ccc",
     width: "100%",
     paddingRight: "30px",
@@ -257,6 +244,18 @@ const styles = {
     height: "20px",
     cursor: "pointer",
   },
+  tableHead: {
+    backgroundColor: "#ff4d4d", // Red background for the header
+    color: "#fff",               // White text color for good contrast
+    fontWeight: "bold",
+  },
+  eyeIcon: {
+    cursor: "pointer",
+    width: "20px",
+    height: "20px",
+  },
 };
 
 export default RegisteredPwd;
+
+

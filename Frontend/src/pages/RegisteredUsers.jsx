@@ -22,8 +22,6 @@ const RegisteredUsers = () => {
   const [registeredUsers, setRegisteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
- 
-
   useEffect(() => {
     fetchRegistered();
   }, []);
@@ -46,19 +44,17 @@ const RegisteredUsers = () => {
   );
 
   const onRowHover = (e) => {
-    e.currentTarget.style.backgroundColor = "#f1f1f1"; // light grey on hover
+    e.currentTarget.style.backgroundColor = "#e8f0fe"; // Soft blue on hover
   };
 
   const onRowLeave = (e) => {
-    e.currentTarget.style.backgroundColor = "#ffffff"; // reset to white
+    e.currentTarget.style.backgroundColor = "#ffffff"; // Reset to white
   };
 
   return (
     <div style={styles.tableContainer}>
-      <div style={styles.searchContainer}>
-        <h1 className="fs-3 open-sans-bold" style={styles.header}>
-          Registered Employee
-        </h1>
+      <div style={styles.header}>
+        <h1 style={styles.title}>Registered Users</h1>
         <div style={styles.searchWrapper}>
           <input
             type="text"
@@ -71,7 +67,7 @@ const RegisteredUsers = () => {
         </div>
       </div>
       <Table striped bordered hover responsive style={styles.table}>
-        <thead className="fs-5 open-sans-bold">
+        <thead>
           <tr>
             {TABLE_HEAD.map((head) => (
               <th key={head} style={styles.tableHead}>
@@ -80,7 +76,7 @@ const RegisteredUsers = () => {
             ))}
           </tr>
         </thead>
-        <tbody className="fs-5 open-sans-regular">
+        <tbody>
           {filteredUsers.length > 0 ? (
             filteredUsers.map((employee) => (
               <tr
@@ -99,6 +95,7 @@ const RegisteredUsers = () => {
                 <td>{moment(employee.birthdate).format("MMM DD, YYYY")}</td>
                 <td>{employee.username}</td>
                 <td>{employee.group_name}</td>
+                <td> {/* Add any action buttons or links here */}</td>
               </tr>
             ))
           ) : (
@@ -121,54 +118,64 @@ const styles = {
     borderRadius: "10px",
     boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.05)",
   },
-  searchContainer: {
+  header: {
     display: "flex",
+    justifyContent: "space-between",
     alignItems: "center",
-    justifyContent: "space-between", // Keep space between header and search
-    marginBottom: "15px",
+    marginBottom: "20px",
+  },
+  title: {
+    fontSize: "24px",
+    fontWeight: "bold",
+    color: "#333",
   },
   searchWrapper: {
     position: "relative",
-    width: "200px", // Adjust width as needed
+    width: "220px",
   },
   searchBar: {
     padding: "10px",
-    paddingRight: "30px", // Space for the icon
-    borderRadius: "5px",
-    border: "1px solid #ccc",
+    borderRadius: "20px",
+    border: "1px solid #ddd",
     width: "100%",
+    paddingRight: "35px",
+    fontSize: "14px",
+    backgroundColor: "#fafafa",
   },
   searchIcon: {
     position: "absolute",
     right: "10px",
     top: "50%",
     transform: "translateY(-50%)",
-    width: "20px",
-    height: "20px",
+    width: "18px",
+    height: "18px",
     cursor: "pointer",
   },
   table: {
-    borderCollapse: "collapse",
+    borderCollapse: "separate",
+    borderSpacing: "0 8px",
     width: "100%",
     borderRadius: "10px",
     overflow: "hidden",
   },
   tableHead: {
-    backgroundColor: "#e0e0e0", // light gray background for table headers
-    color: "#333", // dark text color for good contrast
+    backgroundColor: "#ff4d4d", // Red background for headers
+    color: "#fff",
     textAlign: "center",
     fontWeight: "bold",
     padding: "12px",
   },
+  tableRow: {
+    textAlign: "center",
+    padding: "12px",
+    backgroundColor: "#ffffff",
+    transition: "background-color 0.3s",
+    borderBottom: "1px solid #eee",
+  },
   noData: {
     textAlign: "center",
     padding: "20px",
-    color: "#888", // grey color for no data message
-  },
-  header: {
-    margin: 0,
-    fontSize: "20px", // Adjust font size as needed
-    flexGrow: 1, // Allow header to take available space
+    color: "#888", // Grey color for no data message
   },
 };
 

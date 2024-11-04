@@ -37,7 +37,7 @@ const Barangay = () => {
   return (
     <div style={styles.tableContainer}>
       <div style={styles.header}>
-        <h1 style={styles.title}>Barangay</h1>
+        <h1 style={styles.title}>Barangay Information</h1>
         <div style={styles.searchWrapper}>
           <input
             type="text"
@@ -81,65 +81,75 @@ const styles = {
   tableContainer: {
     padding: "20px",
     backgroundColor: "#f8f9fa",
-    borderRadius: "10px",
-    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.05)",
+    borderRadius: "12px",
+    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
   },
   header: {
     display: "flex",
-    justifyContent: "space-between", // Space between title and search bar
-    alignItems: "center", // Center align items vertically
+    justifyContent: "space-between",
+    alignItems: "center",
     marginBottom: "20px",
   },
   title: {
-    textAlign: "left",
-    fontSize: "24px",
+    fontSize: "26px",
+    fontWeight: "bold",
+    color: "#333",
   },
   searchWrapper: {
     position: "relative",
-    width: "200px", // Adjust width as needed
+    width: "220px",
   },
   searchBar: {
     padding: "10px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
+    borderRadius: "20px",
+    border: "1px solid #ddd",
     width: "100%",
-    paddingRight: "30px", // Add padding to avoid overlap with the icon
+    paddingRight: "35px",
+    fontSize: "14px",
+    backgroundColor: "#fafafa",
   },
   searchIcon: {
     position: "absolute",
     right: "10px",
     top: "50%",
     transform: "translateY(-50%)",
-    width: "20px",
-    height: "20px",
+    width: "18px",
+    height: "18px",
     cursor: "pointer",
   },
   table: {
-    borderCollapse: "collapse",
+    borderCollapse: "separate",
+    borderSpacing: "0 8px",
     width: "100%",
     borderRadius: "10px",
     overflow: "hidden",
   },
   tableHead: {
-    backgroundColor: "#e0e0e0",
-    color: "#333",
+    backgroundColor: "#ff4d4d", // Red background for the header
+    color: "#fff",
     textAlign: "center",
     fontWeight: "bold",
-    padding: "12px",
+    padding: "14px",
+    fontSize: "16px",
   },
   tableRow: {
     textAlign: "center",
-    padding: "10px",
+    padding: "12px",
     backgroundColor: "#ffffff",
     transition: "background-color 0.3s",
+    borderBottom: "1px solid #eee",
+  },
+  tableRowOdd: {
+    backgroundColor: "#f9f9f9",
   },
 };
 
 const onRowHover = (e) => {
-  e.currentTarget.style.backgroundColor = "#f1f1f1"; // light grey on hover
+  e.currentTarget.style.backgroundColor = "#e8f0fe"; // soft blue on hover
 };
 const onRowLeave = (e) => {
   e.currentTarget.style.backgroundColor = "#ffffff"; // reset to white
 };
 
 export default Barangay;
+
