@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Chart from "react-apexcharts";
+import { host } from "../apiRoutes";
 
-const LineGraph = () => {
+const StackedBarGraph = () => {
   const [chartData, setChartData] = useState({ series: [], categories: [] });
 
   function capitalizeFirstLetter(string) {
@@ -12,7 +13,7 @@ const LineGraph = () => {
   const fetchDisabilityData = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/api/barangay/distributed_disability"
+        `${host}/api/barangay/distributed_disability`
       );
       const data = response.data;
 
@@ -21,8 +22,11 @@ const LineGraph = () => {
         if (!groupedData[item.barangay]) {
           groupedData[item.barangay] = {};
         }
-        groupedData[item.barangay][item.disability_status] = item.user_count;
+        groupedData[item.barangay][item.disability_status] =
+          Number(item.user_count) || 0;
       });
+
+      // Log the grouped data for debugging
 
       const disabilityStatuses = [
         ...new Set(data.map((item) => item.disability_status)),
@@ -31,12 +35,13 @@ const LineGraph = () => {
       const series = disabilityStatuses.map((status) => ({
         name: status,
         data: Object.values(groupedData).map(
-          (barangay) => barangay[status] || 0
+          (barangay) => Number(barangay[status]) || 0 // Ensure number type
         ),
       }));
 
-      // Capitalize first letter for each barangay
       const categories = Object.keys(groupedData).map(capitalizeFirstLetter);
+
+      // Log series and categories to verify lengths match
 
       setChartData({ series, categories });
     } catch (error) {
@@ -50,8 +55,9 @@ const LineGraph = () => {
 
   const chartOptions = {
     chart: {
-      type: "line",
+      type: "bar",
       height: 350,
+      stacked: true, // Enable stacking
     },
     xaxis: {
       categories: chartData.categories,
@@ -67,13 +73,26 @@ const LineGraph = () => {
     dataLabels: {
       enabled: false,
     },
-    stroke: {
-      curve: "smooth",
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: "50%",
+        dataLabels: {
+          position: "top",
+        },
+      },
     },
     tooltip: {
       y: {
         formatter: (value) => `${value} users`,
       },
+    },
+    legend: {
+      position: "top",
+      horizontalAlign: "left",
+    },
+    fill: {
+      opacity: 1,
     },
   };
 
@@ -81,10 +100,10 @@ const LineGraph = () => {
     <Chart
       options={chartOptions}
       series={chartData.series}
-      type="line"
+      type="bar"
       height={350}
     />
   );
 };
 
-export default LineGraph;
+export default StackedBarGraph;

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Table } from "react-bootstrap";
 import axios from "axios";
+import { host } from "../../apiRoutes";
 
 const TABLE_HEAD = [
   "User Id",
@@ -26,7 +27,7 @@ const PwdPreview = ({ show, handleClose, userId }) => {
   const fetchRegistered = async (userId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/pwdInfo/pwd_details/${userId}`
+        `${host}/api/pwdInfo/pwd_details/${userId}`
       );
       setPreviewPwd(response.data); // Wrap in array to match table rendering
     } catch (error) {

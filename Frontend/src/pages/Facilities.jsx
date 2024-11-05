@@ -3,6 +3,7 @@ import { Tabs, Tab, Container, Row, Col, Button, Form } from "react-bootstrap";
 import CardFacilities from "../components/CardFacilities";
 import axios from "axios";
 import AddFacility from "../components/modal/AddFacility";
+import { host } from "../apiRoutes";
 
 const Facilities = () => {
   const [addFacility, setAddFacility] = useState(false);
@@ -21,9 +22,7 @@ const Facilities = () => {
 
   const fetchFacilities = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/api/pwdInfo/get-facilities"
-      );
+      const response = await axios.get(`${host}/api/pwdInfo/get-facilities`);
       const facilitiesData = response.data;
 
       const proFriendly = facilitiesData.filter(

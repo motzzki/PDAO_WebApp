@@ -3,7 +3,7 @@ import Table from "react-bootstrap/Table";
 import axios from "axios";
 import moment from "moment";
 import searchIcon from "../images/search.svg"; // Adjust path as necessary
-
+import { host } from "../apiRoutes";
 const TABLE_HEAD = [
   "User Id",
   "First Name",
@@ -29,7 +29,7 @@ const RegisteredUsers = () => {
   const fetchRegistered = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/user_management/get-employee`
+        `${host}/api/user_management/get-employee`
       );
       setRegisteredUsers(response.data);
     } catch (error) {

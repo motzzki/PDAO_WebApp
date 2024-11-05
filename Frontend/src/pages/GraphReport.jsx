@@ -9,13 +9,7 @@ import MonthlyUserChart from "../components/MonthlyUserChart .jsx";
 const GraphReport = () => {
   return (
     <Container fluid>
-      <Row className="g-4">
-        <Col xs={4} md={6} lg={12}>
-          <GraphCard title="Barangay Registration">
-            <BarGraph />
-          </GraphCard>
-        </Col>
-
+      <Row className="g-3">
         <Col xs={4} md={6} lg={12}>
           <GraphCard title="Disability Distribution per Barangay">
             <LineGraph />

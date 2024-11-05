@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import axios from "axios";
 import searchIcon from "../images/search.svg"; // Make sure the path is correct
-
+import { host } from "../apiRoutes";
 const TABLE_HEAD = ["Barangay", "Registered PWD"];
 
 function capitalizeFirstLetter(string) {
@@ -19,9 +19,7 @@ const Barangay = () => {
 
   const fetchBarangayInfo = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8000/api/barangay/get_barangay`
-      );
+      const response = await axios.get(`${host}/api/barangay/get_barangay`);
       setBarangayInfo(response.data);
     } catch (error) {
       console.error("Error fetching barangay information:", error);
@@ -152,4 +150,3 @@ const onRowLeave = (e) => {
 };
 
 export default Barangay;
-

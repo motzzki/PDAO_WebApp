@@ -5,6 +5,7 @@ import { MdLiveHelp } from "react-icons/md";
 import CardPreview from "../components/CardPreview.jsx";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { host } from "../apiRoutes.js";
 
 const StaffDashboard = () => {
   const [totalRegistered, setTotalRegistered] = useState("");
@@ -20,7 +21,7 @@ const StaffDashboard = () => {
   const fetchTotalRegistered = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/api/barangay/get_total_registered"
+        `${host}/api/barangay/get_total_registered`
       );
       return response.data.total_registered;
     } catch (error) {

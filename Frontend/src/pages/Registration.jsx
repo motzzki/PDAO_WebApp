@@ -3,13 +3,14 @@ import { Button, Card, FloatingLabel, Form, Row, Col } from "react-bootstrap";
 import Select from "react-select";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { host } from "../apiRoutes";
 
 const Registration = () => {
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState(new Date());
+  const [dateOfBirth, setDateOfBirth] = useState("");
   const [contactNum, setContactNum] = useState("");
   const [email, setEmail] = useState("");
   const [nationality, setNationality] = useState("");
@@ -33,6 +34,33 @@ const Registration = () => {
   const blockLetters = (e) => {
     if (!/[0-9]/.test(e.key)) {
       e.preventDefault();
+    }
+  };
+
+  const calculateAge = (dateOfBirth) => {
+    const birthDate = new Date(dateOfBirth);
+    const today = new Date();
+    let calculatedAge = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    // Adjust age if the birthday hasn't occurred yet this year
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      calculatedAge--;
+    }
+
+    return calculatedAge;
+  };
+
+  const handleDobChange = (e) => {
+    const dateOfBirth = e.target.value;
+    setDateOfBirth(dateOfBirth);
+    if (dateOfBirth) {
+      setAge(calculateAge(dateOfBirth));
+    } else {
+      setAge("");
     }
   };
 
@@ -85,7 +113,7 @@ const Registration = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/registerPwd/register_pwd",
+        `${host}/api/registerPwd/register_pwd`,
         newUser,
 
         {
@@ -205,7 +233,6 @@ const Registration = () => {
               </FloatingLabel>
             </Col>
             <Col md={6}>
-            
               <FloatingLabel controlId="floatingOccupation" label="Occupation">
                 <Form.Control
                   type="text"
@@ -234,7 +261,6 @@ const Registration = () => {
               </FloatingLabel>
             </Col>
             <Col md={6}>
-            
               <FloatingLabel
                 controlId="floatingNationality"
                 label="Nationality"
@@ -266,7 +292,6 @@ const Registration = () => {
               </FloatingLabel>
             </Col>
             <Col md={6}>
-            
               <FloatingLabel
                 controlId="floatingCivilStatus"
                 label="Civil Status"
@@ -289,7 +314,6 @@ const Registration = () => {
 
           <Row className="mb-3">
             <Col md={6}>
-              
               <FloatingLabel controlId="floatingGender" label="Gender">
                 <Form.Select
                   aria-label="Gender"
@@ -306,7 +330,7 @@ const Registration = () => {
               </FloatingLabel>
             </Col>
             <Col md={6}>
-            <FloatingLabel
+              <FloatingLabel
                 controlId="floatingEducation"
                 label="Education Level"
               >
@@ -330,19 +354,17 @@ const Registration = () => {
 
           <Row className="mb-3">
             <Col md={6}>
-              
               <FloatingLabel controlId="floatingDOB" label="Date of Birth">
                 <Form.Control
                   type="date"
                   value={dateOfBirth}
-                  onChange={(e) => setDateOfBirth(e.target.value)}
+                  onChange={handleDobChange}
                   required
                   className="form-control-custom"
                 />
               </FloatingLabel>
             </Col>
             <Col md={6}>
-              
               <FloatingLabel
                 controlId="floatingEmployment"
                 label="Employment Status"
@@ -365,19 +387,16 @@ const Registration = () => {
 
           <Row className="mb-3">
             <Col md={6}>
-              
               <FloatingLabel controlId="floatingAge" label="Age">
                 <Form.Control
-                  type="number"
                   placeholder="Age"
                   value={age}
-                  onChange={(e) => setAge(e.target.value)}
+                  readOnly
                   className="form-control-custom"
                 />
               </FloatingLabel>
             </Col>
             <Col md={6}>
-            
               <FloatingLabel
                 controlId="floatingDisability"
                 label="Type of Disability"
@@ -404,7 +423,6 @@ const Registration = () => {
 
           <Row className="mb-3">
             <Col md={6}>
-              
               <FloatingLabel controlId="floatingContact" label="Mobile Number">
                 <Form.Control
                   type="text"
@@ -416,7 +434,7 @@ const Registration = () => {
               </FloatingLabel>
             </Col>
             <Col md={6}>
-            <FloatingLabel
+              <FloatingLabel
                 controlId="floatingCause"
                 label="Cause of Disability"
               >
@@ -469,7 +487,6 @@ const Registration = () => {
           </Row>
           <Row className="mb-3">
             <Col md={6}>
-              
               <FloatingLabel controlId="floatingEmail" label="Email Address">
                 <Form.Control
                   type="email"
@@ -491,7 +508,7 @@ const Registration = () => {
               </div>
             </Col>
             <Col md={6}>
-            <Select
+              <Select
                 options={options}
                 value={
                   options.find((option) => option.value === barangay) || null

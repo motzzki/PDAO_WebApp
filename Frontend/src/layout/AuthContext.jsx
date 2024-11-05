@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { host } from "../apiRoutes";
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
@@ -40,10 +41,9 @@ const AuthProvider = ({ children }) => {
     if (!refreshToken) throw new Error("No refresh token available");
 
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/authUser/token",
-        { refreshToken }
-      );
+      const response = await axios.post(`${host}/api/authUser/token`, {
+        refreshToken,
+      });
       handleToken(response.data.accessToken, refreshToken);
     } catch (error) {
       console.error("Error refreshing token:", error);
@@ -63,7 +63,7 @@ const AuthProvider = ({ children }) => {
       throw new Error("User not authenticated");
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/pwdInfo/logged_user/${auth.user.id}`,
+        `${host}/api/pwdInfo/logged_user/${auth.user.id}`,
         {
           headers: {
             Authorization: `Bearer ${auth.token}`,
@@ -85,7 +85,7 @@ const AuthProvider = ({ children }) => {
       throw new Error("Employee not authenticated");
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/authUser/get-employee/${auth.user.id}`,
+        `${host}/api/authUser/get-employee/${auth.user.id}`,
         {
           headers: {
             Authorization: `Bearer ${auth.token}`,
@@ -123,7 +123,7 @@ const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/authUser/login",
+        `${host}/api/authUser/login`,
         { username, password },
         { headers: { "Content-Type": "application/json" } }
       );

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, FloatingLabel, Form, Button } from "react-bootstrap";
 import axios from "axios";
 import Swal from "sweetalert2";
-
+import { host } from "../apiRoutes";
 const AddUser = () => {
   const [firstName, setFirstName] = useState("");
   const [middleName, setMiddleName] = useState("");
@@ -38,7 +38,7 @@ const AddUser = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/user_management/register_user",
+        `${host}/api/user_management/register_user`,
         newUser,
         {
           headers: {

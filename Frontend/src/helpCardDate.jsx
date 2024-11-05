@@ -11,7 +11,7 @@ export const cardData = {
     title: "Psychosocial Disability",
     img: <MdOutlinePsychology />,
     text: `Help for Psychosocial Disability. Support options include mental health services, peer support groups, workplace and educational accommodations, and advocacy for disability rights. Government programs may also offer financial and housing assistance.`,
-    link: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    link: "https://www.harvestcounselingandwellness.com/blog/psychosocial-disabilities",
   },
   hearing: {
     title: "Hearing Disability",

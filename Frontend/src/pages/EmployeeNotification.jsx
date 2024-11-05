@@ -3,8 +3,7 @@ import { Table } from "react-bootstrap";
 import axios from "axios";
 import moment from "moment";
 
-const BASE_URL = "http://localhost:8000/api/notification";
-
+import { host } from "../apiRoutes";
 const EmployeeNotification = () => {
   const [notifications, setNotifications] = useState([]);
   const [birthdays, setBirthdays] = useState([]);
@@ -15,7 +14,7 @@ const EmployeeNotification = () => {
   const fetchNotifications = async (type) => {
     try {
       const response = await axios.get(
-        `${BASE_URL}/employeenotif?type=${type}`
+        `${host}/api/notification/employeenotif?type=${type}`
       );
       return response.data;
     } catch (err) {
@@ -30,8 +29,12 @@ const EmployeeNotification = () => {
   useEffect(() => {
     const fetchAllNotifications = async () => {
       try {
-        const expiredIdNotifications = await fetchNotifications("notify_before");
-        const expirationNotifications = await fetchNotifications("notify_on_expiration");
+        const expiredIdNotifications = await fetchNotifications(
+          "notify_before"
+        );
+        const expirationNotifications = await fetchNotifications(
+          "notify_on_expiration"
+        );
         const birthdayNotifications = await fetchNotifications("birthday");
 
         // Combine expired ID notifications
@@ -144,9 +147,9 @@ const EmployeeNotification = () => {
 
 const styles = {
   container: {
-    width: "100%",           // Full width for responsiveness
-    maxWidth: "1200px",       // Max width for wider layout
-    margin: "0 auto",         // Center alignment
+    width: "100%", // Full width for responsiveness
+    maxWidth: "1200px", // Max width for wider layout
+    margin: "0 auto", // Center alignment
     padding: "20px",
     backgroundColor: "#f8f9fa",
     borderRadius: "12px",

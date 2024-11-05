@@ -5,6 +5,7 @@ import moment from "moment";
 import eye from "../images/eye.svg";
 import searchIcon from "../images/search.svg";
 import PwdPreview from "../components/modal/PwdPreview";
+import { host } from "../apiRoutes";
 
 const TABLE_HEAD = [
   "User Id",
@@ -45,7 +46,7 @@ const RegisteredPwd = () => {
   const fetchRegistered = async (page, barangay, order) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/pwdInfo/pwd_info?page=${page}&limit=7&barangay=${barangay}&order=${order}`
+        `${host}/api/pwdInfo/pwd_info?page=${page}&limit=7&barangay=${barangay}&order=${order}`
       );
       setRegisteredPwd(response.data.data);
       setTotalPages(response.data.pagination.totalPages);
@@ -132,11 +133,7 @@ const RegisteredPwd = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   style={styles.searchBar}
                 />
-                <img
-                  src={searchIcon}
-                  alt="search"
-                  style={styles.searchIcon}
-                />
+                <img src={searchIcon} alt="search" style={styles.searchIcon} />
               </div>
             </div>
           </div>
@@ -145,7 +142,11 @@ const RegisteredPwd = () => {
             <thead>
               <tr>
                 {TABLE_HEAD.map((head) => (
-                  <th key={head} className="text-center" style={styles.tableHead}>
+                  <th
+                    key={head}
+                    className="text-center"
+                    style={styles.tableHead}
+                  >
                     {head}
                   </th>
                 ))}
@@ -246,7 +247,7 @@ const styles = {
   },
   tableHead: {
     backgroundColor: "#ff4d4d", // Red background for the header
-    color: "#fff",               // White text color for good contrast
+    color: "#fff", // White text color for good contrast
     fontWeight: "bold",
   },
   eyeIcon: {
@@ -257,5 +258,3 @@ const styles = {
 };
 
 export default RegisteredPwd;
-
-

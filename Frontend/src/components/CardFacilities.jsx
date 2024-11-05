@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Card, Modal, Form } from "react-bootstrap";
 import "../App.css";
 import axios from "axios";
+import { host } from "../apiRoutes";
 
 const CardFacilities = ({ facility, onSave }) => {
   const [show, setShow] = useState(false);
@@ -56,7 +57,7 @@ const CardFacilities = ({ facility, onSave }) => {
       }
 
       await axios.put(
-        `http://localhost:8000/api/pwdInfo/facilities/${facility.facility_id}`,
+        `${host}/api/pwdInfo/facilities/${facility.facility_id}`,
         formData,
         {
           headers: {
@@ -79,7 +80,7 @@ const CardFacilities = ({ facility, onSave }) => {
       <Card className="card-container">
         <Card.Img
           variant="top"
-          src={facility.picture || "defaultImage.jpg"}
+          src={facility.picture}
           className="card-img-fixed"
         />
         <Card.Body className="card-body-custom">

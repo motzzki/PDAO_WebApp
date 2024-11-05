@@ -4,6 +4,7 @@ import "leaflet.heat";
 import axios from "axios";
 import L from "leaflet";
 import { barangayBoundaries } from "../Cabuyao";
+import { host } from "../apiRoutes";
 
 const HeatMap = () => {
   const [heatmapData, setHeatmapData] = useState([]);
@@ -12,9 +13,7 @@ const HeatMap = () => {
   useEffect(() => {
     const fetchBarangayData = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8000/api/barangay/get_barangay"
-        );
+        const response = await axios.get(`${host}/api/barangay/get_barangay`);
 
         if (response.status === 200) {
           const barangayInfo = response.data;

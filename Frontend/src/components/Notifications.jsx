@@ -3,8 +3,9 @@ import io from "socket.io-client";
 import axios from "axios";
 import { GoBell } from "react-icons/go";
 import { OverlayTrigger, Tooltip, Dropdown } from "react-bootstrap";
+import { host } from "../apiRoutes";
 
-const socket = io("http://localhost:8000"); // Connect to Socket.IO server
+const socket = io("http://localhost:8018"); // Connect to Socket.IO server
 
 const Notifications = ({ userId }) => {
   const [notifications, setNotifications] = useState({
@@ -16,7 +17,7 @@ const Notifications = ({ userId }) => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-        const url = `http://localhost:8000/api/notification/user/${userId}`;
+        const url = `${host}/api/notification/user/${userId}`;
         const response = await axios.get(url);
         setNotifications(response.data);
         console.log(response.data); // Log the notifications structure

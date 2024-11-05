@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Chart from "react-apexcharts";
+import { host } from "../apiRoutes";
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -10,9 +11,7 @@ const PieChart = () => {
 
   const fetchDisabilityData = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/api/barangay/get_disability"
-      );
+      const response = await axios.get(`${host}/api/barangay/get_disability`);
       setDisabilityData(response.data);
     } catch (error) {
       console.error("Error fetching disability data:", error);

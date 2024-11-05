@@ -225,7 +225,20 @@ router.put("/facilities/:id", async (req, res) => {
       return res.status(400).json({ error: "All fields are required" });
     }
 
-    let newPath = null;
+    conn = await pool.getConnection();
+
+    // Fetch the current facility data
+    const [currentFacility] = await conn.query(
+      "SELECT picture FROM facilities WHERE facility_id = ?",
+      [facilityId]
+    );
+
+    // Check if the facility exists
+    if (currentFacility.length === 0) {
+      return res.status(404).json({ error: "Facility not found" });
+    }
+
+    let newPath = currentFacility[0].picture; // Default to current picture path
     if (files.picture) {
       // Check if a new file was uploaded
       const picture = files.picture[0];
@@ -242,16 +255,17 @@ router.put("/facilities/:id", async (req, res) => {
 
       // Move the file to the new path
       await fs.rename(picture.filepath, newPath);
-    }
 
-    conn = await pool.getConnection();
+      // Optionally delete the old image file
+      if (currentFacility[0].picture) {
+        await fs.unlink(currentFacility[0].picture); // Delete old image file
+      }
+    }
 
     // Update the SQL query
     const sql = `
       UPDATE facilities
-      SET facility_name = ?, location = ?, flag = ?, accessibility_features = ?${
-        newPath ? ", picture = ?" : ""
-      }
+      SET facility_name = ?, location = ?, flag = ?, accessibility_features = ?, picture = ?
       WHERE facility_id = ?
     `;
 
@@ -260,12 +274,9 @@ router.put("/facilities/:id", async (req, res) => {
       location,
       flag,
       accessibility_features,
+      newPath, // Use the updated path (new or existing)
       facilityId,
     ];
-
-    if (newPath) {
-      params.splice(4, 0, newPath); // Insert the new picture path if it exists
-    }
 
     const [result] = await conn.query(sql, params);
 
@@ -283,6 +294,11 @@ router.put("/facilities/:id", async (req, res) => {
 });
 
 router.get("/get-facilities", async (req, res) => {
+  const useProduction = false; // Change to `true` for production
+
+  const host = useProduction
+    ? "https://api.pdao-web.online"
+    : "http://localhost:8018"; //
   try {
     conn = await pool.getConnection();
     const sql = `SELECT facility_id, facility_name, location, flag, accessibility_features, picture FROM facilities`;
@@ -294,13 +310,10 @@ router.get("/get-facilities", async (req, res) => {
       return res.status(404).json({ message: "No facilities found." });
     }
 
-    // Prefix the relative path with the base URL
     const facilitiesWithFullPath = facilities.map((facility) => {
       return {
         ...facility,
-        picture: `http://localhost:8000/uploads/${facility.picture
-          .split("/")
-          .pop()}`, // Assuming picture is stored as a relative path
+        picture: `${host}/uploads/${facility.picture.split("/").pop()}`, // Assuming picture is stored as a relative path
       };
     });
 

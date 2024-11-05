@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Chart from "react-apexcharts";
+import { host } from "../apiRoutes";
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -11,9 +12,7 @@ const BarGraph = () => {
 
   const fetchBarangayData = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/api/barangay/get_barangay"
-      );
+      const response = await axios.get(`${host}/api/barangay/get_barangay`);
       setBarangayData(response.data);
     } catch (error) {
       console.error("Error fetching barangay data:", error);

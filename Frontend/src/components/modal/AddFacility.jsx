@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Form, Modal, Image, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import "../../App.css"; // Assuming you have a CSS file for styles
+import { host } from "../../apiRoutes";
 
 const AddFacility = ({ show, handleClose, onSave }) => {
   const [image, setImage] = useState(null);
@@ -10,8 +11,6 @@ const AddFacility = ({ show, handleClose, onSave }) => {
   const [location, setLocation] = useState("");
   const [accessibilityFeatures, setAccessibilityFeatures] = useState("");
   const [flag, setFlag] = useState("");
-
-  const BASE_URL = "http://localhost:8000/api/pwdInfo";
 
   const resetField = () => {
     setImagePreview(null);
@@ -46,11 +45,15 @@ const AddFacility = ({ show, handleClose, onSave }) => {
     }
 
     try {
-      const response = await axios.post(`${BASE_URL}/facilities`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data", // Important for file uploads
-        },
-      });
+      const response = await axios.post(
+        `${host}/api/pwdInfo/facilities`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Important for file uploads
+          },
+        }
+      );
       console.log(response.data); // Handle success response
       handleClose();
       resetField();

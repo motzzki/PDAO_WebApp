@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Row, Col, Container, Tabs, Tab, Form, Button } from "react-bootstrap";
 import UserCardFacilities from "../components/UserCardFacilities";
 import axios from "axios";
+import { host } from "../apiRoutes";
 
 const UserFacilities = () => {
   const [facilities, setFacilities] = useState({
@@ -11,9 +12,7 @@ const UserFacilities = () => {
 
   const fetchFacilities = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/api/pwdInfo/get-facilities"
-      );
+      const response = await axios.get(`${host}/api/pwdInfo/get-facilities`);
       const facilitiesData = response.data;
 
       const proFriendly = facilitiesData.filter(

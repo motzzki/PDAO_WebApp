@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Chart from "react-apexcharts";
+import { host } from "../apiRoutes";
 
 const MonthlyUserChart = () => {
   const [chartData, setChartData] = useState({ series: [], categories: [] });
 
   const fetchMonthlyUserData = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/api/barangay/monthly-enlist"
-      );
+      const response = await axios.get(`${host}/api/barangay/monthly-enlist`);
       const data = response.data;
 
       const categories = data.map((item) => item.month);
@@ -47,7 +46,7 @@ const MonthlyUserChart = () => {
       enabled: false,
     },
     stroke: {
-      curve: "smooth",
+      curve: "straight",
     },
     tooltip: {
       y: {
