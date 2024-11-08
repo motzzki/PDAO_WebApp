@@ -127,12 +127,46 @@ const Registration = () => {
         throw new Error("Failed to add user");
       } else {
         Swal.fire({
-          position: "top-end",
           icon: "success",
-          title: "User Registered",
-          showConfirmButton: false,
-          timer: 1500,
+          title:
+            "<h3 style='color: #333; font-weight: 600;'>User Registered Successfully</h3>",
+          html: `
+            <div style="text-align: left; margin-bottom: 10px;">
+              <p><strong>Account ID:</strong> <span style="color: #007bff;">${response.data.accountId}</span></p>
+              <p><strong>Password:</strong></p>
+              <div style="display: flex; align-items: center; border: 1px solid #ddd; border-radius: 6px; padding: 5px;">
+                <input 
+                  type="password" 
+                  id="generated-password" 
+                  value="${response.data.password}" 
+                  readonly 
+                  style="flex: 1; padding: 8px; border: none; font-size: 14px; outline: none; color: #555;"
+                />
+                <button 
+                  id="toggle-password" 
+                  style="padding: 5px 10px; background: none; border: none; color: #007bff; font-weight: 500; cursor: pointer; outline: none;">
+                  Show
+                </button>
+              </div>
+            </div>
+            <p style="color: red; font-size: 14px; margin-top: 10px; text-align: center;"><strong>Do not share this information</strong></p>
+          `,
+          showConfirmButton: true,
+          confirmButtonText: "OK",
+          confirmButtonColor: "#007bff",
+          width: "400px",
+          didOpen: () => {
+            const passwordInput = document.getElementById("generated-password");
+            const toggleButton = document.getElementById("toggle-password");
+
+            toggleButton.addEventListener("click", () => {
+              const isPasswordVisible = passwordInput.type === "text";
+              passwordInput.type = isPasswordVisible ? "password" : "text";
+              toggleButton.textContent = isPasswordVisible ? "Show" : "Hide";
+            });
+          },
         });
+
         setFirstName("");
         setAddress("");
         setAge("");

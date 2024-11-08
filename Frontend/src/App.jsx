@@ -25,6 +25,8 @@ import StaffDashboard from "./pages/StaffDashboard.jsx";
 import StaffSidebar from "./components/StaffSidebar.jsx";
 import HeatMap from "./pages/HeatMap.jsx";
 import EmployeeNotification from "./pages/EmployeeNotification.jsx";
+import MyAccount from "./pages/MyAccount.jsx";
+import UserAccounts from "./pages/UserAccounts.jsx";
 
 function App() {
   return (
@@ -54,6 +56,8 @@ function App() {
         <Route path="addhelp" element={<AddHelp />} />
         <Route path="heatmap" element={<HeatMap />} />
         <Route path="notif" element={<EmployeeNotification />} />
+        <Route path="myaccount" element={<MyAccount />} />
+        <Route path="accounts" element={<UserAccounts />} />
       </Route>
 
       <Route
@@ -74,6 +78,7 @@ function App() {
         <Route path="addhelp" element={<AddHelp />} />
         <Route path="heatmap" element={<HeatMap />} />
         <Route path="notif" element={<EmployeeNotification />} />
+        <Route path="myaccount" element={<MyAccount />} />
       </Route>
 
       <Route

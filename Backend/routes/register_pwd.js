@@ -15,7 +15,6 @@ router.post("/register_pwd", async (req, res) => {
     last_name,
     contact_num,
     email,
-    password,
     age,
     gender,
     date_of_birth,
@@ -31,7 +30,6 @@ router.post("/register_pwd", async (req, res) => {
     civilStatus,
   } = req.body;
 
-  // Required field check
   if (
     !first_name ||
     !middle_name ||
@@ -47,36 +45,36 @@ router.post("/register_pwd", async (req, res) => {
     return res.status(400).json({ error: "All fields are required" });
   }
 
-  // Email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     return res.status(400).json({ error: "Invalid email format" });
   }
 
-  // Validation to prevent numbers in name, nationality, and occupation
   const noNumbersRegex = /^[A-Za-z\s]+$/;
   if (
     !noNumbersRegex.test(first_name) ||
     !noNumbersRegex.test(middle_name) ||
     !noNumbersRegex.test(last_name) ||
     !noNumbersRegex.test(nationality) ||
-    (occupation_name && !noNumbersRegex.test(occupation_name)) // occupation_name can be optional, hence check
+    (occupation_name && !noNumbersRegex.test(occupation_name))
   ) {
     return res.status(400).json({
       error: "Names, nationality, and occupation cannot contain numbers.",
     });
   }
 
+  const generatedPassword = generatePasswordFromDOB(date_of_birth);
+  const hashedPassword = await bcrypt.hash(
+    generatedPassword,
+    parseFloat(process.env.SALT_ROUNDS)
+  );
   const connection = await pool.getConnection();
 
   try {
     await connection.beginTransaction();
 
-    const generatedPassword = password || generatePassword();
     const generateAccount = await generateAccountId();
-
     const createdAt = new Date();
-
     const expiredId = new Date(createdAt);
     expiredId.setFullYear(expiredId.getFullYear() + 5);
 
@@ -89,7 +87,7 @@ router.post("/register_pwd", async (req, res) => {
         contact_num,
         email,
         generateAccount,
-        generatedPassword,
+        hashedPassword,
         age,
         gender,
         date_of_birth,
@@ -106,7 +104,6 @@ router.post("/register_pwd", async (req, res) => {
       "INSERT INTO disabilities (user_id, disability_status) VALUES (?,?)",
       [userId, disability_status]
     );
-
     await connection.query(
       "INSERT INTO tbl_occupations (user_id, occupation_name) VALUES (?,?)",
       [userId, occupation_name]
@@ -127,7 +124,6 @@ router.post("/register_pwd", async (req, res) => {
       "INSERT INTO tbladdress (user_id, house_address, barangay) VALUES (?,?,?)",
       [userId, house_address, barangay]
     );
-
     await connection.query(
       "INSERT INTO tbl_civilstatus (user_id, civilStatus) VALUES (?,?)",
       [userId, civilStatus]
@@ -138,7 +134,7 @@ router.post("/register_pwd", async (req, res) => {
     res.status(201).json({
       message: "User registered successfully",
       accountId: generateAccount,
-      password: generatedPassword,
+      password: generatedPassword, // Unhashed password shown to the user
     });
   } catch (error) {
     await connection.rollback();
@@ -153,7 +149,7 @@ async function generateAccountId() {
   const connection = await pool.getConnection();
 
   const generatedAccountId =
-    Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 1000000; // Generate a random 7-digit number
+    Math.floor(Math.random() * (9999999 - 1000000 + 1)) + 1000000;
 
   await connection.beginTransaction();
 
@@ -162,28 +158,30 @@ async function generateAccountId() {
     [generatedAccountId]
   );
 
-  console.log(results);
-
   if (results?.length > 0) {
-    console.log("Nakarating sya dito");
     return generateAccountId();
   }
-
-  console.log(generatedAccountId);
 
   return generatedAccountId;
 }
 
-function generatePassword(length = 10) {
-  const charset = "abcdefghijkmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ23456789";
-
-  let password = "";
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * charset.length);
-    password += charset[randomIndex];
-  }
-
-  return password;
+function generatePasswordFromDOB(dob) {
+  const date = new Date(dob);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}${month}${day}`;
 }
 
+// function generatePassword(length = 10) {
+//   const charset = "abcdefghijkmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ23456789";
+
+//   let password = "";
+//   for (let i = 0; i < length; i++) {
+//     const randomIndex = Math.floor(Math.random() * charset.length);
+//     password += charset[randomIndex];
+//   }
+
+//   return password;
+// }
 export default router;

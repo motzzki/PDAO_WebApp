@@ -268,7 +268,26 @@ const Sidebar = () => {
                       e.currentTarget.style.color = ""; // Revert text color on hover end
                     }}
                   >
-                    Registered Employee
+                    Team Members
+                  </CDBSidebarMenuItem>
+                </Link>
+                <Link to="/admin/accounts">
+                  <CDBSidebarMenuItem
+                    icon="users"
+                    style={menuItemStyle}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        hoverStyle.backgroundColor;
+                      e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
+                      e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "";
+                      e.currentTarget.style.boxShadow = "";
+                      e.currentTarget.style.color = ""; // Revert text color on hover end
+                    }}
+                  >
+                    User Accounts
                   </CDBSidebarMenuItem>
                 </Link>
               </div>
@@ -277,23 +296,47 @@ const Sidebar = () => {
         </CDBSidebarMenu>
 
         {/* Updated Logout Icon */}
-        <div
-          className="mt-auto"
-          onClick={handleLogout}
-          style={menuItemStyle}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = hoverStyle.backgroundColor;
-            e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
-            e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "";
-            e.currentTarget.style.boxShadow = "";
-            e.currentTarget.style.color = ""; // Revert text color on hover end
-          }}
-        >
-          <CDBSidebarMenuItem icon="sign-out-alt">Logout</CDBSidebarMenuItem>
-        </div>
+        <CDBSidebarMenu>
+          <Link to="/admin/myaccount">
+            <CDBSidebarMenuItem
+              icon="user"
+              className="mt-auto"
+              style={menuItemStyle}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor =
+                  hoverStyle.backgroundColor;
+                e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
+                e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "";
+                e.currentTarget.style.boxShadow = "";
+                e.currentTarget.style.color = ""; // Revert text color on hover end
+              }}
+            >
+              My Account
+            </CDBSidebarMenuItem>
+          </Link>
+          {/* Logout */}
+          <CDBSidebarMenuItem
+            icon="sign-out-alt"
+            onClick={handleLogout}
+            style={menuItemStyle}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor =
+                hoverStyle.backgroundColor;
+              e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
+              e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "";
+              e.currentTarget.style.boxShadow = "";
+              e.currentTarget.style.color = ""; // Revert text color on hover end
+            }}
+          >
+            Logout
+          </CDBSidebarMenuItem>
+        </CDBSidebarMenu>
       </CDBSidebarContent>
     </CDBSidebar>
   );
