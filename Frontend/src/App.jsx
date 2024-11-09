@@ -27,12 +27,12 @@ import HeatMap from "./pages/HeatMap.jsx";
 import EmployeeNotification from "./pages/EmployeeNotification.jsx";
 import MyAccount from "./pages/MyAccount.jsx";
 import UserAccounts from "./pages/UserAccounts.jsx";
+import Custom404 from "./pages/Custom404.jsx";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
-
       <Route path="/landing_page" element={<LandingPage />} />
       <Route path="/login" element={<Login />} />
 
@@ -94,6 +94,7 @@ function App() {
         <Route path="user_facilities" element={<UserFacilities />} />
         <Route path="pwdinfo" element={<PwdInfo />} />
       </Route>
+      <Route path="*" element={<Custom404 />} />
     </Routes>
   );
 }

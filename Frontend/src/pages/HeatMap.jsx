@@ -6,6 +6,16 @@ import L from "leaflet";
 import { barangayBoundaries } from "../Cabuyao";
 import { host } from "../apiRoutes";
 
+// Function to generate a random hex color
+const getRandomColor = () => {
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+};
+
 const HeatMap = () => {
   const [heatmapData, setHeatmapData] = useState([]);
   const [error, setError] = useState(null);
@@ -24,7 +34,7 @@ const HeatMap = () => {
             return [
               coordinates.lat,
               coordinates.lng,
-              barangay.Registered / 100, // Adjust the intensity
+              (barangay.Registered && barangay.Registered / 100) || 0, // Adjust the intensity
             ];
           });
 
@@ -42,9 +52,9 @@ const HeatMap = () => {
   }, []);
 
   const getBarangayCoordinates = (barangayName) => {
-    const feature = barangayBoundaries.features.find(
-      (feature) => feature.properties.NAME_3 === barangayName
-    );
+    const feature = barangayBoundaries.features.find((feature) => {
+      return feature.properties.NAME_3.toLocaleLowerCase() === barangayName;
+    });
 
     if (feature) {
       const coordinates = feature.geometry.coordinates[0][0];
@@ -57,11 +67,31 @@ const HeatMap = () => {
     return { lat: 0, lng: 0 }; // Default if not found
   };
 
+  // Dynamic style function for GeoJSON features
+  const styleFeature = (feature) => {
+    return {
+      fillColor: getRandomColor(), // Assign a random color to each barangay
+      weight: 2, // Border thickness
+      opacity: 1, // Border opacity
+      color: "white", // Border color
+      fillOpacity: 0.7, // Fill opacity
+    };
+  };
+
   const onEachFeature = (feature, layer) => {
+    // Create a simple tooltip with the Barangay name
+    layer.bindTooltip(feature.properties.NAME_3, {
+      permanent: true,
+      direction: "center",
+      offset: [0, 0],
+      className: "custom-tooltip", // Use a custom class to target specific tooltips
+    });
+
     layer.on({
       click: () => {
         layer.bindPopup(feature.properties.NAME_3).openPopup();
       },
+
       mouseover: (e) => {
         const layer = e.target;
         layer.setStyle({
@@ -90,14 +120,13 @@ const HeatMap = () => {
       if (data.length > 0) {
         const heat = L.heatLayer(data, {
           radius: 25,
-          blur: 15,
+          blur: 5,
           maxZoom: 17,
+          minOpacity: 0.5,
           gradient: {
-            0.2: "blue",
-            0.4: "lime",
-            0.6: "yellow",
-            0.8: "orange",
-            1: "red",
+            0: "blue", // Very low intensity
+            0.5: "yellow", // Mid intensity
+            1: "red", // High intensity // Very high intensity (contrasting red)
           },
         });
         heat.addTo(map);
@@ -131,7 +160,7 @@ const HeatMap = () => {
     >
       <GeoJSON
         data={barangayBoundaries}
-        style={{ color: "red", weight: 2, fillOpacity: 0.2 }}
+        style={styleFeature}
         onEachFeature={onEachFeature}
       />
       <FitBoundsToPolygon />

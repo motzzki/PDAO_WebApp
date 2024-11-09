@@ -420,3 +420,13 @@ div.footer {
 }
 
 /*  */
+.custom-tooltip {
+  background: transparent !important; /* Remove background */
+  border: none !important; /* Remove border */
+  color: black !important; /* Set text color */
+  font-size: 10px !important; /* Adjust font size */
+  font-weight: bold !important; /* Bold text */
+  padding: 0px !important; /* Remove padding */
+  box-shadow: none !important; /* Remove any shadow */
+  text-shadow: none !important; /* Remove text shadow */
+}
