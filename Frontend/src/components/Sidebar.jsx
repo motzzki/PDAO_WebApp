@@ -213,7 +213,7 @@ const Sidebar = () => {
           <Link to="/admin/cashgift">
             {/* Updated Graphical Report Icon */}
             <CDBSidebarMenuItem
-              icon="money"
+              icon="gift"
               style={menuItemStyle}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor =
