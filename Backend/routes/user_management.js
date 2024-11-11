@@ -215,6 +215,90 @@ router.post("/toggleStatus", async (req, res) => {
   }
 });
 
+router.get("/current-birthdays", async (req, res) => {
+  try {
+    // Query to get birthdays in the current month along with claim_tag
+    const [result] = await pool.query(
+      `SELECT u.userId, u.first_name, u.middle_name, u.last_name, u.gender, u.date_of_birth, 
+              IFNULL(c.claim_tag, 0) AS claim_tag
+       FROM tblusers u
+       LEFT JOIN claim_table c ON u.userId = c.user_id
+       WHERE MONTH(u.date_of_birth) = MONTH(CURDATE())
+         AND YEAR(u.date_of_birth) <= YEAR(CURDATE())
+       ORDER BY u.date_of_birth ASC;`
+    );
+
+    // If there are no birthdays in the current month, return an empty response
+    if (result.length === 0) {
+      return res.json({
+        birthdays: [],
+        totalClaimed: 0,
+        totalUnclaimed: 0,
+      });
+    }
+
+    // Get the userIds from the first query result to filter the claims
+    const userIds = result.map((user) => user.userId);
+
+    // Query to get the total claimed count for users with birthdays in the current month
+    const [claimedCount] = await pool.query(
+      `SELECT COUNT(*) as claimed_count
+       FROM claim_table
+       WHERE user_id IN (?) AND claim_tag = 1`,
+      [userIds] // Pass userIds as an array to the query
+    );
+
+    // Query to get the total unclaimed count for users with birthdays in the current month
+    const [unclaimedCount] = await pool.query(
+      `SELECT COUNT(*) as unclaimed_count
+       FROM claim_table
+       WHERE user_id IN (?) AND claim_tag = 0`,
+      [userIds] // Pass userIds as an array to the query
+    );
+
+    // Send the results including both the birthdays and the claim totals
+    res.json({
+      birthdays: result,
+      totalClaimed: claimedCount[0].claimed_count,
+      totalUnclaimed: unclaimedCount[0].unclaimed_count,
+    });
+  } catch (error) {
+    console.error("Error fetching birthdays this month:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/claim", async (req, res) => {
+  const { userId, claimType } = req.body; // Expecting { userId, claimType } from the request body
+
+  try {
+    // Check if the user has already claimed the gift
+    const [existingClaim] = await pool.query(
+      `SELECT * FROM claim_table WHERE user_id = ? AND claim_type = ?`,
+      [userId, claimType]
+    );
+
+    if (existingClaim.length > 0) {
+      return res
+        .status(400)
+        .json({ message: "User has already claimed this gift." });
+    }
+
+    // Insert new claim with claim_tag set to 1 (claimed)
+    const [result] = await pool.query(
+      `INSERT INTO claim_table (user_id, claim_type, claim_tag) VALUES (?, ?, 1)`,
+      [userId, claimType]
+    );
+
+    res
+      .status(201)
+      .json({ message: "Claim successful!", claimId: result.insertId });
+  } catch (error) {
+    console.error("Error claiming the gift:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // Password generation function that creates password from DOB
 function generatePasswordFromDOB(dob) {
   const date = new Date(dob);
