@@ -8,76 +8,45 @@ import {
   Tabs,
   Tab,
 } from "react-bootstrap";
-import { FaArchive } from "react-icons/fa";
-import axios from "axios"; // Ensure Axios is imported
+import axios from "axios";
 import { host } from "../apiRoutes";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import Swal from "sweetalert2";
+import searchIcon from "../images/search.svg"; // Ensure the path is correct
 
 const UserAccounts = () => {
-  // State for storing users and employees data
   const [users, setUsers] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    // Fetch data from the backend API
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `${host}/api/user_management/users-employees`
-        );
-        setUsers(response.data.users); // Set users data
-        setEmployees(response.data.employees); // Set employees data
+        const response = await axios.get(`${host}/api/user_management/users-employees`);
+        setUsers(response.data.users);
+        setEmployees(response.data.employees);
       } catch (err) {
         setError("Failed to fetch data");
         console.error("Error fetching data:", err);
       } finally {
-        setLoading(false); // Set loading to false after data is fetched
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, []); // Empty dependency array ensures this runs once when the component mounts
+  }, []);
 
-  // Render loading state
-  if (loading) {
-    return (
-      <Container>
-        <div className="d-flex justify-content-center align-items-center">
-          <Spinner animation="border" role="status" />
-          <span className="ms-2">Loading...</span>
-        </div>
-      </Container>
-    );
-  }
-
-  // Render error state
-  if (error) {
-    return (
-      <Container>
-        <Alert variant="danger">{error}</Alert>
-      </Container>
-    );
-  }
-
-  // Function to return status based on flag value
   const getStatus = (flag) => {
-    if (flag === 1) {
-      return { status: "Active", colorClass: "text-success" }; // Green for Active
-    } else {
-      return { status: "Inactive", colorClass: "text-danger" }; // Red for Inactive
-    }
+    return flag === 1
+      ? { status: "Active", colorClass: "text-success" }
+      : { status: "Inactive", colorClass: "text-danger" };
   };
 
-  // Function to toggle status with SweetAlert2 confirmation
   const handleToggleStatus = async (id, currentFlag) => {
-    // Show confirmation dialog
     const result = await Swal.fire({
       title: "Are you sure?",
-      text: `Do you want to ${
-        currentFlag === 1 ? "disable" : "enable"
-      } this account?`,
+      text: `Do you want to ${currentFlag === 1 ? "disable" : "enable"} this account?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: currentFlag === 1 ? "Disable" : "Enable",
@@ -86,157 +55,216 @@ const UserAccounts = () => {
 
     if (result.isConfirmed) {
       try {
-        const newFlag = currentFlag === 1 ? 0 : 1; // Toggle between 1 and 0
+        const newFlag = currentFlag === 1 ? 0 : 1;
+        await axios.post(`${host}/api/user_management/toggleStatus`, { id, flag: newFlag });
 
-        // Call the backend API to update the status
-        await axios.post(`${host}/api/user_management/toggleStatus`, {
-          id,
-          flag: currentFlag,
-        });
-
-        // Update the state to reflect the new status in the UI
-        if (employees.some((emp) => emp.employeeId === id)) {
-          setEmployees((prevEmployees) =>
-            prevEmployees.map((employee) =>
-              employee.employeeId === id
-                ? { ...employee, flag: newFlag }
-                : employee
-            )
-          );
-        } else if (users.some((user) => user.userId === id)) {
-          setUsers((prevUsers) =>
-            prevUsers.map((user) =>
-              user.userId === id ? { ...user, flagUser: newFlag } : user
-            )
-          );
-        }
-
-        Swal.fire(
-          "Updated!",
-          `The account has been ${currentFlag === 1 ? "disabled" : "enabled"}.`,
-          "success"
+        setEmployees((prevEmployees) =>
+          prevEmployees.map((employee) =>
+            employee.employeeId === id ? { ...employee, flag: newFlag } : employee
+          )
         );
+        setUsers((prevUsers) =>
+          prevUsers.map((user) => (user.userId === id ? { ...user, flagUser: newFlag } : user))
+        );
+
+        Swal.fire("Updated!", `The account has been ${currentFlag === 1 ? "disabled" : "enabled"}.`, "success");
       } catch (err) {
         setError("Failed to update status");
-        console.error("Error updating status:", err);
-        Swal.fire(
-          "Error!",
-          "Failed to update the status. Please try again.",
-          "error"
-        );
+        Swal.fire("Error!", "Failed to update the status. Please try again.", "error");
       }
     }
   };
 
+  const filteredEmployees = employees.filter((emp) =>
+    `${emp.firstname} ${emp.lastname}`.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  const filteredUsers = users.filter((user) =>
+    `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <Container>
-      <div className="d-flex justify-content-between mb-3 pt-5">
-        <h1 className="open-sans-bold">User Accounts</h1>
-        <div className="d-flex justify-content-end w-75">
-          <Form.Control
+      <div style={styles.header}>
+        <h1 style={styles.title}>User Accounts</h1>
+        <div style={styles.searchWrapper}>
+          <input
             type="text"
             placeholder="Search..."
-            className="me-3 w-25"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={styles.searchBar}
           />
+          <img src={searchIcon} alt="search" style={styles.searchIcon} />
         </div>
       </div>
 
-      <Tabs
-        defaultActiveKey="Staffs"
-        id="facilities-tab"
-        className="custom-tabs mb-4"
-      >
-        <Tab eventKey="Staffs" title="Staff Accounts" className="custom-tab">
-          <div style={{ overflowX: "auto", width: "100%" }}>
-            <Table striped bordered hover responsive>
-              <thead>
-                <tr>
-                  <th>First Name</th>
-                  <th>Last Name</th>
-                  <th>Username</th>
-                  <th>Contact</th>
-                  <th>Email</th>
-                  <th>Status</th>
-                  <th className="text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {employees.map((employee) => {
-                  const { status, colorClass } = getStatus(employee.flag);
-                  return (
-                    <tr key={employee.employeeId}>
-                      <td>{employee.firstname}</td>
-                      <td>{employee.lastname}</td>
-                      <td>{employee.username}</td>
-                      <td>{employee.contactnum}</td>
-                      <td>{employee.email}</td>
-                      <td className={colorClass}>{status}</td>
-                      <td className="text-center">
-                        <button
-                          className="btn btn-secondary"
-                          onClick={() =>
-                            handleToggleStatus(
-                              employee.employeeId,
-                              employee.flag
-                            )
-                          }
-                        >
-                          {employee.flag === 1 ? "Disable" : "Enable"}
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </div>
-        </Tab>
-
-        <Tab eventKey="pwdAccounts" title="PWD Accounts" className="custom-tab">
-          <div style={{ overflowX: "auto", width: "100%" }}>
-            <Table striped bordered hover responsive>
-              <thead>
-                <tr>
-                  <th>First Name</th>
-                  <th>Last Name</th>
-                  <th>Account ID</th>
-                  <th>Contact</th>
-                  <th>Email</th>
-                  <th>Status</th>
-                  <th className="text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map((user) => {
-                  const { status, colorClass } = getStatus(user.flagUser);
-                  return (
-                    <tr key={user.userId}>
-                      <td>{user.first_name}</td>
-                      <td>{user.last_name}</td>
-                      <td>{user.accountId}</td>
-                      <td>{user.contact_num}</td>
-                      <td>{user.email}</td>
-                      <td className={colorClass}>{status}</td>
-                      <td className="text-center">
-                        <button
-                          className="btn btn-secondary"
-                          onClick={() =>
-                            handleToggleStatus(user.userId, user.flagUser)
-                          }
-                        >
-                          {user.flagUser === 1 ? "Disable" : "Enable"}
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
-          </div>
-        </Tab>
-      </Tabs>
+      {loading ? (
+        <div className="d-flex justify-content-center align-items-center">
+          <Spinner animation="border" role="status" />
+          <span className="ms-2">Loading...</span>
+        </div>
+      ) : error ? (
+        <Alert variant="danger">{error}</Alert>
+      ) : (
+        <Tabs defaultActiveKey="Staffs" id="facilities-tab" className="custom-tabs mb-4">
+          <Tab eventKey="Staffs" title="Staff Accounts" className="custom-tab">
+            <div style={styles.tableContainer}>
+              <Table striped bordered hover responsive style={styles.table}>
+                <thead>
+                  <tr>
+                    <th style={styles.tableHead}>First Name</th>
+                    <th style={styles.tableHead}>Last Name</th>
+                    <th style={styles.tableHead}>Username</th>
+                    <th style={styles.tableHead}>Contact</th>
+                    <th style={styles.tableHead}>Email</th>
+                    <th style={styles.tableHead}>Status</th>
+                    <th style={styles.tableHead}>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredEmployees.map((employee) => {
+                    const { status, colorClass } = getStatus(employee.flag);
+                    return (
+                      <tr key={employee.employeeId} style={styles.tableRow} onMouseEnter={onRowHover} onMouseLeave={onRowLeave}>
+                        <td>{employee.firstname}</td>
+                        <td>{employee.lastname}</td>
+                        <td>{employee.username}</td>
+                        <td>{employee.contactnum}</td>
+                        <td>{employee.email}</td>
+                        <td className={colorClass}>{status}</td>
+                        <td className="text-center">
+                          <button
+                            className="btn btn-danger" // Red button
+                            onClick={() => handleToggleStatus(employee.employeeId, employee.flag)}
+                          >
+                            {employee.flag === 1 ? "Disable" : "Enable"}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
+            </div>
+          </Tab>
+          <Tab eventKey="pwdAccounts" title="PWD Accounts" className="custom-tab">
+            <div style={styles.tableContainer}>
+              <Table striped bordered hover responsive style={styles.table}>
+                <thead>
+                  <tr>
+                    <th style={styles.tableHead}>First Name</th>
+                    <th style={styles.tableHead}>Last Name</th>
+                    <th style={styles.tableHead}>Account ID</th>
+                    <th style={styles.tableHead}>Contact</th>
+                    <th style={styles.tableHead}>Email</th>
+                    <th style={styles.tableHead}>Status</th>
+                    <th style={styles.tableHead}>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredUsers.map((user) => {
+                    const { status, colorClass } = getStatus(user.flagUser);
+                    return (
+                      <tr key={user.userId} style={styles.tableRow} onMouseEnter={onRowHover} onMouseLeave={onRowLeave}>
+                        <td>{user.first_name}</td>
+                        <td>{user.last_name}</td>
+                        <td>{user.accountId}</td>
+                        <td>{user.contact_num}</td>
+                        <td>{user.email}</td>
+                        <td className={colorClass}>{status}</td>
+                        <td className="text-center">
+                          <button
+                            className="btn btn-danger" // Red button
+                            onClick={() => handleToggleStatus(user.userId, user.flagUser)}
+                          >
+                            {user.flagUser === 1 ? "Disable" : "Enable"}
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
+            </div>
+          </Tab>
+        </Tabs>
+      )}
     </Container>
   );
 };
 
+const styles = {
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "20px",
+    paddingTop: "20px",
+  },
+  title: {
+    fontSize: "26px",
+    fontWeight: "bold",
+    color: "#333",
+  },
+  searchWrapper: {
+    position: "relative",
+    width: "220px",
+  },
+  searchBar: {
+    padding: "10px",
+    borderRadius: "20px",
+    border: "1px solid #ddd",
+    width: "100%",
+    paddingRight: "35px",
+    fontSize: "14px",
+    backgroundColor: "#fafafa",
+  },
+  searchIcon: {
+    position: "absolute",
+    right: "10px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    width: "18px",
+    height: "18px",
+    cursor: "pointer",
+  },
+  tableContainer: {
+    padding: "20px",
+    backgroundColor: "#f8f9fa",
+    borderRadius: "12px",
+    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+  },
+  table: {
+    borderCollapse: "separate",
+    borderSpacing: "0 8px",
+    width: "100%",
+    borderRadius: "10px",
+    overflow: "hidden",
+  },
+  tableHead: {
+    backgroundColor: "#ff4d4d",
+    color: "#fff",
+    textAlign: "center",
+    fontWeight: "bold",
+    padding: "14px",
+    fontSize: "16px",
+  },
+  tableRow: {
+    textAlign: "center",
+    padding: "12px",
+    backgroundColor: "#ffffff",
+    transition: "background-color 0.3s",
+    borderBottom: "1px solid #ddd",
+  },
+};
+
+function onRowHover(e) {
+  e.currentTarget.style.backgroundColor = "#f1f1f1";
+}
+
+function onRowLeave(e) {
+  e.currentTarget.style.backgroundColor = "#ffffff";
+}
+
 export default UserAccounts;
+

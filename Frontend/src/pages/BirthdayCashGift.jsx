@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { Card, CardHeader, CardBody, CardTitle, Table } from "react-bootstrap";
+import Table from "react-bootstrap/Table";
 import axios from "axios";
-import { host } from "../apiRoutes"; // Adjust your API base URL
-import Swal from "sweetalert2"; // Import SweetAlert2
+import searchIcon from "../images/search.svg";
+import { host } from "../apiRoutes";
+import Swal from "sweetalert2";
 
 const BirthdayCashGift = () => {
-  const [birthdays, setBirthdays] = useState([]); // Store fetched birthdays
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(""); // Error message state
-  const [totalClaimed, setTotalClaimed] = useState(0); // Store total claimed
-  const [totalUnclaimed, setTotalUnclaimed] = useState(0); // Store total unclaimed
+  const [birthdays, setBirthdays] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [totalClaimed, setTotalClaimed] = useState(0);
+  const [totalUnclaimed, setTotalUnclaimed] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchBirthdays = async () => {
       try {
-        const response = await axios.get(
-          `${host}/api/user_management/current-birthdays`
-        );
-        setBirthdays(response.data.birthdays); // Store birthdays in state
-        setTotalClaimed(response.data.totalClaimed); // Store total claimed
-        setTotalUnclaimed(response.data.totalUnclaimed); // Store total unclaimed
+        const response = await axios.get(`${host}/api/user_management/current-birthdays`);
+        setBirthdays(response.data.birthdays);
+        setTotalClaimed(response.data.totalClaimed);
+        setTotalUnclaimed(response.data.totalUnclaimed);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching birthdays:", error);
@@ -28,10 +28,9 @@ const BirthdayCashGift = () => {
       }
     };
 
-    fetchBirthdays(); // Fetch birthdays on mount
+    fetchBirthdays();
   }, []);
 
-  // Handle claim action with SweetAlert confirmation
   const handleClaim = (userId) => {
     Swal.fire({
       title: "Are you sure?",
@@ -43,25 +42,15 @@ const BirthdayCashGift = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const claimType = "birthday"; // You can modify this based on different claim types
-          const response = await axios.post(
-            `${host}/api/user_management/claim`,
-            {
-              userId,
-              claimType,
-            }
-          );
+          const response = await axios.post(`${host}/api/user_management/claim`, {
+            userId,
+            claimType: "birthday",
+          });
 
-          Swal.fire("Claimed!", response.data.message, "success"); // Show success message
-
-          // Update the claimed status of the user in the local state to disable the button
+          Swal.fire("Claimed!", response.data.message, "success");
           setBirthdays((prevState) =>
-            prevState.map(
-              (user) =>
-                user.userId === userId ? { ...user, claim_tag: 1 } : user // Update claim_tag to 1
-            )
+            prevState.map((user) => (user.userId === userId ? { ...user, claim_tag: 1 } : user))
           );
-          // Optionally update the total claimed count if needed
           setTotalClaimed((prevTotal) => prevTotal + 1);
         } catch (error) {
           Swal.fire(
@@ -74,73 +63,162 @@ const BirthdayCashGift = () => {
     });
   };
 
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="fs-1 open-sans-bold">Cash Gift</CardTitle>
-      </CardHeader>
-      <CardBody>
-        {loading ? (
-          <p>Loading...</p>
-        ) : error ? (
-          <p>{error}</p>
-        ) : (
-          <>
-            {/* Legend for total claimed and unclaimed */}
-            <div className="mb-3">
-              <strong>Legend:</strong>
-              <span
-                className="badge bg-success mx-2"
-                style={{ fontSize: "14px" }}
-              >
-                Claimed: {totalClaimed}
-              </span>
-              <span
-                className="badge bg-danger mx-2"
-                style={{ fontSize: "14px" }}
-              >
-                Unclaimed: {totalUnclaimed}
-              </span>
-            </div>
+  const filteredBirthdays = birthdays.filter((user) =>
+    user.first_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-            <Table className="table table-striped table-hover">
-              <thead>
-                <tr>
-                  <th>User ID</th>
-                  <th>Name</th>
-                  <th>Gender</th>
-                  <th>Date of Birth</th>
-                  <th className="text-center">Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {birthdays.map((user) => (
-                  <tr key={user.userId}>
-                    <td>{user.userId}</td>
-                    <td>
-                      {user.first_name} {user.middle_name} {user.last_name}
-                    </td>
-                    <td>{user.gender}</td>
-                    <td>{new Date(user.date_of_birth).toLocaleDateString()}</td>
-                    <td className="text-center">
-                      <button
-                        className="btn btn-secondary"
-                        onClick={() => handleClaim(user.userId)}
-                        disabled={user.claim_tag === 1} // Disable if claim_tag is 1 (claimed)
-                      >
-                        {user.claim_tag === 1 ? "Claimed" : "Claim"}{" "}
-                        {/* Show text based on claim_tag */}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </>
-        )}
-      </CardBody>
-    </Card>
+  return (
+    <div style={styles.tableContainer}>
+      <div style={styles.header}>
+        <h1 style={styles.title}>Birthday Cash Gift</h1>
+        <div style={styles.searchWrapper}>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={styles.searchBar}
+          />
+          <img src={searchIcon} alt="search" style={styles.searchIcon} />
+        </div>
+      </div>
+      <Table striped bordered hover responsive style={styles.table}>
+        <thead>
+          <tr>
+            <th style={styles.tableHead}>User ID</th>
+            <th style={styles.tableHead}>Name</th>
+            <th style={styles.tableHead}>Gender</th>
+            <th style={styles.tableHead}>Date of Birth</th>
+            <th style={styles.tableHead}>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loading ? (
+            <tr>
+              <td colSpan="5" className="text-center">Loading...</td>
+            </tr>
+          ) : error ? (
+            <tr>
+              <td colSpan="5" className="text-center text-danger">{error}</td>
+            </tr>
+          ) : (
+            filteredBirthdays.map((user) => (
+              <tr
+                key={user.userId}
+                style={styles.tableRow}
+                onMouseEnter={onRowHover}
+                onMouseLeave={onRowLeave}
+              >
+                <td>{user.userId}</td>
+                <td>{`${user.first_name} ${user.middle_name} ${user.last_name}`}</td>
+                <td>{user.gender}</td>
+                <td>{new Date(user.date_of_birth).toLocaleDateString()}</td>
+                <td className="text-center">
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleClaim(user.userId)}
+                    disabled={user.claim_tag === 1}
+                    style={{ cursor: user.claim_tag === 1 ? "not-allowed" : "pointer" }}
+                  >
+                    {user.claim_tag === 1 ? "Claimed" : "Claim"}
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </Table>
+
+      {/* Legend for claimed and unclaimed totals */}
+      <div style={styles.legend}>
+        <span className="badge bg-success" style={styles.badge}>Claimed: {totalClaimed}</span>
+        <span className="badge bg-danger" style={styles.badge}>Unclaimed: {totalUnclaimed}</span>
+      </div>
+    </div>
   );
 };
 
+const styles = {
+  tableContainer: {
+    padding: "20px",
+    backgroundColor: "#f8f9fa",
+    borderRadius: "12px",
+    boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)",
+  },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "20px",
+  },
+  title: {
+    fontSize: "26px",
+    fontWeight: "bold",
+    color: "#333",
+  },
+  searchWrapper: {
+    position: "relative",
+    width: "220px",
+  },
+  searchBar: {
+    padding: "10px",
+    borderRadius: "20px",
+    border: "1px solid #ddd",
+    width: "100%",
+    paddingRight: "35px",
+    fontSize: "14px",
+    backgroundColor: "#fafafa",
+  },
+  searchIcon: {
+    position: "absolute",
+    right: "10px",
+    top: "50%",
+    transform: "translateY(-50%)",
+    width: "18px",
+    height: "18px",
+    cursor: "pointer",
+  },
+  table: {
+    borderCollapse: "separate",
+    borderSpacing: "0 8px",
+    width: "100%",
+    borderRadius: "10px",
+    overflow: "hidden",
+  },
+  tableHead: {
+    backgroundColor: "#ff4d4d",
+    color: "#fff",
+    textAlign: "center",
+    fontWeight: "bold",
+    padding: "14px",
+    fontSize: "16px",
+  },
+  tableRow: {
+    textAlign: "center",
+    padding: "12px",
+    backgroundColor: "#ffffff",
+    transition: "background-color 0.3s",
+    borderBottom: "1px solid #eee",
+  },
+  legend: {
+    display: "flex",
+    justifyContent: "center",
+    gap: "10px",
+    marginTop: "20px",
+  },
+  badge: {
+    fontSize: "14px",
+    padding: "8px 12px",
+    borderRadius: "20px",
+  },
+};
+
+const onRowHover = (e) => {
+  e.currentTarget.style.backgroundColor = "#e8f0fe";
+};
+const onRowLeave = (e) => {
+  e.currentTarget.style.backgroundColor = "#ffffff";
+};
+
 export default BirthdayCashGift;
+
