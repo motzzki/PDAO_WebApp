@@ -185,7 +185,7 @@ const MyAccount = () => {
             {/* Profile Card */}
             <Card
               style={cardStyle}
-              className="shadow-lg rounded-lg border-0 text-center bg-danger"
+              className="shadow-lg rounded-lg border-0 text-center bg-secondary"
             >
               <Card.Body>
                 <Image
@@ -207,7 +207,7 @@ const MyAccount = () => {
               <Col sm={12} md={6}>
                 <Card
                   style={cardStyle}
-                  className="shadow-lg rounded-lg border-0 bg-danger"
+                  className="shadow-lg rounded-lg border-0 bg-secondary"
                 >
                   <Card.Body>
                     <h5>
@@ -223,7 +223,7 @@ const MyAccount = () => {
               <Col sm={12} md={6}>
                 <Card
                   style={cardStyle}
-                  className="shadow-lg rounded-lg border-0 bg-danger"
+                  className="shadow-lg rounded-lg border-0 bg-secondary"
                 >
                   <Card.Body>
                     <h5>
@@ -240,7 +240,7 @@ const MyAccount = () => {
               <Col sm={12} md={6}>
                 <Card
                   style={cardStyle}
-                  className="shadow-lg rounded-lg border-0 bg-danger"
+                  className="shadow-lg rounded-lg border-0 bg-secondary"
                 >
                   <Card.Body>
                     <h5>
@@ -253,7 +253,7 @@ const MyAccount = () => {
               <Col sm={12} md={6}>
                 <Card
                   style={cardStyle}
-                  className="shadow-lg rounded-lg border-0 bg-danger"
+                  className="shadow-lg rounded-lg border-0 bg-secondary"
                 >
                   <Card.Body>
                     <h5>
@@ -272,7 +272,7 @@ const MyAccount = () => {
               <Col sm={12} md={6}>
                 <Card
                   style={cardStyle}
-                  className="shadow-lg rounded-lg border-0 bg-danger"
+                  className="shadow-lg rounded-lg border-0 bg-secondary"
                 >
                   <Card.Body>
                     <h5>
@@ -286,7 +286,7 @@ const MyAccount = () => {
               <Col sm={12} md={6}>
                 <Card
                   style={cardStyle}
-                  className="shadow-lg rounded-lg border-0 bg-danger"
+                  className="shadow-lg rounded-lg border-0 bg-secondary"
                 >
                   <Card.Body>
                     <h5>

@@ -14,22 +14,27 @@ const BirthdayCashGift = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    const fetchBirthdays = async () => {
-      try {
-        const response = await axios.get(`${host}/api/user_management/current-birthdays`);
-        setBirthdays(response.data.birthdays);
-        setTotalClaimed(response.data.totalClaimed);
-        setTotalUnclaimed(response.data.totalUnclaimed);
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching birthdays:", error);
-        setError("Failed to load birthdays");
-        setLoading(false);
-      }
-    };
-
     fetchBirthdays();
   }, []);
+
+  const fetchBirthdays = async () => {
+    try {
+      const response = await axios.get(
+        `${host}/api/user_management/current-cashgift`
+      );
+      const birthdaysData = response.data.birthdays;
+
+      setBirthdays(birthdaysData);
+      setTotalClaimed(birthdaysData.filter((b) => b.claim_tag === 1).length);
+      setTotalUnclaimed(birthdaysData.filter((b) => b.claim_tag === 0).length);
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching birthdays:", error);
+      setError("Failed to load birthdays");
+      setLoading(false);
+    }
+  };
 
   const handleClaim = (userId) => {
     Swal.fire({
@@ -42,16 +47,22 @@ const BirthdayCashGift = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await axios.post(`${host}/api/user_management/claim`, {
-            userId,
-            claimType: "birthday",
-          });
+          const response = await axios.post(
+            `${host}/api/user_management/claim`,
+            {
+              userId,
+              claimType: "birthday",
+            }
+          );
 
           Swal.fire("Claimed!", response.data.message, "success");
           setBirthdays((prevState) =>
-            prevState.map((user) => (user.userId === userId ? { ...user, claim_tag: 1 } : user))
+            prevState.map((user) =>
+              user.userId === userId ? { ...user, claim_tag: 1 } : user
+            )
           );
           setTotalClaimed((prevTotal) => prevTotal + 1);
+          fetchBirthdays();
         } catch (error) {
           Swal.fire(
             "Error",
@@ -95,11 +106,15 @@ const BirthdayCashGift = () => {
         <tbody>
           {loading ? (
             <tr>
-              <td colSpan="5" className="text-center">Loading...</td>
+              <td colSpan="5" className="text-center">
+                Loading...
+              </td>
             </tr>
           ) : error ? (
             <tr>
-              <td colSpan="5" className="text-center text-danger">{error}</td>
+              <td colSpan="5" className="text-center text-danger">
+                {error}
+              </td>
             </tr>
           ) : (
             filteredBirthdays.map((user) => (
@@ -118,7 +133,9 @@ const BirthdayCashGift = () => {
                     className="btn btn-danger btn-sm"
                     onClick={() => handleClaim(user.userId)}
                     disabled={user.claim_tag === 1}
-                    style={{ cursor: user.claim_tag === 1 ? "not-allowed" : "pointer" }}
+                    style={{
+                      cursor: user.claim_tag === 1 ? "not-allowed" : "pointer",
+                    }}
                   >
                     {user.claim_tag === 1 ? "Claimed" : "Claim"}
                   </button>
@@ -131,8 +148,12 @@ const BirthdayCashGift = () => {
 
       {/* Legend for claimed and unclaimed totals */}
       <div style={styles.legend}>
-        <span className="badge bg-success" style={styles.badge}>Claimed: {totalClaimed}</span>
-        <span className="badge bg-danger" style={styles.badge}>Unclaimed: {totalUnclaimed}</span>
+        <span className="badge bg-success" style={styles.badge}>
+          Claimed: {totalClaimed}
+        </span>
+        <span className="badge bg-danger" style={styles.badge}>
+          Unclaimed: {totalUnclaimed}
+        </span>
       </div>
     </div>
   );
@@ -221,4 +242,3 @@ const onRowLeave = (e) => {
 };
 
 export default BirthdayCashGift;
-

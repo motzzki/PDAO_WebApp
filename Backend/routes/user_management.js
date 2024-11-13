@@ -215,17 +215,20 @@ router.post("/toggleStatus", async (req, res) => {
   }
 });
 
-router.get("/current-birthdays", async (req, res) => {
+router.get("/current-cashgift", async (req, res) => {
   try {
-    // Query to get birthdays in the current month along with claim_tag
     const [result] = await pool.query(
       `SELECT u.userId, u.first_name, u.middle_name, u.last_name, u.gender, u.date_of_birth, 
-              IFNULL(c.claim_tag, 0) AS claim_tag
-       FROM tblusers u
-       LEFT JOIN claim_table c ON u.userId = c.user_id
-       WHERE MONTH(u.date_of_birth) = MONTH(CURDATE())
-         AND YEAR(u.date_of_birth) <= YEAR(CURDATE())
-       ORDER BY u.date_of_birth ASC;`
+       IFNULL(c.claim_tag, 0) AS claim_tag
+      FROM tblusers u
+      LEFT JOIN claim_table c ON u.userId = c.user_id
+      WHERE (
+              (MONTH(u.date_of_birth) = MONTH(CURDATE()) AND DAY(u.date_of_birth) >= DAY(CURDATE())) 
+              OR MONTH(u.date_of_birth) = MONTH(DATE_ADD(CURDATE(), INTERVAL 1 MONTH))
+              OR MONTH(u.date_of_birth) = MONTH(DATE_ADD(CURDATE(), INTERVAL 2 MONTH))
+            )
+      AND YEAR(u.date_of_birth) <= YEAR(CURDATE())
+      ORDER BY MONTH(u.date_of_birth), DAY(u.date_of_birth) ASC;`
     );
 
     // If there are no birthdays in the current month, return an empty response
@@ -296,6 +299,87 @@ router.post("/claim", async (req, res) => {
   } catch (error) {
     console.error("Error claiming the gift:", error);
     res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get("/current-birthday", async (req, res) => {
+  let conn;
+
+  try {
+    conn = await pool.getConnection();
+
+    const query = `
+     SELECT u.userId, u.first_name, u.middle_name, u.last_name, u.gender, u.date_of_birth, 
+       IFNULL(c.claim_tag, 0) AS claim_tag
+      FROM tblusers u
+      LEFT JOIN claim_table c ON u.userId = c.user_id
+      WHERE (
+              (MONTH(u.date_of_birth) = MONTH(CURDATE()) AND DAY(u.date_of_birth) >= DAY(CURDATE())) 
+              OR MONTH(u.date_of_birth) = MONTH(DATE_ADD(CURDATE(), INTERVAL 1 MONTH))
+              OR MONTH(u.date_of_birth) = MONTH(DATE_ADD(CURDATE(), INTERVAL 2 MONTH))
+            )
+      AND YEAR(u.date_of_birth) <= YEAR(CURDATE())
+      ORDER BY MONTH(u.date_of_birth), DAY(u.date_of_birth) ASC;
+    `;
+
+    const [rows] = await conn.query(query);
+    const totalClaimed = rows.filter((user) => user.claim_tag === 1).length;
+    const totalUnclaimed = rows.filter((user) => user.claim_tag === 0).length;
+
+    res.json({
+      message: "Current birthdays fetched successfully",
+      birthdays: rows,
+      totalClaimed,
+      totalUnclaimed,
+    });
+  } catch (error) {
+    console.error("Error fetching birthdays:", error);
+    res.status(500).json({
+      message: "Failed to load birthdays",
+      error: error.message,
+    });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+router.get("/claimed-dates", async (req, res) => {
+  let conn;
+
+  try {
+    conn = await pool.getConnection();
+
+    const query = `
+                SELECT 
+                u.userId, 
+                u.first_name, 
+                u.last_name, 
+                IFNULL(c.claimed_date, 'Not Claimed') AS claimed_date, 
+                IFNULL(c.claim_tag, 0) AS claim_tag
+              FROM tblusers u
+              LEFT JOIN claim_table c 
+                ON u.userId = c.user_id
+              WHERE (
+                (MONTH(u.date_of_birth) = MONTH(CURDATE()) AND DAY(u.date_of_birth) >= DAY(CURDATE())) 
+                OR MONTH(u.date_of_birth) = MONTH(DATE_ADD(CURDATE(), INTERVAL 1 MONTH))
+                OR MONTH(u.date_of_birth) = MONTH(DATE_ADD(CURDATE(), INTERVAL 2 MONTH))
+              )
+              ORDER BY c.claimed_date ASC;
+    `;
+
+    const [claimedDates] = await conn.query(query);
+    res.json({
+      message: "Claimed and Unclaimed dates fetched successfully",
+      claimedDates,
+    });
+  } catch (error) {
+    console.error("Error fetching claimed dates:", error);
+    res.status(500).json({
+      message: "Failed to load claimed dates",
+      error: error.message,
+    });
+  } finally {
+    if (conn) conn.release();
   }
 });
 

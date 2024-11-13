@@ -31,12 +31,6 @@ const Registration = () => {
     }
   };
 
-  const blockLetters = (e) => {
-    if (!/[0-9]/.test(e.key)) {
-      e.preventDefault();
-    }
-  };
-
   const calculateAge = (dateOfBirth) => {
     const birthDate = new Date(dateOfBirth);
     const today = new Date();
@@ -67,6 +61,7 @@ const Registration = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Basic field validation
     if (
       !firstName ||
       !lastName ||
@@ -90,6 +85,26 @@ const Registration = () => {
       return;
     }
 
+    // Email validation (basic regex check)
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
+    // Contact number validation (must be 11 digits)
+    if (!/^\d{11}$/.test(contactNum)) {
+      alert("Please enter a valid 11-digit contact number.");
+      return;
+    }
+
+    // Additional validations for fields like age (must be a positive number)
+    if (isNaN(age) || age <= 0) {
+      alert("Please enter a valid age.");
+      return;
+    }
+
+    // Create new user object
     const newUser = {
       first_name: firstName,
       middle_name: middleName,
@@ -115,15 +130,14 @@ const Registration = () => {
       const response = await axios.post(
         `${host}/api/registerPwd/register_pwd`,
         newUser,
-
         {
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
+
       if (response.status !== 201) {
-        // Check for 201 status code
         throw new Error("Failed to add user");
       } else {
         Swal.fire({
@@ -167,6 +181,7 @@ const Registration = () => {
           },
         });
 
+        // Reset form fields after successful registration
         setFirstName("");
         setAddress("");
         setAge("");
@@ -187,8 +202,10 @@ const Registration = () => {
       }
     } catch (err) {
       console.error("Error adding user:", err.message);
+      alert("An error occurred while registering the user. Please try again.");
     }
   };
+
   const clearForm = () => {
     setFirstName("");
     setMiddleName("");
@@ -209,19 +226,18 @@ const Registration = () => {
     setEmployment("");
   };
 
-  // const handleNumber = (e, setValue) => {
-  //   const value = e.target.value;
-  //   const regex = /^[0-9]*$/;
-  //   if (regex.test(value) || value === "") {
-  //     setValue(value);
-  //   }
-  // };
   const handleChange = (selectedOption) => {
     if (selectedOption) {
       setBarangay(selectedOption.value); // Set only the value
     } else {
       setBarangay(""); // Reset if no option is selected
     }
+  };
+  const handleContactNumChange = (e) => {
+    const value = e.target.value;
+    // Remove all non-numeric characters and limit to 11 digits
+    const filteredValue = value.replace(/[^0-9]/g, "").slice(0, 11);
+    setContactNum(filteredValue);
   };
 
   const options = [
@@ -462,7 +478,7 @@ const Registration = () => {
                   type="text"
                   placeholder="Mobile Number"
                   value={contactNum}
-                  onChange={(e) => setContactNum(e.target.value)}
+                  onChange={handleContactNumChange}
                   className="form-control-custom"
                 />
               </FloatingLabel>

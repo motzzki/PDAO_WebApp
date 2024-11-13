@@ -23,7 +23,9 @@ const UserAccounts = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${host}/api/user_management/users-employees`);
+        const response = await axios.get(
+          `${host}/api/user_management/users-employees`
+        );
         setUsers(response.data.users);
         setEmployees(response.data.employees);
       } catch (err) {
@@ -46,7 +48,9 @@ const UserAccounts = () => {
   const handleToggleStatus = async (id, currentFlag) => {
     const result = await Swal.fire({
       title: "Are you sure?",
-      text: `Do you want to ${currentFlag === 1 ? "disable" : "enable"} this account?`,
+      text: `Do you want to ${
+        currentFlag === 1 ? "disable" : "enable"
+      } this account?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: currentFlag === 1 ? "Disable" : "Enable",
@@ -56,30 +60,49 @@ const UserAccounts = () => {
     if (result.isConfirmed) {
       try {
         const newFlag = currentFlag === 1 ? 0 : 1;
-        await axios.post(`${host}/api/user_management/toggleStatus`, { id, flag: newFlag });
+        await axios.post(`${host}/api/user_management/toggleStatus`, {
+          id,
+          flag: newFlag,
+        });
 
         setEmployees((prevEmployees) =>
           prevEmployees.map((employee) =>
-            employee.employeeId === id ? { ...employee, flag: newFlag } : employee
+            employee.employeeId === id
+              ? { ...employee, flag: newFlag }
+              : employee
           )
         );
         setUsers((prevUsers) =>
-          prevUsers.map((user) => (user.userId === id ? { ...user, flagUser: newFlag } : user))
+          prevUsers.map((user) =>
+            user.userId === id ? { ...user, flagUser: newFlag } : user
+          )
         );
 
-        Swal.fire("Updated!", `The account has been ${currentFlag === 1 ? "disabled" : "enabled"}.`, "success");
+        Swal.fire(
+          "Updated!",
+          `The account has been ${currentFlag === 1 ? "disabled" : "enabled"}.`,
+          "success"
+        );
       } catch (err) {
         setError("Failed to update status");
-        Swal.fire("Error!", "Failed to update the status. Please try again.", "error");
+        Swal.fire(
+          "Error!",
+          "Failed to update the status. Please try again.",
+          "error"
+        );
       }
     }
   };
 
   const filteredEmployees = employees.filter((emp) =>
-    `${emp.firstname} ${emp.lastname}`.toLowerCase().includes(searchQuery.toLowerCase())
+    `${emp.firstname} ${emp.lastname}`
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase())
   );
   const filteredUsers = users.filter((user) =>
-    `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchQuery.toLowerCase())
+    `${user.first_name} ${user.last_name}`
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -106,7 +129,11 @@ const UserAccounts = () => {
       ) : error ? (
         <Alert variant="danger">{error}</Alert>
       ) : (
-        <Tabs defaultActiveKey="Staffs" id="facilities-tab" className="custom-tabs mb-4">
+        <Tabs
+          defaultActiveKey="Staffs"
+          id="facilities-tab"
+          className="custom-tabs mb-4"
+        >
           <Tab eventKey="Staffs" title="Staff Accounts" className="custom-tab">
             <div style={styles.tableContainer}>
               <Table striped bordered hover responsive style={styles.table}>
@@ -125,7 +152,12 @@ const UserAccounts = () => {
                   {filteredEmployees.map((employee) => {
                     const { status, colorClass } = getStatus(employee.flag);
                     return (
-                      <tr key={employee.employeeId} style={styles.tableRow} onMouseEnter={onRowHover} onMouseLeave={onRowLeave}>
+                      <tr
+                        key={employee.employeeId}
+                        style={styles.tableRow}
+                        onMouseEnter={onRowHover}
+                        onMouseLeave={onRowLeave}
+                      >
                         <td>{employee.firstname}</td>
                         <td>{employee.lastname}</td>
                         <td>{employee.username}</td>
@@ -135,7 +167,12 @@ const UserAccounts = () => {
                         <td className="text-center">
                           <button
                             className="btn btn-danger" // Red button
-                            onClick={() => handleToggleStatus(employee.employeeId, employee.flag)}
+                            onClick={() =>
+                              handleToggleStatus(
+                                employee.employeeId,
+                                employee.flag
+                              )
+                            }
                           >
                             {employee.flag === 1 ? "Disable" : "Enable"}
                           </button>
@@ -147,7 +184,11 @@ const UserAccounts = () => {
               </Table>
             </div>
           </Tab>
-          <Tab eventKey="pwdAccounts" title="PWD Accounts" className="custom-tab">
+          <Tab
+            eventKey="pwdAccounts"
+            title="PWD Accounts"
+            className="custom-tab"
+          >
             <div style={styles.tableContainer}>
               <Table striped bordered hover responsive style={styles.table}>
                 <thead>
@@ -165,7 +206,12 @@ const UserAccounts = () => {
                   {filteredUsers.map((user) => {
                     const { status, colorClass } = getStatus(user.flagUser);
                     return (
-                      <tr key={user.userId} style={styles.tableRow} onMouseEnter={onRowHover} onMouseLeave={onRowLeave}>
+                      <tr
+                        key={user.userId}
+                        style={styles.tableRow}
+                        onMouseEnter={onRowHover}
+                        onMouseLeave={onRowLeave}
+                      >
                         <td>{user.first_name}</td>
                         <td>{user.last_name}</td>
                         <td>{user.accountId}</td>
@@ -175,7 +221,9 @@ const UserAccounts = () => {
                         <td className="text-center">
                           <button
                             className="btn btn-danger" // Red button
-                            onClick={() => handleToggleStatus(user.userId, user.flagUser)}
+                            onClick={() =>
+                              handleToggleStatus(user.userId, user.flagUser)
+                            }
                           >
                             {user.flagUser === 1 ? "Disable" : "Enable"}
                           </button>
@@ -267,4 +315,3 @@ function onRowLeave(e) {
 }
 
 export default UserAccounts;
-

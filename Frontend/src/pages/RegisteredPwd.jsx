@@ -46,7 +46,7 @@ const RegisteredPwd = () => {
   const fetchRegistered = async (page, barangay, order) => {
     try {
       const response = await axios.get(
-        `${host}/api/pwdInfo/pwd_info?page=${page}&limit=7&barangay=${barangay}&order=${order}`
+        `${host}/api/pwdInfo/pwd_info?page=${page}&limit=15&barangay=${barangay}&order=${order}`
       );
       setRegisteredPwd(response.data.data);
       setTotalPages(response.data.pagination.totalPages);

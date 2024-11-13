@@ -5,6 +5,7 @@ import BarGraph from "../components/BarGraph.jsx";
 import PieChart from "../components/PieChart.jsx";
 import LineGraph from "../components/LineGraph.jsx";
 import MonthlyUserChart from "../components/MonthlyUserChart .jsx";
+import CashGiftGraph from "../components/CashGiftGraph.jsx";
 
 const GraphReport = () => {
   return (
@@ -13,6 +14,11 @@ const GraphReport = () => {
         <Col xs={4} md={6} lg={12}>
           <GraphCard title="Disability Distribution per Barangay">
             <LineGraph />
+          </GraphCard>
+        </Col>
+        <Col xs={4} md={6} lg={12}>
+          <GraphCard title="Disability Distribution per Barangay">
+            <CashGiftGraph />
           </GraphCard>
         </Col>
         <Col xs={12} md={6} lg={4}>
