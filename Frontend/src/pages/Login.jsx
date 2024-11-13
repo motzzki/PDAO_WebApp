@@ -125,7 +125,7 @@ const Login = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={isLoading}
               />
-              {/* <InputGroup.Text
+              <InputGroup.Text
                 onClick={() => setShowPassword(!showPassword)}
                 style={{ cursor: "pointer" }}
               >
@@ -134,7 +134,7 @@ const Login = () => {
                   alt="Toggle password visibility"
                   style={{ width: "20px", height: "20px" }}
                 />
-              </InputGroup.Text> */}
+              </InputGroup.Text>
             </InputGroup>
             <Button
               className="w-100 mt-4 fs-5"
