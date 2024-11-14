@@ -383,6 +383,43 @@ router.get("/claimed-dates", async (req, res) => {
   }
 });
 
+router.get("/user-feedbacks", async (req, res) => {
+  let conn;
+
+  try {
+    conn = await pool.getConnection();
+
+    const query = `
+      SELECT
+        user_feedbacks.feedbackId,
+        user_feedbacks.userId,
+        tblUsers.accountId,         -- Fetching the username
+        user_feedbacks.question1,
+        user_feedbacks.question2,
+        user_feedbacks.question3,
+        user_feedbacks.question4,
+        user_feedbacks.question5,
+        user_feedbacks.suggestion
+      FROM user_feedbacks
+      JOIN tblUsers ON user_feedbacks.userId = tblUsers.userId;
+    `;
+
+    const [user_feedbacks] = await conn.query(query);
+    res.json({
+      message: "User Feedbacks Fetched Successfully.",
+      user_feedbacks,
+    });
+  } catch (error) {
+    console.error("Error fetching user feedbacks:", error);
+    res.status(500).json({
+      message: "Failed to load user feedbacks",
+      error: error.message,
+    });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
 // Password generation function that creates password from DOB
 function generatePasswordFromDOB(dob) {
   const date = new Date(dob);

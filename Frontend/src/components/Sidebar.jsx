@@ -231,6 +231,27 @@ const Sidebar = () => {
             </CDBSidebarMenuItem>
           </Link>
 
+          <Link to="/admin/user-feedback">
+            {/* Updated Graphical Report Icon */}
+            <CDBSidebarMenuItem
+              icon="fa fa-comments"
+              style={menuItemStyle}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor =
+                  hoverStyle.backgroundColor;
+                e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
+                e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "";
+                e.currentTarget.style.boxShadow = "";
+                e.currentTarget.style.color = ""; // Revert text color on hover end
+              }}
+            >
+              User Feedbacks
+            </CDBSidebarMenuItem>
+          </Link>
+
           {/* User Management Dropdown */}
           <div>
             <CDBSidebarMenuItem

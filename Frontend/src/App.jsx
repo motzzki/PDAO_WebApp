@@ -30,6 +30,7 @@ import MyAccount from "./pages/MyAccount.jsx";
 import UserAccounts from "./pages/UserAccounts.jsx";
 import Custom404 from "./pages/Custom404.jsx";
 import BirthdayCashGift from "./pages/BirthdayCashGift.jsx";
+import UserFeedbacks from "./pages/UserFeedbacks.jsx";
 
 function App() {
   return (
@@ -61,6 +62,7 @@ function App() {
         <Route path="myaccount" element={<MyAccount />} />
         <Route path="accounts" element={<UserAccounts />} />
         <Route path="cashgift" element={<BirthdayCashGift />} />
+        <Route path="user-feedback" element={<UserFeedbacks />} />
       </Route>
 
       <Route

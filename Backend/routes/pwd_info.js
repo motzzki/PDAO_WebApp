@@ -327,6 +327,37 @@ router.get("/get-facilities", async (req, res) => {
   }
 });
 
+router.post("/submit-feedback", async (req, res) => {
+  try {
+    const { userId, ratings, openFeedback } = req.body;
+    conn = await pool.getConnection();
+
+    const sql = `
+      INSERT INTO user_feedbacks (userId, question1, question2, question3, question4, question5, suggestion)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const [result] = await conn.query(sql, [
+      userId,
+      ratings.question1,
+      ratings.question2,
+      ratings.question3,
+      ratings.question4,
+      ratings.question5,
+      openFeedback
+    ]);
+
+    res
+      .status(201)
+      .json({ message: "Feedback submitted successfully", id: result.insertId });
+  } catch (err) {
+    console.error("Error submitting feedback:", err);
+    res.status(500).json({ error: "Error submitting feedback." });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
 // API endpoint to get previous notifications
 // router.get("/api/notifications", (req, res) => {
 //   const query = "SELECT * FROM notifications ORDER BY timestamp DESC";

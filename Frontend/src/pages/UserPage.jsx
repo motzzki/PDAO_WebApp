@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../layout/AuthContext.jsx";
 import FooterUser from "../components/UserFooter";
 import hehe from "../images/hehe.jpg";
 import {
@@ -10,9 +11,111 @@ import {
   Image,
   Badge,
   Card,
+  Modal,
 } from "react-bootstrap";
+import axios from "axios";
+import Swal from "sweetalert2";
+import { host } from "../apiRoutes";
 
 const UserPage = () => {
+  const { auth } = useAuth();
+  const [isFeedbackModalOpen, setFeedbackModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [ratings, setRatings] = useState({
+    question1: 0,
+    question2: 0,
+    question3: 0,
+    question4: 0,
+    question5: 0,
+  });
+  const [openFeedback, setOpenFeedback] = useState("");
+  const [profileData, setProfileData] = useState(null);
+
+  useEffect(() => {
+    console.log(auth.user)
+    setProfileData(auth.user);
+  }, [auth]);
+
+  const handleModalClose = () => setFeedbackModalOpen(false);
+  const handleModalOpen = () => setFeedbackModalOpen(true);
+
+  const handleRatingChange = (question, rating) => {
+    setRatings((prevRatings) => ({
+      ...prevRatings,
+      [question]: rating,
+    }));
+  };
+
+  // Handler for open-ended feedback
+  const handleFeedbackChange = (event) => {
+    setOpenFeedback(event.target.value);
+  };
+
+  // Navigate between pages
+  const nextPage = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
+
+  const prevPage = () => {
+    setPage((prevPage) => prevPage - 1);
+  };
+
+  const handleReset = () => {
+    // Reset ratings to initial values
+    setRatings({
+      question1: 0,
+      question2: 0,
+      question3: 0,
+      question4: 0,
+      question5: 0,
+    });
+  
+    // Reset openFeedback to an empty string
+    setOpenFeedback("");
+  
+    // Optionally reset the page if you're using multi-step form
+    setPage(1);
+  };
+
+  const handleSubmitFeedback = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: `You want to submit this feedback?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Confirm",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!result) {
+      return;
+    }
+
+    try {
+      await axios.post(`${host}/api/pwdInfo/submit-feedback`, {
+        userId: profileData.id,
+        ratings,
+        openFeedback
+      });
+
+      await Swal.fire(
+        "Thank You!",
+        `Your feedback has been submitted.`,
+        "success"
+      );
+
+      handleReset();
+      handleModalClose();
+    } catch (err) {
+      console.log(err)
+      Swal.fire(
+        "Error!",
+        "Failed to submit feedback. Please try again.",
+        "error"
+      );
+    }
+  };
+  
   return (
     <div className="userpage-container">
       <main>
@@ -133,8 +236,155 @@ const UserPage = () => {
                   </Button>
                 </div>
               </Form>
+              <h1 className="mb-3 mt-3">Submit a Feedback</h1>
+              <h4 className="open-sans-regular">
+                <Button variant="danger" onClick={handleModalOpen}>
+                  Submit a Feedback
+                </Button>
+              </h4>
             </Col>
           </Row>
+
+          {/* Feedback Multi-Page Form */}
+        <Modal show={isFeedbackModalOpen} onHide={() => { handleReset(); setFeedbackModalOpen(false); }}>
+          <Modal.Header>
+            <Modal.Title>Feedback Form</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              {/* Page 1: Questions 1 and 2 */}
+              {page === 1 && (
+                <div>
+                  <div className="mb-4">
+                    <p>How would you rate our service?</p>
+                    <div className="star-rating">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span
+                          key={star}
+                          className={`star ${
+                            ratings.question1 >= star ? "filled" : ""
+                          }`}
+                          onClick={() => handleRatingChange("question1", star)}
+                        >
+                          &#9733;
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <p>How would you rate the quality of our support?</p>
+                    <div className="star-rating">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span
+                          key={star}
+                          className={`star ${
+                            ratings.question2 >= star ? "filled" : ""
+                          }`}
+                          onClick={() => handleRatingChange("question2", star)}
+                        >
+                          &#9733;
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Page 2: Questions 3 and 4 */}
+              {page === 2 && (
+                <div>
+                  <div className="mb-4">
+                    <p>How would you rate our website's user experience?</p>
+                    <div className="star-rating">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span
+                          key={star}
+                          className={`star ${
+                            ratings.question3 >= star ? "filled" : ""
+                          }`}
+                          onClick={() => handleRatingChange("question3", star)}
+                        >
+                          &#9733;
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <p>How would you rate the clarity of the information provided?</p>
+                    <div className="star-rating">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span
+                          key={star}
+                          className={`star ${
+                            ratings.question4 >= star ? "filled" : ""
+                          }`}
+                          onClick={() => handleRatingChange("question4", star)}
+                        >
+                          &#9733;
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Page 3: Question 5 and Open Feedback */}
+              {page === 3 && (
+                <div>
+                  <div className="mb-4">
+                    <p>How likely are you to recommend us to others?</p>
+                    <div className="star-rating">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span
+                          key={star}
+                          className={`star ${
+                            ratings.question5 >= star ? "filled" : ""
+                          }`}
+                          onClick={() => handleRatingChange("question5", star)}
+                        >
+                          &#9733;
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <Form.Group controlId="openFeedback">
+                      <Form.Label>Any other comments or suggestions?</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={3}
+                        value={openFeedback}
+                        onChange={handleFeedbackChange}
+                        placeholder="Your feedback here..."
+                      />
+                    </Form.Group>
+                  </div>
+                </div>
+              )}
+
+              {/* Navigation Buttons */}
+              <div className="d-flex justify-content-between">
+                {page > 1 && (
+                  <Button variant="secondary" onClick={prevPage}>
+                    Back
+                  </Button>
+                )}
+                {page < 3 ? (
+                  <Button variant="danger" onClick={nextPage}>
+                    Next
+                  </Button>
+                ) : (
+                  <Button variant="danger" onClick={handleSubmitFeedback}>
+                    Submit Feedback
+                  </Button>
+                )}
+              </div>
+            </Form>
+          </Modal.Body>
+        </Modal>
         </Container>
         <FooterUser />
       </main>
