@@ -4,6 +4,7 @@ import axios from "axios";
 import searchIcon from "../images/search.svg";
 import { host } from "../apiRoutes";
 import Swal from "sweetalert2";
+import { Modal, Form, Button, Row, Col } from "react-bootstrap";
 
 const BirthdayCashGift = () => {
   const [birthdays, setBirthdays] = useState([]);
@@ -12,6 +13,64 @@ const BirthdayCashGift = () => {
   const [totalClaimed, setTotalClaimed] = useState(0);
   const [totalUnclaimed, setTotalUnclaimed] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const [showModal, setShowModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+
+  const handleShow = () => setShowModal(true);
+
+  const handleClose = () => {
+    setShowModal(false);
+    setSelectedFile(null);
+    setPreviewUrl(null);
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (selectedFile) {
+      try {
+        const formData = new FormData();
+        formData.append("file", selectedFile); // Append file with key 'file'
+
+        console.log("Uploading file:", selectedFile);
+
+        const response = await axios.post(
+          `${host}/api/pwdInfo/post-sched`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        if (response.status === 201) {
+          alert("Image uploaded successfully!");
+          console.log("Upload response:", response.data);
+          handleClose(); // Close the modal after successful upload
+        } else {
+          alert("Failed to upload image. Please try again.");
+        }
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        alert("An error occurred while uploading the image.");
+      }
+    } else {
+      alert("Please select a file to upload.");
+    }
+  };
 
   useEffect(() => {
     fetchBirthdays();
@@ -82,15 +141,26 @@ const BirthdayCashGift = () => {
     <div style={styles.tableContainer}>
       <div style={styles.header}>
         <h1 style={styles.title}>Birthday Cash Gift</h1>
-        <div style={styles.searchWrapper}>
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={styles.searchBar}
-          />
-          <img src={searchIcon} alt="search" style={styles.searchIcon} />
+        <div className="d-flex flex-row align-items-center">
+          <button className="btn btn-danger me-3" onClick={handleShow}>
+            Upload Schedule
+          </button>
+          <div style={styles.searchWrapper}>
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="form-control"
+              style={styles.searchBar}
+            />
+            <img
+              src={searchIcon}
+              alt="search"
+              className="position-absolute"
+              style={styles.searchIcon}
+            />
+          </div>
         </div>
       </div>
       <Table striped bordered hover responsive style={styles.table}>
@@ -155,6 +225,52 @@ const BirthdayCashGift = () => {
           Unclaimed: {totalUnclaimed}
         </span>
       </div>
+      <Modal show={showModal} onHide={handleClose} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Upload Schedule Image</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleUpload}>
+            <Form.Group controlId="formFile">
+              <Form.Label>Select an image to upload:</Form.Label>
+              <Form.Control
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+              />
+            </Form.Group>
+
+            {/* Image Preview */}
+            {previewUrl && (
+              <div className="mt-3 text-center">
+                <img
+                  src={previewUrl}
+                  alt="Preview"
+                  style={{
+                    width: "100%",
+                    maxHeight: "300px",
+                    objectFit: "cover",
+                  }}
+                />
+              </div>
+            )}
+            <Row className="mt-4">
+              <Col className="text-end">
+                <Button
+                  variant="secondary"
+                  onClick={handleClose}
+                  className="me-2"
+                >
+                  Close
+                </Button>
+                <Button variant="primary" type="submit">
+                  Save Changes
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
@@ -179,7 +295,8 @@ const styles = {
   },
   searchWrapper: {
     position: "relative",
-    width: "220px",
+    width: "25rem",
+    height: "2.5rem",
   },
   searchBar: {
     padding: "10px",

@@ -1,3 +1,4 @@
+import { log } from "console";
 import pool from "../db.js";
 import express from "express";
 import formidable from "formidable";
@@ -139,6 +140,89 @@ const upload = (req, res) => {
     });
   });
 };
+
+router.post("/post-sched", async (req, res) => {
+  try {
+    // Use formidable to parse the file
+    const { files } = await upload(req, res);
+
+    // Check if a file was uploaded
+    if (!files || !files.file || !files.file[0].filepath) {
+      return res.status(400).json({ error: "Picture is required" });
+    }
+
+    const uploadedFile = files.file[0]; // Access the first file in the array
+    console.log("Uploaded file:", uploadedFile);
+
+    // Generate a new unique file name
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const newFileName = `image-${uniqueSuffix}-${uploadedFile.originalFilename}`;
+    const newPath = `assets/uploads/${newFileName}`;
+    console.log("New file path:", newPath);
+
+    // Current date-time for the `sched_created` column
+    const currentDateTime = new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace("T", " "); // 'YYYY-MM-DD HH:MM:SS' format
+
+    // Move the file to the new path
+    await fs.rename(uploadedFile.filepath, newPath);
+
+    // Insert file path and current date-time into the database
+    const conn = await pool.getConnection();
+    const sql = `INSERT INTO schedtbl (path, sched_created) VALUES (?, ?)`;
+    const [result] = await conn.query(sql, [newPath, currentDateTime]);
+
+    res.status(201).json({
+      message: "Schedule image uploaded successfully",
+      id: result.insertId,
+      path: newPath,
+      sched_created: currentDateTime,
+    });
+  } catch (err) {
+    console.error("Error uploading image:", err);
+    res.status(500).json({ error: "Failed to upload image" });
+  } finally {
+    if (conn) conn.release();
+  }
+});
+
+router.get("/get-images", async (req, res) => {
+  const useProduction = false; // Change to `true` for production
+
+  const host = useProduction
+    ? "https://api.pdao-web.online"
+    : "http://localhost:8018"; // Adjust for local or production environments
+
+  try {
+    // Connect to the database
+    const conn = await pool.getConnection();
+    const sql = `SELECT path FROM schedtbl ORDER BY sched_created DESC LIMIT 1`;
+    const [rows] = await conn.query(sql);
+
+    // If no records are found, return 404
+    if (rows.length === 0) {
+      return res.status(404).json({ message: "No images found." });
+    }
+
+    // Map over each row to create a list of full image URLs
+    const imagesWithFullPath = rows.map((row) => {
+      const imagePath = row.path;
+      return {
+        imageUrl: `${host}/uploads/${imagePath.split("/").pop()}`, // Construct full image URL
+      };
+    });
+
+    // Respond with all image URLs
+    res.status(200).json(imagesWithFullPath);
+  } catch (err) {
+    console.error("Error fetching images:", err);
+    res.status(500).json({ error: "Error fetching images" });
+  } finally {
+    if (conn) conn.release(); // Release the database connection
+  }
+});
 
 router.post("/facilities", async (req, res) => {
   try {
@@ -344,12 +428,13 @@ router.post("/submit-feedback", async (req, res) => {
       ratings.question3,
       ratings.question4,
       ratings.question5,
-      openFeedback
+      openFeedback,
     ]);
 
-    res
-      .status(201)
-      .json({ message: "Feedback submitted successfully", id: result.insertId });
+    res.status(201).json({
+      message: "Feedback submitted successfully",
+      id: result.insertId,
+    });
   } catch (err) {
     console.error("Error submitting feedback:", err);
     res.status(500).json({ error: "Error submitting feedback." });

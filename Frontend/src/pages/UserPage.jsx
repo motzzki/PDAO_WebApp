@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../layout/AuthContext.jsx";
 import FooterUser from "../components/UserFooter";
-import hehe from "../images/hehe.jpg";
+import userLogo from "../images/logoheader.jpg";
+import sched from "../images/sched.jpg";
 import {
   Container,
   Row,
@@ -18,6 +19,15 @@ import Swal from "sweetalert2";
 import { host } from "../apiRoutes";
 
 const UserPage = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [images, setImages] = useState([]);
+  const [modalImageUrl, setModalImageUrl] = useState("");
+
+  const handleCardClick = (imageUrl) => {
+    setModalImageUrl(imageUrl); // Set the clicked image URL to modal state
+    setShowModal(true); // Show the modal
+  };
+  const handleClose = () => setShowModal(false);
   const { auth } = useAuth();
   const [isFeedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [page, setPage] = useState(1);
@@ -32,7 +42,7 @@ const UserPage = () => {
   const [profileData, setProfileData] = useState(null);
 
   useEffect(() => {
-    console.log(auth.user)
+    console.log(auth.user);
     setProfileData(auth.user);
   }, [auth]);
 
@@ -69,13 +79,32 @@ const UserPage = () => {
       question4: 0,
       question5: 0,
     });
-  
+
     // Reset openFeedback to an empty string
     setOpenFeedback("");
-  
+
     // Optionally reset the page if you're using multi-step form
     setPage(1);
   };
+
+  const fetchImages = async () => {
+    try {
+      const response = await axios.get(`${host}/api/pwdInfo/get-images`);
+
+      if (response.status === 200) {
+        setImages(response.data);
+      } else {
+        console.log("No images found");
+      }
+    } catch (error) {
+      console.error("Error fetching images:", error);
+      alert("Failed to fetch images.");
+    }
+  };
+
+  useEffect(() => {
+    fetchImages();
+  }, []);
 
   const handleSubmitFeedback = async () => {
     const result = await Swal.fire({
@@ -95,7 +124,7 @@ const UserPage = () => {
       await axios.post(`${host}/api/pwdInfo/submit-feedback`, {
         userId: profileData.id,
         ratings,
-        openFeedback
+        openFeedback,
       });
 
       await Swal.fire(
@@ -107,7 +136,7 @@ const UserPage = () => {
       handleReset();
       handleModalClose();
     } catch (err) {
-      console.log(err)
+      console.log(err);
       Swal.fire(
         "Error!",
         "Failed to submit feedback. Please try again.",
@@ -115,14 +144,14 @@ const UserPage = () => {
       );
     }
   };
-  
+
   return (
     <div className="userpage-container">
       <main>
         <Container>
           <Row className="user-header mb-4">
             <Image
-              src={`https://placehold.co/600x300/000000/FFF`}
+              src={userLogo}
               fluid
               className="w-100 h-100"
               style={{ objectFit: "cover" }}
@@ -164,19 +193,49 @@ const UserPage = () => {
               </p>
             </Col>
             <Col lg={4} md={6} className="my-3">
-              <Card className="mb-4">
-                <Card.Img variant="top" src="holder.js/100px180" />
-                <Card.Body>
-                  <Card.Title>Card Title</Card.Title>
-                  <Card.Text>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                    Officia voluptates magnam tempora omnis saepe ducimus
-                    corrupti distinctio voluptate dolorem, asperiores
-                    consequuntur maiores impedit qui tempore!
-                  </Card.Text>
-                  <Button variant="primary">Go somewhere</Button>
-                </Card.Body>
-              </Card>
+              <div>
+                {images.length > 0 ? (
+                  images.map((image, index) => (
+                    <Card
+                      key={index}
+                      className="mb-4 preview-card"
+                      onClick={() => handleCardClick(image.imageUrl)} // Pass the image URL to the handler
+                      style={{ cursor: "pointer" }}
+                    >
+                      <Card.Img
+                        src={image.imageUrl} // Access individual image URL
+                        alt={`Card image ${index + 1}`}
+                        className="blurred-image"
+                      />
+                      <Card.ImgOverlay></Card.ImgOverlay>
+                    </Card>
+                  ))
+                ) : (
+                  <p>No images to display</p>
+                )}
+
+                {/* Modal for image preview */}
+                <Modal size="lg" show={showModal} onHide={handleClose} centered>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Image Preview</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>
+                    {modalImageUrl && (
+                      <img
+                        src={modalImageUrl} // Directly use the modalImageUrl state
+                        alt="Full image"
+                        style={{ width: "100%", height: "auto" }}
+                      />
+                    )}
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                      Close
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+              </div>
+
               <Card className="mb-4">
                 <Card.Img variant="top" src="holder.js/100px180" />
                 <Card.Body>
@@ -225,166 +284,178 @@ const UserPage = () => {
                   Uno 4025 Cabuyao, Philippines
                 </Badge>
               </h4>
-              <Form className="mt-4">
-                <Form.Group controlId="message" className="mb-3">
-                  <Form.Label>Message</Form.Label>
-                  <Form.Control as="textarea" rows={4} required />
-                </Form.Group>
-                <div className="d-flex justify-content-center">
-                  <Button variant="danger" type="submit">
-                    Send Message
+              <div>
+                <h1 className="mt-5">Submit a Feedback</h1>
+                <h4 className="open-sans-regular">
+                  <Button variant="danger" onClick={handleModalOpen}>
+                    Submit a Feedback
                   </Button>
-                </div>
-              </Form>
-              <h1 className="mb-3 mt-3">Submit a Feedback</h1>
-              <h4 className="open-sans-regular">
-                <Button variant="danger" onClick={handleModalOpen}>
-                  Submit a Feedback
-                </Button>
-              </h4>
+                </h4>
+              </div>
             </Col>
           </Row>
 
           {/* Feedback Multi-Page Form */}
-        <Modal show={isFeedbackModalOpen} onHide={() => { handleReset(); setFeedbackModalOpen(false); }}>
-          <Modal.Header>
-            <Modal.Title>Feedback Form</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form>
-              {/* Page 1: Questions 1 and 2 */}
-              {page === 1 && (
-                <div>
-                  <div className="mb-4">
-                    <p>How would you rate our service?</p>
-                    <div className="star-rating">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <span
-                          key={star}
-                          className={`star ${
-                            ratings.question1 >= star ? "filled" : ""
-                          }`}
-                          onClick={() => handleRatingChange("question1", star)}
-                        >
-                          &#9733;
-                        </span>
-                      ))}
+          <Modal
+            show={isFeedbackModalOpen}
+            onHide={() => {
+              handleReset();
+              setFeedbackModalOpen(false);
+            }}
+          >
+            <Modal.Header>
+              <Modal.Title>Feedback Form</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <Form>
+                {/* Page 1: Questions 1 and 2 */}
+                {page === 1 && (
+                  <div>
+                    <div className="mb-4">
+                      <p>How would you rate our service?</p>
+                      <div className="star-rating">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <span
+                            key={star}
+                            className={`star ${
+                              ratings.question1 >= star ? "filled" : ""
+                            }`}
+                            onClick={() =>
+                              handleRatingChange("question1", star)
+                            }
+                          >
+                            &#9733;
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="mb-4">
+                      <p>How would you rate the quality of our support?</p>
+                      <div className="star-rating">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <span
+                            key={star}
+                            className={`star ${
+                              ratings.question2 >= star ? "filled" : ""
+                            }`}
+                            onClick={() =>
+                              handleRatingChange("question2", star)
+                            }
+                          >
+                            &#9733;
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </div>
-
-                  <div className="mb-4">
-                    <p>How would you rate the quality of our support?</p>
-                    <div className="star-rating">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <span
-                          key={star}
-                          className={`star ${
-                            ratings.question2 >= star ? "filled" : ""
-                          }`}
-                          onClick={() => handleRatingChange("question2", star)}
-                        >
-                          &#9733;
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Page 2: Questions 3 and 4 */}
-              {page === 2 && (
-                <div>
-                  <div className="mb-4">
-                    <p>How would you rate our website's user experience?</p>
-                    <div className="star-rating">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <span
-                          key={star}
-                          className={`star ${
-                            ratings.question3 >= star ? "filled" : ""
-                          }`}
-                          onClick={() => handleRatingChange("question3", star)}
-                        >
-                          &#9733;
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="mb-4">
-                    <p>How would you rate the clarity of the information provided?</p>
-                    <div className="star-rating">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <span
-                          key={star}
-                          className={`star ${
-                            ratings.question4 >= star ? "filled" : ""
-                          }`}
-                          onClick={() => handleRatingChange("question4", star)}
-                        >
-                          &#9733;
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Page 3: Question 5 and Open Feedback */}
-              {page === 3 && (
-                <div>
-                  <div className="mb-4">
-                    <p>How likely are you to recommend us to others?</p>
-                    <div className="star-rating">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <span
-                          key={star}
-                          className={`star ${
-                            ratings.question5 >= star ? "filled" : ""
-                          }`}
-                          onClick={() => handleRatingChange("question5", star)}
-                        >
-                          &#9733;
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="mb-4">
-                    <Form.Group controlId="openFeedback">
-                      <Form.Label>Any other comments or suggestions?</Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        rows={3}
-                        value={openFeedback}
-                        onChange={handleFeedbackChange}
-                        placeholder="Your feedback here..."
-                      />
-                    </Form.Group>
-                  </div>
-                </div>
-              )}
-
-              {/* Navigation Buttons */}
-              <div className="d-flex justify-content-between">
-                {page > 1 && (
-                  <Button variant="secondary" onClick={prevPage}>
-                    Back
-                  </Button>
                 )}
-                {page < 3 ? (
-                  <Button variant="danger" onClick={nextPage}>
-                    Next
-                  </Button>
-                ) : (
-                  <Button variant="danger" onClick={handleSubmitFeedback}>
-                    Submit Feedback
-                  </Button>
+
+                {/* Page 2: Questions 3 and 4 */}
+                {page === 2 && (
+                  <div>
+                    <div className="mb-4">
+                      <p>How would you rate our website's user experience?</p>
+                      <div className="star-rating">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <span
+                            key={star}
+                            className={`star ${
+                              ratings.question3 >= star ? "filled" : ""
+                            }`}
+                            onClick={() =>
+                              handleRatingChange("question3", star)
+                            }
+                          >
+                            &#9733;
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="mb-4">
+                      <p>
+                        How would you rate the clarity of the information
+                        provided?
+                      </p>
+                      <div className="star-rating">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <span
+                            key={star}
+                            className={`star ${
+                              ratings.question4 >= star ? "filled" : ""
+                            }`}
+                            onClick={() =>
+                              handleRatingChange("question4", star)
+                            }
+                          >
+                            &#9733;
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 )}
-              </div>
-            </Form>
-          </Modal.Body>
-        </Modal>
+
+                {/* Page 3: Question 5 and Open Feedback */}
+                {page === 3 && (
+                  <div>
+                    <div className="mb-4">
+                      <p>How likely are you to recommend us to others?</p>
+                      <div className="star-rating">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <span
+                            key={star}
+                            className={`star ${
+                              ratings.question5 >= star ? "filled" : ""
+                            }`}
+                            onClick={() =>
+                              handleRatingChange("question5", star)
+                            }
+                          >
+                            &#9733;
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="mb-4">
+                      <Form.Group controlId="openFeedback">
+                        <Form.Label>
+                          Any other comments or suggestions?
+                        </Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          rows={3}
+                          value={openFeedback}
+                          onChange={handleFeedbackChange}
+                          placeholder="Your feedback here..."
+                        />
+                      </Form.Group>
+                    </div>
+                  </div>
+                )}
+
+                {/* Navigation Buttons */}
+                <div className="d-flex justify-content-between">
+                  {page > 1 && (
+                    <Button variant="secondary" onClick={prevPage}>
+                      Back
+                    </Button>
+                  )}
+                  {page < 3 ? (
+                    <Button variant="danger" onClick={nextPage}>
+                      Next
+                    </Button>
+                  ) : (
+                    <Button variant="danger" onClick={handleSubmitFeedback}>
+                      Submit Feedback
+                    </Button>
+                  )}
+                </div>
+              </Form>
+            </Modal.Body>
+          </Modal>
         </Container>
         <FooterUser />
       </main>

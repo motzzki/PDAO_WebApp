@@ -17,7 +17,7 @@ const GraphReport = () => {
           </GraphCard>
         </Col>
         <Col xs={4} md={6} lg={12}>
-          <GraphCard title="Disability Distribution per Barangay">
+          <GraphCard>
             <CashGiftGraph />
           </GraphCard>
         </Col>
