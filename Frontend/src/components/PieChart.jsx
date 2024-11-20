@@ -31,7 +31,17 @@ const PieChart = () => {
     labels: disabilityData.map((data) =>
       capitalizeFirstLetter(data.disability_status)
     ),
-    colors: ["#00E396", "#FF4560", "#008FFB", "#775DD0", "#FEB019", "#343131"],
+    colors: [
+      "#00E396",
+      "#FF4560",
+      "#008FFB",
+      "#775DD0",
+      "#FEB019",
+      "#F8981D",
+      "#343131",
+      "#4B0082",
+    ],
+
     dataLabels: {
       enabled: true,
     },
