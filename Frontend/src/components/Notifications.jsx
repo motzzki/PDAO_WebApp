@@ -111,11 +111,11 @@ const Notifications = ({ userId }) => {
             </Dropdown.Item>
           )}
 
-          <Dropdown.Divider />
+          {/* <Dropdown.Divider /> */}
 
-          <Dropdown.Item href="/notifications" className="text-center">
+          {/* <Dropdown.Item href="/notifications" className="text-center">
             Show more
-          </Dropdown.Item>
+          </Dropdown.Item> */}
         </Dropdown.Menu>
       </Dropdown>
     </OverlayTrigger>

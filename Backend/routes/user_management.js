@@ -186,7 +186,7 @@ router.post("/toggleStatus", async (req, res) => {
       .json({ message: "Invalid request. Missing parameters." });
   }
 
-  const newStatus = flag === 1 ? 0 : 1; // Toggle between 1 and 0 (active/inactive)
+  const newStatus = flag === 1 ? 0 : 1;
 
   try {
     // Update tblusers flagUser (status) to the new flag

@@ -274,25 +274,6 @@ const Sidebar = () => {
             </CDBSidebarMenuItem>
             {isUserManagementOpen && (
               <div style={{ paddingLeft: "20px" }}>
-                <Link to="/admin/add_user">
-                  <CDBSidebarMenuItem
-                    icon="user-plus"
-                    style={menuItemStyle}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor =
-                        hoverStyle.backgroundColor;
-                      e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
-                      e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "";
-                      e.currentTarget.style.boxShadow = "";
-                      e.currentTarget.style.color = ""; // Revert text color on hover end
-                    }}
-                  >
-                    Add Employee
-                  </CDBSidebarMenuItem>
-                </Link>
                 <Link to="/admin/registered_users">
                   <CDBSidebarMenuItem
                     icon="users"

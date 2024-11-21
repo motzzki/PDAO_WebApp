@@ -7,11 +7,13 @@ import {
   Table,
   Tabs,
   Tab,
+  Button,
 } from "react-bootstrap";
 import axios from "axios";
 import { host } from "../apiRoutes";
 import Swal from "sweetalert2";
 import searchIcon from "../images/search.svg"; // Ensure the path is correct
+import { Link } from "react-router-dom";
 
 const UserAccounts = () => {
   const [users, setUsers] = useState([]);
@@ -72,6 +74,8 @@ const UserAccounts = () => {
               : employee
           )
         );
+        console.log(newFlag);
+
         setUsers((prevUsers) =>
           prevUsers.map((user) =>
             user.userId === id ? { ...user, flagUser: newFlag } : user
@@ -109,15 +113,21 @@ const UserAccounts = () => {
     <Container>
       <div style={styles.header}>
         <h1 style={styles.title}>User Accounts</h1>
-        <div style={styles.searchWrapper}>
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={styles.searchBar}
-          />
-          <img src={searchIcon} alt="search" style={styles.searchIcon} />
+
+        <div className="d-flex gap-3">
+          <Link to="/admin/add_user">
+            <Button className="btn-danger">Add Employee</Button>
+          </Link>
+          <div style={styles.searchWrapper}>
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              style={styles.searchBar}
+            />
+            <img src={searchIcon} alt="search" style={styles.searchIcon} />
+          </div>
         </div>
       </div>
 

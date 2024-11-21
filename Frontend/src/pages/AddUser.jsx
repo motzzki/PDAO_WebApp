@@ -24,6 +24,32 @@ const AddUser = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (
+      !firstName ||
+      !middleName ||
+      !lastName ||
+      !gender ||
+      !dateOfBirth ||
+      !contactNum ||
+      !email ||
+      !username ||
+      !userGroup
+    ) {
+      alert("Please fill in all the fields.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
+    if (!/^\d{11}$/.test(contactNum)) {
+      alert("Please enter a valid 11-digit contact number.");
+      return;
+    }
+
     const newUser = {
       firstname: firstName,
       middlename: middleName,

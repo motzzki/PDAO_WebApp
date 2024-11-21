@@ -11,6 +11,7 @@ import moment from "moment-timezone";
 import setupSocket from "./socket.js";
 import { getIO } from "./socket.js";
 import pool from "./db.js";
+import nodemailer from "nodemailer";
 
 config();
 
@@ -53,6 +54,86 @@ app.use("/uploads", express.static(join(__dirname, "./assets/uploads")));
 
 // API endpoints for notifications
 
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+});
+
+const sendBirthdayEmail = async (email, name) => {
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: `Happy Birthday, ${name}!`,
+    html: `
+      <html>
+        <head>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              background-color: #f5f5f5;
+              color: #fff;
+              padding: 20px;
+            }
+            .birthday-message {
+              background-color: #ff3333; /* Red background */
+              color: white;
+              padding: 20px;
+              border-radius: 10px;
+              text-align: center;
+              font-size: 24px;
+              font-weight: bold;
+            }
+            .info-message {
+              background-color: #FFFFFF; /* Yellow background */
+              color: #333;
+              padding: 15px;
+              border-radius: 10px;
+              text-align: center;
+              font-size: 18px;
+              margin-top: 20px;
+            }
+            .footer {
+              font-size: 14px;
+              text-align: center;
+              margin-top: 20px;
+              color: #666;
+            }
+            .link {
+              color: #007bff;
+              text-decoration: none;
+              font-weight: bold;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="birthday-message">
+            Today is your birthday, <strong>${name}</strong>!<br>
+            Wishing you a wonderful day filled with joy and happiness!
+          </div>
+          <div class="info-message">
+            You may check your schedule for claiming the birthday cash gift!<br>
+            <a href="https://pdao-web.online" class="link">Click here to see your schedule</a>
+          </div>
+          <div class="footer">
+            Sent with love from our team!<br>
+            Don't forget to enjoy your special day!
+          </div>
+        </body>
+      </html>
+    `,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`Birthday email sent to ${name} at ${email}`);
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+};
+
 // Notification cron job
 // "*/1 * * * *",
 // 0 6 * * *
@@ -61,9 +142,8 @@ cron.schedule(
   async () => {
     const today = moment().tz("Asia/Manila").format("MM-DD");
 
-    // Query to get users whose birthdays are today
     const todayBirthdayQuery = `
-      SELECT userId, first_name, last_name, DATE_FORMAT(date_of_birth, '%m-%d') AS dob
+      SELECT userId, first_name, last_name, email, DATE_FORMAT(date_of_birth, '%m-%d') AS dob
       FROM tblusers
       WHERE DATE_FORMAT(date_of_birth, '%m-%d') = ?
     `;
@@ -75,6 +155,7 @@ cron.schedule(
     first_name,
     last_name,
     expired_id,
+    email,
     CASE 
         WHEN expired_id = CURDATE() THEN 'notify_on_expiration'
         WHEN expired_id BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'notify_before'
@@ -113,6 +194,11 @@ cron.schedule(
 
             // Emit notification for the user
             getIO().emit("birthdayNotification", newNotificationUser);
+            await sendBirthdayEmail(
+              user.email,
+              `${user.first_name} ${user.last_name}`
+            );
+
             console.log(
               `Birthday notification created for ${user.first_name} ${user.last_name} (User)`
             );
@@ -161,7 +247,6 @@ cron.schedule(
         console.log("No birthdays today.");
       }
 
-      // Handle expired ID notifications using the new query
       const [expiredResults] = await pool.query(expiredIdQuery);
       if (expiredResults.length > 0) {
         expiredResults.forEach(async (user) => {
@@ -232,9 +317,9 @@ cron.schedule(
               "employeeExpiredIdNotification",
               newNotificationEmployee
             );
-            console.log(
-              `Expired ID notification created for employee regarding ${user.first_name} ${user.last_name}`
-            );
+            // console.log(
+            //   `Expired ID notification created for employee regarding ${user.first_name} ${user.last_name}`
+            // );
             console.log(newNotificationEmployee);
           } catch (err) {
             console.error(
