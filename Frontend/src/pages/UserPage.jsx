@@ -42,7 +42,6 @@ const UserPage = () => {
   const [profileData, setProfileData] = useState(null);
 
   useEffect(() => {
-    console.log(auth.user);
     setProfileData(auth.user);
   }, [auth]);
 
@@ -200,7 +199,11 @@ const UserPage = () => {
                       key={index}
                       className="mb-4 preview-card"
                       onClick={() => handleCardClick(image.imageUrl)} // Pass the image URL to the handler
-                      style={{ cursor: "pointer" }}
+                      style={{
+                        cursor: "pointer",
+                        width: "400px", // Increased width
+                        height: "520px", // Increased height
+                      }}
                     >
                       <Card.Img
                         src={image.imageUrl} // Access individual image URL
@@ -236,7 +239,7 @@ const UserPage = () => {
                 </Modal>
               </div>
 
-              <Card className="mb-4">
+              {/* <Card className="mb-4">
                 <Card.Img variant="top" src="holder.js/100px180" />
                 <Card.Body>
                   <Card.Title>Card Title</Card.Title>
@@ -248,7 +251,7 @@ const UserPage = () => {
                   </Card.Text>
                   <Button variant="primary">Go somewhere</Button>
                 </Card.Body>
-              </Card>
+              </Card> */}
             </Col>
           </Row>
 

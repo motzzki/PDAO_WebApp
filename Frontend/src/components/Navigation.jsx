@@ -33,24 +33,9 @@ const NavigationBar = () => {
             <Nav.Link href="#services" className="text-white fs-5">
               Services
             </Nav.Link>
-            <Nav.Link href="#action3" className="text-white fs-5">
+            {/* <Nav.Link href="#action3" className="text-white fs-5">
               Contact
-            </Nav.Link>
-            <NavDropdown
-              title={<span className="text-white fs-5">About Us</span>}
-              id="navbarScrollingDropdown"
-            >
-              <NavDropdown.Item href="#teams" className="text-dark">
-                Teams
-              </NavDropdown.Item>
-              <NavDropdown.Item href="#action5" className="text-dark">
-                Another action
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action6" className="text-dark">
-                Something else here
-              </NavDropdown.Item>
-            </NavDropdown>
+            </Nav.Link> */}
           </Nav>
           <Form className="d-flex">
             <Link to="/login">

@@ -27,6 +27,7 @@ import { useAuth } from "../layout/AuthContext";
 import moment from "moment";
 import { host } from "../apiRoutes";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const MyAccount = () => {
   const { getEmployee } = useAuth();
@@ -88,10 +89,12 @@ const MyAccount = () => {
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
+
     if (newPassword !== confirmPassword) {
       setChangePasswordError("Passwords do not match");
       return;
     }
+
     try {
       const response = await axios.post(
         `${host}/api/user_management/change_password`,
@@ -101,34 +104,44 @@ const MyAccount = () => {
           newPassword,
         }
       );
-      setSuccessMessage(response.data.message);
+
+      await Swal.fire({
+        title: "Success!",
+        text: response.data.message,
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+
+      // Clear success message and close modal
       setChangePasswordError(null);
+      handleCloseModal(); // Close the modal
     } catch (err) {
       setChangePasswordError(
         err.response?.data?.error || "Failed to change password"
       );
-      setSuccessMessage(""); // Clear success message on error
+      setSuccessMessage("");
     }
   };
 
   const cardStyle = {
     color: "white",
+    backgroundColor: "rgba(162, 34, 34)",
     borderRadius: "12px",
     padding: "20px",
-    marginBottom: "20px", // Space between cards
+    marginBottom: "20px",
   };
 
   const profileImageStyle = {
     width: "120px",
     height: "120px",
     objectFit: "cover",
-    border: "3px solid #fff", // White border around the profile image
+    border: "3px solid #fff",
     transition: "transform 0.3s ease-in-out",
   };
 
   const iconStyle = {
     fontSize: "1.5rem",
-    color: "#fff", // White icons for contrast
+    color: "#fff",
   };
 
   const buttonStyle = {
@@ -182,10 +195,9 @@ const MyAccount = () => {
       <Container fluid>
         <Row className="justify-content-center">
           <Col md={12} lg={8} xl={6}>
-            {/* Profile Card */}
             <Card
               style={cardStyle}
-              className="shadow-lg rounded-lg border-0 text-center bg-secondary"
+              className="shadow-lg rounded-lg border-0 text-center"
             >
               <Card.Body>
                 <Image
@@ -202,12 +214,11 @@ const MyAccount = () => {
               </Card.Body>
             </Card>
 
-            {/* User Details Cards */}
             <Row>
               <Col sm={12} md={6}>
                 <Card
                   style={cardStyle}
-                  className="shadow-lg rounded-lg border-0 bg-secondary"
+                  className="shadow-lg rounded-lg border-0"
                 >
                   <Card.Body>
                     <h5>
@@ -223,7 +234,7 @@ const MyAccount = () => {
               <Col sm={12} md={6}>
                 <Card
                   style={cardStyle}
-                  className="shadow-lg rounded-lg border-0 bg-secondary"
+                  className="shadow-lg rounded-lg border-0"
                 >
                   <Card.Body>
                     <h5>
@@ -240,7 +251,7 @@ const MyAccount = () => {
               <Col sm={12} md={6}>
                 <Card
                   style={cardStyle}
-                  className="shadow-lg rounded-lg border-0 bg-secondary"
+                  className="shadow-lg rounded-lg border-0"
                 >
                   <Card.Body>
                     <h5>
@@ -253,7 +264,7 @@ const MyAccount = () => {
               <Col sm={12} md={6}>
                 <Card
                   style={cardStyle}
-                  className="shadow-lg rounded-lg border-0 bg-secondary"
+                  className="shadow-lg rounded-lg border-0"
                 >
                   <Card.Body>
                     <h5>
@@ -272,7 +283,7 @@ const MyAccount = () => {
               <Col sm={12} md={6}>
                 <Card
                   style={cardStyle}
-                  className="shadow-lg rounded-lg border-0 bg-secondary"
+                  className="shadow-lg rounded-lg border-0"
                 >
                   <Card.Body>
                     <h5>
@@ -286,7 +297,7 @@ const MyAccount = () => {
               <Col sm={12} md={6}>
                 <Card
                   style={cardStyle}
-                  className="shadow-lg rounded-lg border-0 bg-secondary"
+                  className="shadow-lg rounded-lg border-0"
                 >
                   <Card.Body>
                     <h5>
@@ -328,12 +339,6 @@ const MyAccount = () => {
             <div className="alert alert-danger d-flex align-items-center">
               <FaExclamationCircle className="me-2" />
               <span>{changePasswordError}</span>
-            </div>
-          )}
-          {successMessage && (
-            <div className="alert alert-success d-flex align-items-center">
-              <FaCheckCircle className="me-2" />
-              <span>{successMessage}</span>
             </div>
           )}
 

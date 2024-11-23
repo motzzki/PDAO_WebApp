@@ -3,6 +3,7 @@ import pool from "../db.js";
 import express from "express";
 import formidable from "formidable";
 import fs from "fs/promises";
+import bcrypt from "bcrypt";
 
 const router = express.Router();
 let conn;
@@ -440,6 +441,53 @@ router.post("/submit-feedback", async (req, res) => {
     res.status(500).json({ error: "Error submitting feedback." });
   } finally {
     if (conn) conn.release();
+  }
+});
+
+router.post("/change_password", async (req, res) => {
+  const { userId, oldPassword, newPassword } = req.body;
+
+  // Validate input
+  if (!userId || !oldPassword || !newPassword) {
+    return res.status(400).json({
+      error: "Acount Id, old password, and new password are required",
+    });
+  }
+
+  try {
+    // Check if the user exists
+    const [user] = await pool.query("SELECT * FROM tblusers WHERE userId = ?", [
+      userId,
+    ]);
+
+    if (user.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    console.log(user);
+    console.log(userId);
+
+    // Compare old password with stored hash
+    const passwordMatch = await bcrypt.compare(oldPassword, user[0].password);
+
+    if (!passwordMatch) {
+      return res.status(401).json({ error: "Incorrect old password" });
+    }
+
+    const hashedNewPassword = await bcrypt.hash(
+      newPassword,
+      parseInt(process.env.SALT_ROUNDS)
+    );
+
+    // Update password in the database
+    await pool.query("UPDATE tblusers SET password = ? WHERE userId = ?", [
+      hashedNewPassword,
+      userId,
+    ]);
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 

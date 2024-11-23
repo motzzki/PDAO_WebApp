@@ -15,7 +15,6 @@ const TABLE_HEAD = [
   "Birthdate",
   "Username",
   "User Role",
-  "Action",
 ];
 
 const RegisteredUsers = () => {
@@ -95,7 +94,6 @@ const RegisteredUsers = () => {
                 <td>{moment(employee.birthdate).format("MMM DD, YYYY")}</td>
                 <td>{employee.username}</td>
                 <td>{employee.group_name}</td>
-                <td> {/* Add any action buttons or links here */}</td>
               </tr>
             ))
           ) : (

@@ -98,6 +98,74 @@ const UserAccounts = () => {
     }
   };
 
+  const resetPasswordToBirthday = async (userId) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This will reset the password to the user's birthday. Do you want to proceed?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, reset it!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.post(
+          `${host}/api/user_management/reset_password`,
+          {
+            userId,
+          }
+        );
+
+        // Success alert
+        Swal.fire("Success!", response.data.message, "success");
+      } catch (err) {
+        // Error alert
+        Swal.fire(
+          "Error",
+          err.response?.data?.error || "Failed to reset password",
+          "error"
+        );
+      }
+    }
+  };
+
+  const resetEmployeePass = async (employeeId) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This will reset the password to the user's birthday. Do you want to proceed?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, reset it!",
+      cancelButtonText: "Cancel",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const response = await axios.post(
+          `${host}/api/user_management/reset_employee`,
+          {
+            employeeId,
+          }
+        );
+
+        // Success alert
+        Swal.fire("Success!", response.data.message, "success");
+      } catch (err) {
+        // Error alert
+        Swal.fire(
+          "Error",
+          err.response?.data?.error || "Failed to reset password",
+          "error"
+        );
+      }
+    }
+  };
+
   const filteredEmployees = employees.filter((emp) =>
     `${emp.firstname} ${emp.lastname}`
       .toLowerCase()
@@ -186,6 +254,14 @@ const UserAccounts = () => {
                           >
                             {employee.flag === 1 ? "Disable" : "Enable"}
                           </button>
+                          <button
+                            onClick={() =>
+                              resetEmployeePass(employee.employeeId)
+                            }
+                            className="btn btn-warning mx-1"
+                          >
+                            Reset Password
+                          </button>
                         </td>
                       </tr>
                     );
@@ -236,6 +312,12 @@ const UserAccounts = () => {
                             }
                           >
                             {user.flagUser === 1 ? "Disable" : "Enable"}
+                          </button>
+                          <button
+                            onClick={() => resetPasswordToBirthday(user.userId)}
+                            className="btn btn-warning mx-1"
+                          >
+                            Reset Password
                           </button>
                         </td>
                       </tr>

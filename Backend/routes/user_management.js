@@ -69,6 +69,99 @@ router.post("/register_user", async (req, res) => {
   }
 });
 
+router.post("/reset_password", async (req, res) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ error: "User ID is required" });
+  }
+
+  try {
+    const [user] = await pool.query("SELECT * FROM tblusers WHERE userId = ?", [
+      userId,
+    ]);
+
+    if (user.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const birthDate = user[0].date_of_birth;
+    if (!birthDate) {
+      return res.status(400).json({ error: "User does not have a birth date" });
+    }
+
+    // Format birth date (ensure it's a string like 'YYYY-MM-DD')
+    const formattedBirthDate = generatePasswordFromDOB(birthDate);
+
+    // Hash the birth date
+    const hashedPassword = await bcrypt.hash(
+      formattedBirthDate,
+      parseInt(process.env.SALT_ROUNDS)
+    );
+
+    // Update the password in the database
+    await pool.query("UPDATE tblusers SET password = ? WHERE userId = ?", [
+      hashedPassword,
+      userId,
+    ]);
+
+    res
+      .status(200)
+      .json({ message: "Password reset to birthday successfully" });
+  } catch (error) {
+    console.error("Error resetting password to birthday:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.post("/reset_employee", async (req, res) => {
+  const { employeeId } = req.body;
+
+  if (!employeeId) {
+    return res.status(400).json({ error: "Employee ID is required" });
+  }
+
+  try {
+    const [user] = await pool.query(
+      "SELECT * FROM employees WHERE employeeId = ?",
+      [employeeId]
+    );
+
+    if (user.length === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const birthDate = user[0].birthdate;
+    if (!birthDate) {
+      return res
+        .status(400)
+        .json({ error: "Employee does not have a birth date" });
+    }
+
+    // Format birth date (ensure it's a string like 'YYYY-MM-DD')
+    const formattedBirthDate = generatePasswordFromDOB(birthDate);
+
+    // Hash the birth date
+    const hashedPassword = await bcrypt.hash(
+      formattedBirthDate,
+      parseInt(process.env.SALT_ROUNDS)
+    );
+
+    // Update the password in the database
+    await pool.query("UPDATE employees SET password = ? WHERE employeeId = ?", [
+      hashedPassword,
+      employeeId,
+    ]);
+
+    res
+      .status(200)
+      .json({ message: "Password reset to birthday successfully" });
+  } catch (error) {
+    console.error("Error resetting password to birthday:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.post("/change_password", async (req, res) => {
   const { username, oldPassword, newPassword } = req.body;
 
@@ -132,7 +225,8 @@ router.get("/get-employee", async (req, res) => {
            group_name 
          FROM employees 
          JOIN user_groups 
-         ON user_groups.group_id = employees.user_group`
+         ON user_groups.group_id = employees.user_group
+         WHERE employees.flag = 1`
     );
     conn.release(); // Release the connection before sending the response
     res.json(employees);
@@ -207,6 +301,8 @@ router.post("/toggleStatus", async (req, res) => {
     ) {
       return res.status(404).json({ message: "User or employee not found." });
     }
+    // console.log(userUpdateResult);
+    // console.log(employeeUpdateResult);
 
     res.status(200).json({ message: "Status updated successfully." });
   } catch (error) {
@@ -420,7 +516,6 @@ router.get("/user-feedbacks", async (req, res) => {
   }
 });
 
-// Password generation function that creates password from DOB
 function generatePasswordFromDOB(dob) {
   const date = new Date(dob);
   const year = date.getFullYear();
