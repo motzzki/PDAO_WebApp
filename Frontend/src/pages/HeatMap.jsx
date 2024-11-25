@@ -3,21 +3,24 @@ import { MapContainer, GeoJSON, useMap } from "react-leaflet";
 import "leaflet.heat";
 import axios from "axios";
 import L from "leaflet";
-import { barangayBoundaries } from "../Cabuyao";
+import { barangayBoundaries } from "../Cabuyao"; // Assuming this is your geoJSON data
 import { host } from "../apiRoutes";
 
-// Function to generate a random hex color
-const getRandomColor = () => {
-  const letters = "0123456789ABCDEF";
-  let color = "#";
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
+const categorizeValue = (value, max) => {
+  if (value < 0.4 * max) {
+    return "Low";
+  } else if (value >= 0.4 * max && value <= 0.7 * max) {
+    return "Medium";
+  } else {
+    return "High";
   }
-  return color;
 };
 
 const HeatMap = () => {
   const [heatmapData, setHeatmapData] = useState([]);
+  const [barangayCounts, setBarangayCounts] = useState({});
+  const [barangayCategories, setBarangayCategories] = useState({});
+  const [barangayColors, setBarangayColors] = useState({});
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -28,17 +31,55 @@ const HeatMap = () => {
         if (response.status === 200) {
           const barangayInfo = response.data;
 
-          // Prepare heatmap data based on fetched barangay info
-          const heatData = barangayInfo.map((barangay) => {
-            const coordinates = getBarangayCoordinates(barangay.barangay);
-            return [
-              coordinates.lat,
-              coordinates.lng,
-              (barangay.Registered && barangay.Registered / 100) || 0, // Adjust the intensity
+          const heatData = [];
+          const counts = {};
+          const categories = {};
+          const colors = {};
+          let maxValue = 0;
+
+          // Precompute maximum value to determine relative categories
+          barangayInfo.forEach(
+            (barangay) =>
+              (maxValue = Math.max(maxValue, barangay.Registered || 0))
+          );
+
+          // Get coordinates once and then map through the barangay info
+          const barangayCoordinates = barangayBoundaries.features.reduce(
+            (acc, feature) => {
+              acc[feature.properties.NAME_3.toLowerCase()] =
+                feature.geometry.coordinates[0][0];
+              return acc;
+            },
+            {}
+          );
+
+          barangayInfo.forEach((barangay) => {
+            const normalizedBarangayName = barangay.barangay.toLowerCase();
+            const coordinates = barangayCoordinates[normalizedBarangayName] || [
+              0, 0,
             ];
+
+            const count = barangay.Registered || 0;
+            const category = categorizeValue(count, maxValue);
+
+            // Set heatmap data
+            heatData.push([coordinates[1], coordinates[0], count / 100]); // Scaling down for heatmap
+
+            // Assign categories and colors
+            counts[normalizedBarangayName] = count;
+            categories[normalizedBarangayName] = category;
+            colors[normalizedBarangayName] =
+              category === "High"
+                ? "#FF5733"
+                : category === "Medium"
+                ? "#FFFF57"
+                : "#33FF57"; // High = Red, Medium = Yellow, Low = Green
           });
 
           setHeatmapData(heatData);
+          setBarangayCounts(counts);
+          setBarangayCategories(categories);
+          setBarangayColors(colors);
         } else {
           throw new Error("Failed to fetch data");
         }
@@ -51,47 +92,33 @@ const HeatMap = () => {
     fetchBarangayData();
   }, []);
 
-  const getBarangayCoordinates = (barangayName) => {
-    const feature = barangayBoundaries.features.find((feature) => {
-      return feature.properties.NAME_3.toLocaleLowerCase() === barangayName;
-    });
-
-    if (feature) {
-      const coordinates = feature.geometry.coordinates[0][0];
-      return {
-        lat: coordinates[1], // latitude
-        lng: coordinates[0], // longitude
-      };
-    }
-
-    return { lat: 0, lng: 0 }; // Default if not found
-  };
-
-  // Dynamic style function for GeoJSON features
   const styleFeature = (feature) => {
+    const barangayName = feature.properties.NAME_3.toLowerCase();
     return {
-      fillColor: getRandomColor(), // Assign a random color to each barangay
-      weight: 2, // Border thickness
-      opacity: 1, // Border opacity
-      color: "white", // Border color
-      fillOpacity: 0.7, // Fill opacity
+      fillColor: barangayColors[barangayName] || "#CCCCCC", // Default to gray if no color assigned
+      weight: 2,
+      opacity: 1,
+      color: "white",
+      fillOpacity: 0.7,
     };
   };
 
   const onEachFeature = (feature, layer) => {
-    // Create a simple tooltip with the Barangay name
-    layer.bindTooltip(feature.properties.NAME_3, {
+    const barangayName = feature.properties.NAME_3;
+
+    const tooltipContent = `
+      <b>${barangayName}</b><br/>
+    `;
+
+    layer.bindTooltip(tooltipContent, {
       permanent: true,
       direction: "center",
       offset: [0, 0],
-      className: "custom-tooltip", // Use a custom class to target specific tooltips
+      className: "custom-tooltip",
     });
 
     layer.on({
-      click: () => {
-        layer.bindPopup(feature.properties.NAME_3).openPopup();
-      },
-
+      click: () => layer.bindPopup(tooltipContent).openPopup(),
       mouseover: (e) => {
         const layer = e.target;
         layer.setStyle({
@@ -104,9 +131,9 @@ const HeatMap = () => {
       mouseout: (e) => {
         const layer = e.target;
         layer.setStyle({
-          color: "red",
+          color: "white",
           weight: 2,
-          fillOpacity: 0.2,
+          fillOpacity: 0.7,
         });
         layer.closePopup();
       },
@@ -117,24 +144,23 @@ const HeatMap = () => {
     const map = useMap();
 
     useEffect(() => {
-      if (data.length > 0) {
-        const heat = L.heatLayer(data, {
-          radius: 25,
-          blur: 5,
-          maxZoom: 17,
-          minOpacity: 0.5,
-          gradient: {
-            0: "blue", // Very low intensity
-            0.5: "yellow", // Mid intensity
-            1: "red", // High intensity // Very high intensity (contrasting red)
-          },
-        });
-        heat.addTo(map);
-
-        return () => {
-          map.removeLayer(heat);
-        };
-      }
+      // if (data.length > 0) {
+      //   const heat = L.heatLayer(data, {
+      //     radius: 25,
+      //     blur: 5,
+      //     maxZoom: 17,
+      //     minOpacity: 0.5,
+      //     gradient: {
+      //       0: "blue",
+      //       0.5: "yellow",
+      //       1: "red",
+      //     },
+      //   });
+      //   heat.addTo(map);
+      //   return () => {
+      //     map.removeLayer(heat);
+      //   };
+      // }
     }, [data, map]);
 
     return null;
@@ -168,37 +194,56 @@ const HeatMap = () => {
       {error && (
         <div style={{ color: "red", textAlign: "center" }}>{error}</div>
       )}
+
+      {/* Legend */}
       <div
         style={{
           position: "absolute",
           bottom: "10px",
           left: "10px",
-          background: "white",
+          backgroundColor: "white",
           padding: "10px",
-          border: "1px solid #ccc",
-          borderRadius: "5px",
-          zIndex: 1000,
+          boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+          borderRadius: "8px",
         }}
       >
         <h4>Heatmap Legend</h4>
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ background: "red", height: "20px", width: "20px" }} />{" "}
+          <div
+            style={{
+              background: "#FF5733",
+              height: "20px",
+              width: "20px",
+              marginRight: "10px",
+            }}
+          />
           High
           <div
-            style={{ background: "orange", height: "20px", width: "20px" }}
-          />{" "}
+            style={{
+              background: "#FFFF57",
+              height: "20px",
+              width: "20px",
+              marginRight: "10px",
+            }}
+          />
           Medium
           <div
-            style={{ background: "yellow", height: "20px", width: "20px" }}
-          />{" "}
+            style={{
+              background: "#33FF57",
+              height: "20px",
+              width: "20px",
+              marginRight: "10px",
+            }}
+          />
           Low
           <div
-            style={{ background: "lime", height: "20px", width: "20px" }}
-          />{" "}
-          Very Low
-          <div
-            style={{ background: "blue", height: "20px", width: "20px" }}
-          />{" "}
+            style={{
+              background: "gray",
+              height: "20px",
+              width: "20px",
+              marginRight: "10px",
+            }}
+          />
           No Data
         </div>
       </div>
