@@ -5,7 +5,7 @@ import { GoBell } from "react-icons/go";
 import { OverlayTrigger, Tooltip, Dropdown } from "react-bootstrap";
 import { host } from "../apiRoutes";
 
-const socket = io("http://localhost:8018"); // Connect to Socket.IO server
+const socket = io("https://api.pdao-web.online"); // Connect to Socket.IO server
 
 const Notifications = ({ userId }) => {
   const [notifications, setNotifications] = useState({
