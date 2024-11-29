@@ -397,7 +397,7 @@ router.put("/facilities/:id", async (req, res) => {
 });
 
 router.get("/get-facilities", async (req, res) => {
-  const useProduction = false; // Change to `true` for production
+  const useProduction = true; // Change to `true` for production
   const host = useProduction
     ? "https://api.pdao-web.online"
     : "http://localhost:8018";
