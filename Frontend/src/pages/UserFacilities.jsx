@@ -9,10 +9,13 @@ const UserFacilities = () => {
     proFriendly: [],
     antiFriendly: [],
   });
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const fetchFacilities = async () => {
+  const fetchFacilities = async (query = "") => {
     try {
-      const response = await axios.get(`${host}/api/pwdInfo/get-facilities`);
+      const response = await axios.get(`${host}/api/pwdInfo/get-facilities`, {
+        params: { search: query }, // Pass search query as a parameter
+      });
       const facilitiesData = response.data;
 
       const proFriendly = facilitiesData.filter(
@@ -31,28 +34,15 @@ const UserFacilities = () => {
     }
   };
 
+  const handleSearch = (event) => {
+    const query = event.target.value;
+    setSearchQuery(query); // Update state
+    fetchFacilities(query); // Fetch filtered facilities
+  };
+
   useEffect(() => {
     fetchFacilities();
   }, []);
-  // const renderCardList = (cards) => {
-  //   if (cards.length === 0) {
-  //     return <p>No facilities available.</p>; // Message when there are no facilities
-  //   }
-  //   return (
-  //     <Row className="g-4">
-  //       {cards.map((card, index) => (
-  //         <Col key={index} md={4}>
-  //           <CardFacilities
-  //             // cardTitle={card.facility_name} // Display facility name
-  //             // cardText={card.accessibility_features} // Display accessibility features
-  //             // cardImg={card.picture}
-  //             facility={card}
-  //           />
-  //         </Col>
-  //       ))}
-  //     </Row>
-  //   );
-  // };
 
   return (
     <Container>
@@ -63,6 +53,8 @@ const UserFacilities = () => {
             type="text"
             placeholder="Search..."
             className="me-3 w-25"
+            value={searchQuery}
+            onChange={handleSearch}
           />
         </div>
       </div>

@@ -26,8 +26,6 @@ const StackedBarGraph = () => {
           Number(item.user_count) || 0;
       });
 
-      // Log the grouped data for debugging
-
       const disabilityStatuses = [
         ...new Set(data.map((item) => item.disability_status)),
       ];
@@ -40,8 +38,6 @@ const StackedBarGraph = () => {
       }));
 
       const categories = Object.keys(groupedData).map(capitalizeFirstLetter);
-
-      // Log series and categories to verify lengths match
 
       setChartData({ series, categories });
     } catch (error) {
@@ -94,6 +90,16 @@ const StackedBarGraph = () => {
     fill: {
       opacity: 1,
     },
+    colors: [
+      "#C2F9BB",
+      "#9AD1D4",
+      "#62C370",
+      "#CC3363",
+      "#20063B",
+      "#6D4C3D",
+      "#F7FF58",
+      "#FE4A49",
+    ],
   };
 
   return (

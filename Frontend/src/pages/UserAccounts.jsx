@@ -47,48 +47,49 @@ const UserAccounts = () => {
       : { status: "Inactive", colorClass: "text-danger" };
   };
 
-  const handleToggleStatus = async (id, currentFlag) => {
+  const handleToggleStatus = async (id, currentFlag, type) => {
     const result = await Swal.fire({
       title: "Are you sure?",
       text: `Do you want to ${
-        currentFlag === 1 ? "disable" : "enable"
+        currentFlag ? "disable" : "enable"
       } this account?`,
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: currentFlag === 1 ? "Disable" : "Enable",
+      confirmButtonText: currentFlag ? "Disable" : "Enable",
       cancelButtonText: "Cancel",
     });
 
     if (result.isConfirmed) {
       try {
-        const newFlag = currentFlag === 1 ? 0 : 1;
+        const newFlag = currentFlag ? 0 : 1;
+
         await axios.post(`${host}/api/user_management/toggleStatus`, {
           id,
-          flag: newFlag,
+          flag: currentFlag,
         });
 
-        setEmployees((prevEmployees) =>
-          prevEmployees.map((employee) =>
-            employee.employeeId === id
-              ? { ...employee, flag: newFlag }
-              : employee
-          )
-        );
-        console.log(newFlag);
+        const updateState = (prevData) =>
+          prevData.map((item) =>
+            type === "employees" && item.employeeId === id
+              ? { ...item, flag: newFlag }
+              : type === "users" && item.userId === id
+              ? { ...item, flagUser: newFlag }
+              : item
+          );
 
-        setUsers((prevUsers) =>
-          prevUsers.map((user) =>
-            user.userId === id ? { ...user, flagUser: newFlag } : user
-          )
-        );
+        if (type === "employees") {
+          setEmployees(updateState);
+        } else if (type === "users") {
+          setUsers(updateState);
+        }
 
         Swal.fire(
           "Updated!",
-          `The account has been ${currentFlag === 1 ? "disabled" : "enabled"}.`,
+          `The account has been ${currentFlag ? "disabled" : "enabled"}.`,
           "success"
         );
       } catch (err) {
-        setError("Failed to update status");
+        console.error("Error updating status:", err);
         Swal.fire(
           "Error!",
           "Failed to update the status. Please try again.",
@@ -230,12 +231,7 @@ const UserAccounts = () => {
                   {filteredEmployees.map((employee) => {
                     const { status, colorClass } = getStatus(employee.flag);
                     return (
-                      <tr
-                        key={employee.employeeId}
-                        style={styles.tableRow}
-                        onMouseEnter={onRowHover}
-                        onMouseLeave={onRowLeave}
-                      >
+                      <tr key={employee.employeeId}>
                         <td>{employee.firstname}</td>
                         <td>{employee.lastname}</td>
                         <td>{employee.username}</td>
@@ -244,11 +240,12 @@ const UserAccounts = () => {
                         <td className={colorClass}>{status}</td>
                         <td className="text-center">
                           <button
-                            className="btn btn-danger" // Red button
+                            className="btn btn-danger"
                             onClick={() =>
                               handleToggleStatus(
                                 employee.employeeId,
-                                employee.flag
+                                employee.flag,
+                                "employees"
                               )
                             }
                           >
@@ -308,7 +305,11 @@ const UserAccounts = () => {
                           <button
                             className="btn btn-danger" // Red button
                             onClick={() =>
-                              handleToggleStatus(user.userId, user.flagUser)
+                              handleToggleStatus(
+                                user.userId,
+                                user.flagUser,
+                                "users"
+                              )
                             }
                           >
                             {user.flagUser === 1 ? "Disable" : "Enable"}

@@ -30,6 +30,7 @@ const RegisteredPwd = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [barangay, setBarangay] = useState("");
+  const [disability_status, setDisability] = useState("");
   const [order, setOrder] = useState("asc");
 
   const handleShow = (infos) => {
@@ -40,14 +41,25 @@ const RegisteredPwd = () => {
   const handleClose = () => setShowPwd(false);
 
   useEffect(() => {
-    fetchRegistered(currentPage, barangay, order);
-  }, [currentPage, barangay, order]);
+    fetchRegistered(currentPage, barangay, order, disability_status);
+  }, [currentPage, barangay, order, disability_status]);
 
-  const fetchRegistered = async (page, barangay, order) => {
+  const fetchRegistered = async (page, barangay, order, disability_status) => {
     try {
-      const response = await axios.get(
-        `${host}/api/pwdInfo/pwd_info?page=${page}&limit=15&barangay=${barangay}&order=${order}`
-      );
+      // Dynamically build query parameters based on selected filters
+      let url = `${host}/api/pwdInfo/pwd_info?page=${page}&limit=15&order=${order}`;
+
+      if (barangay) {
+        url += `&barangay=${barangay}`;
+      }
+
+      if (disability_status) {
+        url += `&disability_status=${disability_status}`;
+      }
+
+      const response = await axios.get(url);
+
+      // Set state with the fetched data
       setRegisteredPwd(response.data.data);
       setTotalPages(response.data.pagination.totalPages);
     } catch (error) {
@@ -99,6 +111,18 @@ const RegisteredPwd = () => {
     "Poblacion-tres",
     "Pulo",
     "Sala",
+    "San-isidro",
+  ];
+
+  const disability = [
+    "Physical",
+    "Hearing",
+    "Visual",
+    "Mental",
+    "Psychosocial",
+    "Speech",
+    "Learning",
+    "Intellectual",
   ];
 
   return (
@@ -108,6 +132,23 @@ const RegisteredPwd = () => {
           <div style={styles.searchContainer}>
             <h1 style={styles.header}>Registered PWD</h1>
             <div style={styles.selectContainer}>
+              <Form.Select
+                required
+                value={disability_status}
+                onChange={(e) => {
+                  setDisability(e.target.value);
+                  setCurrentPage(1);
+                }}
+                style={styles.select}
+              >
+                <option value="">Sort by Disability</option>
+                {disability.map((disabilityOption) => (
+                  <option key={disabilityOption} value={disabilityOption}>
+                    {disabilityOption}
+                  </option>
+                ))}
+              </Form.Select>
+
               <Form.Select
                 required
                 value={barangay}

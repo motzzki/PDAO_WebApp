@@ -32,14 +32,14 @@ const PieChart = () => {
       capitalizeFirstLetter(data.disability_status)
     ),
     colors: [
-      "#00E396",
-      "#FF4560",
-      "#008FFB",
-      "#775DD0",
-      "#FEB019",
-      "#F8981D",
-      "#343131",
-      "#4B0082",
+      "#C2F9BB",
+      "#9AD1D4",
+      "#62C370",
+      "#CC3363",
+      "#20063B",
+      "#6D4C3D",
+      "#F7FF58",
+      "#FE4A49",
     ],
 
     dataLabels: {

@@ -11,6 +11,7 @@ const Facilities = () => {
     proFriendly: [],
     antiFriendly: [],
   });
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleShow = () => setAddFacility(true);
   const handleClose = () => setAddFacility(false);
@@ -19,10 +20,11 @@ const Facilities = () => {
     handleClose();
     fetchFacilities();
   };
-
-  const fetchFacilities = async () => {
+  const fetchFacilities = async (query = "") => {
     try {
-      const response = await axios.get(`${host}/api/pwdInfo/get-facilities`);
+      const response = await axios.get(`${host}/api/pwdInfo/get-facilities`, {
+        params: { search: query }, // Pass search query as a parameter
+      });
       const facilitiesData = response.data;
 
       const proFriendly = facilitiesData.filter(
@@ -41,6 +43,12 @@ const Facilities = () => {
     }
   };
 
+  const handleSearch = (event) => {
+    const query = event.target.value;
+    setSearchQuery(query); // Update state
+    fetchFacilities(query); // Fetch filtered facilities
+  };
+
   useEffect(() => {
     fetchFacilities();
   }, []);
@@ -54,6 +62,8 @@ const Facilities = () => {
             type="text"
             placeholder="Search..."
             className="me-3 w-25"
+            value={searchQuery}
+            onChange={handleSearch}
           />
           <Button variant="danger" onClick={handleShow}>
             Add Facility

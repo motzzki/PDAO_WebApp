@@ -14,7 +14,7 @@ const HelpCard = ({ title, img, text, link }) => {
       ) : (
         <div style={{ fontSize: "5rem" }}>{img}</div>
       )}
-      <Card.Body>
+      <Card.Body style={{ maxHeight: "300px", overflowY: "auto" }}>
         <Card.Title className="open-sans-bold">{title}</Card.Title>
         <Card.Text className="open-sans-italic fs-5">{text}</Card.Text>
         <a
@@ -25,6 +25,8 @@ const HelpCard = ({ title, img, text, link }) => {
         >
           Click here
         </a>
+        <br />
+        Additional Information
       </Card.Body>
     </Card>
   );

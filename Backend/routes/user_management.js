@@ -272,7 +272,7 @@ router.get("/users-employees", async (req, res) => {
 });
 
 router.post("/toggleStatus", async (req, res) => {
-  const { id, flag } = req.body; // id (userId or employeeId) and flag (0 or 1)
+  const { id, flag } = req.body;
 
   if (id === undefined || flag === undefined) {
     return res
@@ -280,31 +280,38 @@ router.post("/toggleStatus", async (req, res) => {
       .json({ message: "Invalid request. Missing parameters." });
   }
 
-  const newStatus = flag === 1 ? 0 : 1;
+  const newStatus = flag ? 0 : 1;
 
   try {
-    // Update tblusers flagUser (status) to the new flag
-    const userUpdateQuery = `UPDATE tblusers SET flagUser = ? WHERE userId = ?`;
-    const userUpdateResult = await pool.query(userUpdateQuery, [newStatus, id]);
+    const queries = [
+      {
+        table: "tblusers",
+        column: "flagUser",
+        condition: "userId",
+      },
+      {
+        table: "employees",
+        column: "flag",
+        condition: "employeeId",
+      },
+    ];
 
-    // Update employee flag (status) to the new flag
-    const employeeUpdateQuery = `UPDATE employees SET flag = ? WHERE employeeId = ?`;
-    const employeeUpdateResult = await pool.query(employeeUpdateQuery, [
-      newStatus,
-      id,
-    ]);
+    let updated = false;
 
-    // Check if any row was affected
-    if (
-      userUpdateResult.affectedRows === 0 &&
-      employeeUpdateResult.affectedRows === 0
-    ) {
-      return res.status(404).json({ message: "User or employee not found." });
+    for (const { table, column, condition } of queries) {
+      const updateQuery = `UPDATE ${table} SET ${column} = ? WHERE ${condition} = ?`;
+      const [result] = await pool.query(updateQuery, [newStatus, id]);
+
+      if (result.affectedRows > 0) {
+        updated = true;
+      }
     }
-    // console.log(userUpdateResult);
-    // console.log(employeeUpdateResult);
 
-    res.status(200).json({ message: "Status updated successfully." });
+    if (updated) {
+      return res.status(200).json({ message: "Status updated successfully." });
+    }
+
+    res.status(404).json({ message: "No matching record found." });
   } catch (error) {
     console.error("Error updating status:", error);
     res.status(500).json({ message: "Failed to update status." });

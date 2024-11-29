@@ -7,7 +7,7 @@ const AddHelp = () => {
   return (
     <Container>
       <h1 className="text-center open-sans-italic-bold mb-5">
-        We are here to help!
+        Disability Information!
       </h1>
       <Row className="g-4">
         {Object.keys(cardData).map((disabilityType, index) => {

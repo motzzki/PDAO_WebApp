@@ -9,39 +9,57 @@ const router = express.Router();
 let conn;
 
 router.get("/pwd_info", async (req, res) => {
+  let conn;
   try {
     conn = await pool.getConnection();
 
-    const page = parseInt(req.query.page, 10) || 1; // Default to page 1 if not provided
-    const limit = parseInt(req.query.limit, 10) || 10; // Default to 15 records per page
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 10;
     const offset = (page - 1) * limit;
 
-    // Get the barangay filtering parameter from the request
-    const barangay = req.query.barangay || null; // Accept barangay as query param
+    const barangay = req.query.barangay || null;
+    const disabilityStatus = req.query.disability_status || null;
+    const order = req.query.order === "desc" ? "DESC" : "ASC";
 
-    // Get the sorting parameter from the request; default is to sort by barangay
-    const order = req.query.order === "desc" ? "DESC" : "ASC"; // Ascending or descending
+    let whereClause = [];
+    let queryParams = [];
 
-    // Query with limit and offset for pagination, and filtering by barangay
+    if (barangay) {
+      whereClause.push("tbladdress.barangay = ?");
+      queryParams.push(barangay);
+    }
+
+    if (disabilityStatus) {
+      whereClause.push("disabilities.disability_status = ?");
+      queryParams.push(disabilityStatus);
+    }
+
+    const whereQuery =
+      whereClause.length > 0 ? "WHERE " + whereClause.join(" AND ") : "";
+
     const [infos] = await conn.query(
-      `SELECT *, barangay FROM tblusers 
-       LEFT JOIN tbladdress  ON user_id = userId
-       ${barangay ? "WHERE barangay = ?" : ""}
-       ORDER BY userId DESC 
+      `SELECT tblusers.*, tbladdress.barangay, disabilities.disability_status
+       FROM tblusers
+       LEFT JOIN tbladdress ON tblusers.userId = tbladdress.user_id
+       LEFT JOIN disabilities ON tblusers.userId = disabilities.user_id
+       ${whereQuery}
+       ORDER BY tblusers.userId ${order}
        LIMIT ? OFFSET ?`,
-      barangay ? [barangay, limit, offset] : [limit, offset]
+      [...queryParams, limit, offset]
     );
 
-    // Get the total count for pagination
     const [[{ total }]] = await conn.query(
-      `SELECT COUNT(*) as total FROM tblusers  
-       LEFT JOIN tbladdress  ON user_id = userId
-       ${barangay ? "WHERE barangay = ?" : ""}`,
-      barangay ? [barangay] : []
+      `SELECT COUNT(*) as total
+       FROM tblusers
+       LEFT JOIN tbladdress ON tblusers.userId = tbladdress.user_id
+       LEFT JOIN disabilities ON tblusers.userId = disabilities.user_id
+       ${whereQuery}`,
+      queryParams // Ensure same queryParams are used for count query
     );
 
     const totalPages = Math.ceil(total / limit);
 
+    // Send the response with the data and pagination info
     res.json({
       data: infos,
       pagination: {
@@ -380,15 +398,25 @@ router.put("/facilities/:id", async (req, res) => {
 
 router.get("/get-facilities", async (req, res) => {
   const useProduction = false; // Change to `true` for production
-
   const host = useProduction
     ? "https://api.pdao-web.online"
-    : "http://localhost:8018"; //
-  try {
-    conn = await pool.getConnection();
-    const sql = `SELECT facility_id, facility_name, location, flag, accessibility_features, picture FROM facilities`;
+    : "http://localhost:8018";
 
-    const [facilities] = await conn.query(sql);
+  try {
+    const { search } = req.query; // Get the search query parameter
+    conn = await pool.getConnection();
+
+    // Base SQL query
+    let sql = `SELECT facility_id, facility_name, location, flag, accessibility_features, picture FROM facilities`;
+
+    // Append WHERE clause if search parameter exists
+    if (search) {
+      sql += ` WHERE facility_name LIKE ?`;
+    }
+
+    const [facilities] = search
+      ? await conn.query(sql, [`%${search}%`]) // Add search query
+      : await conn.query(sql);
 
     // Check if facilities were found
     if (facilities.length === 0) {

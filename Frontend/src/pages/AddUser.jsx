@@ -26,7 +26,6 @@ const AddUser = () => {
 
     if (
       !firstName ||
-      !middleName ||
       !lastName ||
       !gender ||
       !dateOfBirth ||
@@ -120,6 +119,13 @@ const AddUser = () => {
     } catch (err) {
       console.error("Error adding user:", err.message);
     }
+  };
+
+  const handleContactNumChange = (e) => {
+    const value = e.target.value;
+    // Remove all non-numeric characters and limit to 11 digits
+    const filteredValue = value.replace(/[^0-9]/g, "").slice(0, 11);
+    setContactNum(filteredValue);
   };
 
   const clearForm = () => {
@@ -267,8 +273,7 @@ const AddUser = () => {
               type="text"
               placeholder="Mobile Number"
               value={contactNum}
-              onChange={(e) => setContactNum(e.target.value)}
-              required
+              onChange={handleContactNumChange}
               className="form-control-custom"
             />
           </FloatingLabel>
