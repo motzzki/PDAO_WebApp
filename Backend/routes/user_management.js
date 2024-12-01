@@ -496,7 +496,7 @@ router.get("/user-feedbacks", async (req, res) => {
       SELECT
         user_feedbacks.feedbackId,
         user_feedbacks.userId,
-        tblUsers.accountId,         -- Fetching the username
+        tblusers.accountId,         -- Fetching the username
         user_feedbacks.question1,
         user_feedbacks.question2,
         user_feedbacks.question3,
@@ -504,7 +504,7 @@ router.get("/user-feedbacks", async (req, res) => {
         user_feedbacks.question5,
         user_feedbacks.suggestion
       FROM user_feedbacks
-      JOIN tblUsers ON user_feedbacks.userId = tblUsers.userId;
+      JOIN tblusers ON user_feedbacks.userId = tblusers.userId;
     `;
 
     const [user_feedbacks] = await conn.query(query);

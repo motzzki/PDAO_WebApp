@@ -183,11 +183,10 @@ const sendIDExpirationEmail = async (email, name) => {
         <body>
           <div class="expiration-message">
             Hello <strong>${name}</strong>,<br>
-            Your ID is about to expire soon!
+            Your PWD ID is expired!
           </div>
           <div class="info-message">
-            Please renew your ID before the expiration date to continue enjoying your benefits.<br>
-            <a href="https://pdao-web.online/renew" class="link">Click here to renew your ID</a>
+            Please renew your PWD ID to continue enjoying your benefits.<br>
           </div>
           <div class="footer">
             This is a friendly reminder from our team.<br>
@@ -205,6 +204,77 @@ const sendIDExpirationEmail = async (email, name) => {
     console.error("Error sending email:", error);
   }
 };
+
+// const sendSoonIDExpirationEmail = async (email, name) => {
+//   const mailOptions = {
+//     from: process.env.EMAIL_USER,
+//     to: email,
+//     subject: `ID Expiration Reminder for ${name}`,
+//     html: `
+//       <html>
+//         <head>
+//           <style>
+//             body {
+//               font-family: Arial, sans-serif;
+//               background-color: #f5f5f5;
+//               color: #333;
+//               padding: 20px;
+//             }
+//             .expiration-message {
+//               background-color: #ffcc00; /* Yellow background */
+//               color: #333;
+//               padding: 20px;
+//               border-radius: 10px;
+//               text-align: center;
+//               font-size: 24px;
+//               font-weight: bold;
+//             }
+//             .info-message {
+//               background-color: #fff; /* White background */
+//               color: #333;
+//               padding: 15px;
+//               border-radius: 10px;
+//               text-align: center;
+//               font-size: 18px;
+//               margin-top: 20px;
+//             }
+//             .footer {
+//               font-size: 14px;
+//               text-align: center;
+//               margin-top: 20px;
+//               color: #666;
+//             }
+//             .link {
+//               color: #007bff;
+//               text-decoration: none;
+//               font-weight: bold;
+//             }
+//           </style>
+//         </head>
+//         <body>
+//           <div class="expiration-message">
+//             Hello <strong>${name}</strong>,<br>
+//             Your PWD ID is about to expire soon!
+//           </div>
+//           <div class="info-message">
+//             Please renew your PWD ID to continue enjoying your benefits.<br>
+//           </div>
+//           <div class="footer">
+//             This is a friendly reminder from our team.<br>
+//             Thank you for your prompt attention!
+//           </div>
+//         </body>
+//       </html>
+//     `,
+//   };
+
+//   try {
+//     await transporter.sendMail(mailOptions);
+//     console.log(`ID expiration email sent to ${name} at ${email}`);
+//   } catch (error) {
+//     console.error("Error sending email:", error);
+//   }
+// };
 
 // Notification cron job
 // "*/1 * * * *",
@@ -328,7 +398,8 @@ cron.schedule(
           if (user.notification_type === "notify_before") {
             messageToUser = `Your ID will expire in 30 days, ${user.first_name} ${user.last_name}. Please renew it!`;
             messageToEmployee = `The ID of ${user.first_name} ${user.last_name} will expire soon.`;
-          } else if (user.notification_type === "notify_on_expiration") {
+          }
+          if (user.notification_type === "notify_on_expiration") {
             messageToUser = `Your ID has expired today, ${user.first_name} ${user.last_name}. Please renew it immediately!`;
             messageToEmployee = `The ID of ${user.first_name} ${user.last_name} has expired today.`;
           }
@@ -359,6 +430,12 @@ cron.schedule(
               user.email,
               `${user.first_name} ${user.last_name}`
             );
+
+            // await sendSoonIDExpirationEmail(
+            //   user.email,
+            //   `${user.first_name} ${user.last_name}`
+            // );
+
             console.log(
               `Expired ID notification created for ${user.first_name} ${user.last_name} (User)`
             );

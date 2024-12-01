@@ -162,10 +162,8 @@ const upload = (req, res) => {
 
 router.post("/post-sched", async (req, res) => {
   try {
-    // Use formidable to parse the file
     const { files } = await upload(req, res);
 
-    // Check if a file was uploaded
     if (!files || !files.file || !files.file[0].filepath) {
       return res.status(400).json({ error: "Picture is required" });
     }
@@ -179,16 +177,13 @@ router.post("/post-sched", async (req, res) => {
     const newPath = `assets/uploads/${newFileName}`;
     console.log("New file path:", newPath);
 
-    // Current date-time for the `sched_created` column
     const currentDateTime = new Date()
       .toISOString()
       .slice(0, 19)
-      .replace("T", " "); // 'YYYY-MM-DD HH:MM:SS' format
+      .replace("T", " ");
 
-    // Move the file to the new path
     await fs.rename(uploadedFile.filepath, newPath);
 
-    // Insert file path and current date-time into the database
     const conn = await pool.getConnection();
     const sql = `INSERT INTO schedtbl (path, sched_created) VALUES (?, ?)`;
     const [result] = await conn.query(sql, [newPath, currentDateTime]);
@@ -208,7 +203,7 @@ router.post("/post-sched", async (req, res) => {
 });
 
 router.get("/get-images", async (req, res) => {
-  const useProduction = false; // Change to `true` for production
+  const useProduction = true; // Change to `true` for production
 
   const host = useProduction
     ? "https://api.pdao-web.online"

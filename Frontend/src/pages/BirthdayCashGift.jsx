@@ -38,11 +38,12 @@ const BirthdayCashGift = () => {
     }
   };
 
-  const handleUpload = async () => {
+  const handleUpload = async (e) => {
+    e.preventDefault();
     if (selectedFile) {
       try {
         const formData = new FormData();
-        formData.append("file", selectedFile); // Append file with key 'file'
+        formData.append("file", selectedFile);
 
         console.log("Uploading file:", selectedFile);
 
