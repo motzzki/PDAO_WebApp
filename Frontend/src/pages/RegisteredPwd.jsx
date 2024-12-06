@@ -131,50 +131,55 @@ const RegisteredPwd = () => {
         <Card.Body>
           <div style={styles.searchContainer}>
             <h1 style={styles.header}>Registered PWD</h1>
-            <div style={styles.selectContainer}>
-              <Form.Select
-                required
-                value={disability_status}
-                onChange={(e) => {
-                  setDisability(e.target.value);
-                  setCurrentPage(1);
-                }}
-                style={styles.select}
-              >
-                <option value="">Sort by Disability</option>
-                {disability.map((disabilityOption) => (
-                  <option key={disabilityOption} value={disabilityOption}>
-                    {disabilityOption}
-                  </option>
-                ))}
-              </Form.Select>
+            <div className="d-flex flex-row gap-3">
+              <div className="mb-3">
+                <Form.Select
+                  required
+                  value={disability_status}
+                  onChange={(e) => {
+                    setDisability(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="form-select"
+                >
+                  <option value="">Sort by Disability</option>
+                  {disability.map((disabilityOption) => (
+                    <option key={disabilityOption} value={disabilityOption}>
+                      {disabilityOption}
+                    </option>
+                  ))}
+                </Form.Select>
+              </div>
 
-              <Form.Select
-                required
-                value={barangay}
-                onChange={(e) => {
-                  setBarangay(e.target.value);
-                  setCurrentPage(1);
-                }}
-                style={styles.select}
-              >
-                <option value="">Sort by Barangay</option>
-                {options.map((barangayOption) => (
-                  <option key={barangayOption} value={barangayOption}>
-                    {barangayOption}
-                  </option>
-                ))}
-              </Form.Select>
+              <div className="mb-3">
+                <Form.Select
+                  required
+                  value={barangay}
+                  onChange={(e) => {
+                    setBarangay(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className="form-select"
+                >
+                  <option value="">Sort by Barangay</option>
+                  {options.map((barangayOption) => (
+                    <option key={barangayOption} value={barangayOption}>
+                      {barangayOption}
+                    </option>
+                  ))}
+                </Form.Select>
+              </div>
 
-              <div style={styles.searchWrapper}>
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  style={styles.searchBar}
-                />
-                <img src={searchIcon} alt="search" style={styles.searchIcon} />
+              <div className="mb-3">
+                <div className="d-flex align-items-center">
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="form-control"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -260,7 +265,9 @@ const styles = {
   },
   selectContainer: {
     display: "flex",
-    gap: "10px",
+    flexDirection: "column", // Stack elements vertically
+    gap: "10px", // Add space between elements
+    width: "100%",
   },
   select: {
     padding: "8px",

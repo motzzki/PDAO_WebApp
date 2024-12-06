@@ -22,9 +22,14 @@ const port = process.env.PORT;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 app.use(json());
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "https://api.pdao-web.online"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 
-// Initialize WebSocket connections
 const io = setupSocket(server);
 
 (async () => {
@@ -204,77 +209,6 @@ const sendIDExpirationEmail = async (email, name) => {
     console.error("Error sending email:", error);
   }
 };
-
-// const sendSoonIDExpirationEmail = async (email, name) => {
-//   const mailOptions = {
-//     from: process.env.EMAIL_USER,
-//     to: email,
-//     subject: `ID Expiration Reminder for ${name}`,
-//     html: `
-//       <html>
-//         <head>
-//           <style>
-//             body {
-//               font-family: Arial, sans-serif;
-//               background-color: #f5f5f5;
-//               color: #333;
-//               padding: 20px;
-//             }
-//             .expiration-message {
-//               background-color: #ffcc00; /* Yellow background */
-//               color: #333;
-//               padding: 20px;
-//               border-radius: 10px;
-//               text-align: center;
-//               font-size: 24px;
-//               font-weight: bold;
-//             }
-//             .info-message {
-//               background-color: #fff; /* White background */
-//               color: #333;
-//               padding: 15px;
-//               border-radius: 10px;
-//               text-align: center;
-//               font-size: 18px;
-//               margin-top: 20px;
-//             }
-//             .footer {
-//               font-size: 14px;
-//               text-align: center;
-//               margin-top: 20px;
-//               color: #666;
-//             }
-//             .link {
-//               color: #007bff;
-//               text-decoration: none;
-//               font-weight: bold;
-//             }
-//           </style>
-//         </head>
-//         <body>
-//           <div class="expiration-message">
-//             Hello <strong>${name}</strong>,<br>
-//             Your PWD ID is about to expire soon!
-//           </div>
-//           <div class="info-message">
-//             Please renew your PWD ID to continue enjoying your benefits.<br>
-//           </div>
-//           <div class="footer">
-//             This is a friendly reminder from our team.<br>
-//             Thank you for your prompt attention!
-//           </div>
-//         </body>
-//       </html>
-//     `,
-//   };
-
-//   try {
-//     await transporter.sendMail(mailOptions);
-//     console.log(`ID expiration email sent to ${name} at ${email}`);
-//   } catch (error) {
-//     console.error("Error sending email:", error);
-//   }
-// };
 
 // Notification cron job
 // "*/1 * * * *",

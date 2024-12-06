@@ -16,6 +16,7 @@ import {
 const Sidebar = () => {
   const { logout, getEmployee } = useAuth();
   const [isUserManagementOpen, setIsUserManagementOpen] = useState(false);
+  const [isPwdManagementOpen, setIsPwdManagementOpen] = useState(false);
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -150,9 +151,10 @@ const Sidebar = () => {
             </CDBSidebarMenuItem>
           </Link>
 
-          <Link to="/admin/registration">
+          <div>
             <CDBSidebarMenuItem
               icon="file-alt"
+              onClick={() => setIsPwdManagementOpen(!isPwdManagementOpen)}
               style={menuItemStyle}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor =
@@ -168,28 +170,69 @@ const Sidebar = () => {
             >
               PWD Registration
             </CDBSidebarMenuItem>
-          </Link>
+            {isPwdManagementOpen && (
+              <div style={{ paddingLeft: "20px" }}>
+                <Link to="/admin/registration">
+                  <CDBSidebarMenuItem
+                    icon="users"
+                    style={menuItemStyle}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        hoverStyle.backgroundColor;
+                      e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
+                      e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "";
+                      e.currentTarget.style.boxShadow = "";
+                      e.currentTarget.style.color = ""; // Revert text color on hover end
+                    }}
+                  >
+                    Add PWD
+                  </CDBSidebarMenuItem>
+                </Link>
+                <Link to="/admin/registered_pwd">
+                  <CDBSidebarMenuItem
+                    icon="users"
+                    style={menuItemStyle}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        hoverStyle.backgroundColor;
+                      e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
+                      e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "";
+                      e.currentTarget.style.boxShadow = "";
+                      e.currentTarget.style.color = ""; // Revert text color on hover end
+                    }}
+                  >
+                    Registered PWD
+                  </CDBSidebarMenuItem>
+                </Link>
+                <Link to="/admin/barangay">
+                  <CDBSidebarMenuItem
+                    icon="users"
+                    style={menuItemStyle}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor =
+                        hoverStyle.backgroundColor;
+                      e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
+                      e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "";
+                      e.currentTarget.style.boxShadow = "";
+                      e.currentTarget.style.color = ""; // Revert text color on hover end
+                    }}
+                  >
+                    Barangay
+                  </CDBSidebarMenuItem>
+                </Link>
+              </div>
+            )}
+          </div>
 
-          <Link to="/admin/graph_report">
-            {/* Updated Graphical Report Icon */}
-            <CDBSidebarMenuItem
-              icon="chart-bar"
-              style={menuItemStyle}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor =
-                  hoverStyle.backgroundColor;
-                e.currentTarget.style.boxShadow = hoverStyle.boxShadow;
-                e.currentTarget.style.color = hoverStyle.color; // Apply text color on hover
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "";
-                e.currentTarget.style.boxShadow = "";
-                e.currentTarget.style.color = ""; // Revert text color on hover end
-              }}
-            >
-              Graphical Report
-            </CDBSidebarMenuItem>
-          </Link>
           <Link to="/admin/heatmap">
             {/* Updated Graphical Report Icon */}
             <CDBSidebarMenuItem
@@ -257,7 +300,7 @@ const Sidebar = () => {
             <CDBSidebarMenuItem
               icon="user"
               style={menuItemStyle}
-              onClick={() => setIsUserManagementOpen(!isUserManagementOpen)} // Toggle dropdown
+              onClick={() => setIsUserManagementOpen(!isUserManagementOpen)}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor =
                   hoverStyle.backgroundColor;

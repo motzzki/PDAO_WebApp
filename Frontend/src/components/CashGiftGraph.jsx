@@ -156,8 +156,6 @@ const CashGiftGraph = () => {
 
   return (
     <div>
-      <h2>Birthday Cash Gift</h2>
-
       {/* Show the Back Button only when in drilldown view */}
       {isDrilldown && (
         <Button variant="secondary" onClick={handleBack} className="mb-3">

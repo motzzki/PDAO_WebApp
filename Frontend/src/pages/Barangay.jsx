@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import Table from "react-bootstrap/Table";
 import axios from "axios";
-import searchIcon from "../images/search.svg"; // Make sure the path is correct
 import { host } from "../apiRoutes";
-const TABLE_HEAD = ["Barangay", "Registered PWD"];
+import { Card, Col, Row } from "react-bootstrap";
+import { motion } from "framer-motion";
+import searchIcon from "../images/search.svg"; // Ensure the path is correct
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -47,30 +47,29 @@ const Barangay = () => {
           <img src={searchIcon} alt="search" style={styles.searchIcon} />
         </div>
       </div>
-      <Table striped bordered hover responsive style={styles.table}>
-        <thead>
-          <tr>
-            {TABLE_HEAD.map((head) => (
-              <th key={head} style={styles.tableHead}>
-                {head}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {filteredBarangayInfo?.map((infos) => (
-            <tr
-              key={infos.barangay}
-              style={styles.tableRow}
-              onMouseEnter={onRowHover}
-              onMouseLeave={onRowLeave}
+
+      <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+        {filteredBarangayInfo?.map((infos) => (
+          <Col key={infos.barangay}>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
             >
-              <td>{capitalizeFirstLetter(infos.barangay)}</td>
-              <td>{infos.Registered}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+              <Card style={styles.card}>
+                <Card.Body>
+                  <Card.Title style={styles.cardTitle}>
+                    {capitalizeFirstLetter(infos.barangay)}
+                  </Card.Title>
+                  <Card.Text style={styles.cardText}>
+                    Registered PWD: {infos.Registered}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </motion.div>
+          </Col>
+        ))}
+      </Row>
     </div>
   );
 };
@@ -115,38 +114,23 @@ const styles = {
     height: "18px",
     cursor: "pointer",
   },
-  table: {
-    borderCollapse: "separate",
-    borderSpacing: "0 8px",
-    width: "100%",
+  card: {
+    border: "1px solid #ddd",
     borderRadius: "10px",
-    overflow: "hidden",
-  },
-  tableHead: {
-    backgroundColor: "#ff4d4d", // Red background for the header
-    color: "#fff",
+    backgroundColor: "#fff",
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+    padding: "20px",
     textAlign: "center",
+  },
+  cardTitle: {
+    fontSize: "20px",
     fontWeight: "bold",
-    padding: "14px",
+    color: "#333",
+  },
+  cardText: {
     fontSize: "16px",
+    color: "#555",
   },
-  tableRow: {
-    textAlign: "center",
-    padding: "12px",
-    backgroundColor: "#ffffff",
-    transition: "background-color 0.3s",
-    borderBottom: "1px solid #eee",
-  },
-  tableRowOdd: {
-    backgroundColor: "#f9f9f9",
-  },
-};
-
-const onRowHover = (e) => {
-  e.currentTarget.style.backgroundColor = "#e8f0fe"; // soft blue on hover
-};
-const onRowLeave = (e) => {
-  e.currentTarget.style.backgroundColor = "#ffffff"; // reset to white
 };
 
 export default Barangay;
