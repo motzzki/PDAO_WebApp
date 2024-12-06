@@ -14,9 +14,9 @@ const Services = () => {
             fluid
             className="d-block w-100"
             style={{
-              height: "800px", // Increased height
+              height: "60vh", // Responsive height
               objectFit: "cover",
-              filter: "blur(3px)", // Apply blur effect to the image
+              filter: "blur(3px)", // Blur effect remains
             }}
           />
           <div
@@ -25,29 +25,28 @@ const Services = () => {
               top: 0,
               left: 0,
               width: "100%",
-              height: "100%", // Ensure it spans the entire carousel
+              height: "100%",
               display: "flex",
-              alignItems: "center", // Center vertically
-              justifyContent: "center", // Center horizontally
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
             <Carousel.Caption
               style={{
                 color: "white",
-                backgroundColor: "rgba(0, 0, 0, 0.7)", // Semi-transparent background for readability
-                padding: "20px 40px", // Add balanced padding
-                borderRadius: "15px", // Smooth rounded edges
-                textAlign: "center", // Center the text
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                padding: "10px 20px",
+                borderRadius: "10px",
+                textAlign: "center",
                 wordWrap: "break-word",
-                maxWidth: "30%", // Limit the width of the background for better appearance
-                margin: "0 auto", // Center it horizontally within the parent container
+                maxWidth: "80%", // Scales width based on screen size
               }}
             >
               <h3
-                className="display-2 open-sans-bold text-uppercase"
+                className="open-sans-bold text-uppercase"
                 style={{
                   fontSize: "clamp(1.5rem, 4vw, 3.5rem)", // Responsive font size
-                  textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)", // Add subtle shadow for contrast
+                  textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
                   margin: 0,
                 }}
               >
@@ -65,9 +64,9 @@ const Services = () => {
             fluid
             className="d-block w-100"
             style={{
-              height: "800px", // Increased height
+              height: "60vh", // Responsive height
               objectFit: "cover",
-              filter: "blur(3px)", // Apply blur effect to the image
+              filter: "blur(3px)",
             }}
           />
           <div
@@ -76,29 +75,28 @@ const Services = () => {
               top: 0,
               left: 0,
               width: "100%",
-              height: "100%", // Ensure it spans the entire carousel
+              height: "100%",
               display: "flex",
-              alignItems: "center", // Center vertically
-              justifyContent: "center", // Center horizontally
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
             <Carousel.Caption
               style={{
                 color: "white",
-                backgroundColor: "rgba(0, 0, 0, 0.7)", // Semi-transparent background for readability
-                padding: "20px 40px", // Add balanced padding
-                borderRadius: "15px", // Smooth rounded edges
-                textAlign: "center", // Center the text
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                padding: "10px 20px",
+                borderRadius: "10px",
+                textAlign: "center",
                 wordWrap: "break-word",
-                maxWidth: "30%", // Limit the width of the background for better appearance
-                margin: "0 auto", // Center it horizontally within the parent container
+                maxWidth: "80%",
               }}
             >
               <h3
-                className="display-2 open-sans-bold text-uppercase"
+                className="open-sans-bold text-uppercase"
                 style={{
-                  fontSize: "clamp(1.5rem, 4vw, 3.5rem)", // Responsive font size
-                  textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)", // Add subtle shadow for contrast
+                  fontSize: "clamp(1.5rem, 4vw, 3.5rem)",
+                  textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
                   margin: 0,
                 }}
               >
@@ -116,9 +114,9 @@ const Services = () => {
             fluid
             className="d-block w-100"
             style={{
-              height: "800px", // Increased height
+              height: "60vh", // Responsive height
               objectFit: "cover",
-              filter: "blur(3px)", // Apply blur effect to the image
+              filter: "blur(3px)",
             }}
           />
           <div
@@ -127,29 +125,28 @@ const Services = () => {
               top: 0,
               left: 0,
               width: "100%",
-              height: "100%", // Ensure it spans the entire carousel
+              height: "100%",
               display: "flex",
-              alignItems: "center", // Center vertically
-              justifyContent: "center", // Center horizontally
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
             <Carousel.Caption
               style={{
                 color: "white",
-                backgroundColor: "rgba(0, 0, 0, 0.7)", // Semi-transparent background for readability
-                padding: "20px 40px", // Add balanced padding
-                borderRadius: "15px", // Smooth rounded edges
-                textAlign: "center", // Center the text
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                padding: "10px 20px",
+                borderRadius: "10px",
+                textAlign: "center",
                 wordWrap: "break-word",
-                maxWidth: "30%", // Limit the width of the background for better appearance
-                margin: "0 auto", // Center it horizontally within the parent container
+                maxWidth: "80%",
               }}
             >
               <h3
-                className="display-2 open-sans-bold text-uppercase"
+                className="open-sans-bold text-uppercase"
                 style={{
-                  fontSize: "clamp(1.5rem, 4vw, 3.5rem)", // Responsive font size
-                  textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)", // Add subtle shadow for contrast
+                  fontSize: "clamp(1.5rem, 4vw, 3.5rem)",
+                  textShadow: "2px 2px 4px rgba(0, 0, 0, 0.8)",
                   margin: 0,
                 }}
               >

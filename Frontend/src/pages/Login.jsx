@@ -80,13 +80,21 @@ const Login = () => {
       />
       <div className="position-absolute top-0 start-0 w-100 h-100 bg-black opacity-50" />
 
-      <Card className="w-25 bg-white bg-opacity-75 p-4 shadow-lg backdrop-blur-sm position-relative">
+      <Card
+        className="bg-white bg-opacity-75 p-4 shadow-lg backdrop-blur-sm position-relative"
+        style={{ width: "90%", maxWidth: "400px" }} // Responsive width
+      >
         <div className="d-flex justify-content-center mb-4">
           <img
             src={Logo}
             alt="Logo"
             className="rounded-circle"
-            style={{ width: "128px", height: "128px" }}
+            style={{
+              width: "20vw",
+              height: "20vw",
+              maxWidth: "128px",
+              maxHeight: "128px",
+            }} // Adjusts size responsively
           />
         </div>
         <Card.Body>
@@ -96,7 +104,7 @@ const Login = () => {
                 <img
                   src={iconLogo}
                   alt="icon logo"
-                  style={{ width: "20px", height: "20px" }}
+                  style={{ width: "16px", height: "16px" }} // Slightly reduced for smaller screens
                 />
               </InputGroup.Text>
               <Form.Control
@@ -114,7 +122,7 @@ const Login = () => {
                 <img
                   src={lockLogo}
                   alt="icon logo"
-                  style={{ width: "20px", height: "20px" }}
+                  style={{ width: "16px", height: "16px" }}
                 />
               </InputGroup.Text>
               <Form.Control
@@ -132,12 +140,12 @@ const Login = () => {
                 <img
                   src={showPassword ? eyeLogo : eyeOffLogo}
                   alt="Toggle password visibility"
-                  style={{ width: "20px", height: "20px" }}
+                  style={{ width: "16px", height: "16px" }}
                 />
               </InputGroup.Text>
             </InputGroup>
             <Button
-              className="w-100 mt-4 fs-5"
+              className="w-100 mt-4 fs-6" // Reduced font size for smaller screens
               variant="primary"
               type="submit"
               disabled={isLoading}
