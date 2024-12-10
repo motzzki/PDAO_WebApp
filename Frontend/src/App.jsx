@@ -15,6 +15,9 @@ import Facilities from "./pages/Facilities.jsx";
 import LandingPage from "./pages/LandingPage.jsx";
 import UserPage from "./pages/UserPage.jsx";
 import AddHelp from "./pages/AddHelp.jsx";
+import Assistance from "./pages/Assistance.jsx";
+import Walker from "./pages/Walker.jsx";
+import Medical from "./pages/Medical.jsx";
 
 import UserFacilities from "./pages/UserFacilities.jsx";
 import AdminLayout from "./layout/AdminLayout.jsx";
@@ -63,6 +66,9 @@ function App() {
         <Route path="accounts" element={<UserAccounts />} />
         <Route path="cashgift" element={<BirthdayCashGift />} />
         <Route path="user-feedback" element={<UserFeedbacks />} />
+        <Route path="assistance" element={<Assistance />} />
+        <Route path="walker" element={<Walker />} />
+        <Route path="medical-mission" element={<Medical />} />
       </Route>
 
       <Route

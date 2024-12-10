@@ -3,7 +3,6 @@ import axios from "axios";
 import { host } from "../apiRoutes";
 import { Card, Col, Row } from "react-bootstrap";
 import { motion } from "framer-motion";
-import searchIcon from "../images/search.svg"; // Ensure the path is correct
 
 function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
@@ -11,7 +10,6 @@ function capitalizeFirstLetter(string) {
 
 const Barangay = () => {
   const [barangayInfo, setBarangayInfo] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetchBarangayInfo();
@@ -27,25 +25,13 @@ const Barangay = () => {
   };
 
   const filteredBarangayInfo = barangayInfo.filter((infos) =>
-    capitalizeFirstLetter(infos.barangay)
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase())
+    capitalizeFirstLetter(infos.barangay).toLowerCase()
   );
 
   return (
     <div style={styles.tableContainer}>
       <div style={styles.header}>
         <h1 style={styles.title}>Barangay Information</h1>
-        <div style={styles.searchWrapper}>
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={styles.searchBar}
-          />
-          <img src={searchIcon} alt="search" style={styles.searchIcon} />
-        </div>
       </div>
 
       <Row xs={1} sm={2} md={3} lg={4} className="g-4">

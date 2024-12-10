@@ -14,7 +14,7 @@ const Services = () => {
             fluid
             className="d-block w-100"
             style={{
-              height: "60vh", // Responsive height
+              height: "80vh", // Responsive height
               objectFit: "cover",
               filter: "blur(3px)", // Blur effect remains
             }}
@@ -64,7 +64,7 @@ const Services = () => {
             fluid
             className="d-block w-100"
             style={{
-              height: "60vh", // Responsive height
+              height: "80vh", // Responsive height
               objectFit: "cover",
               filter: "blur(3px)",
             }}
@@ -114,7 +114,7 @@ const Services = () => {
             fluid
             className="d-block w-100"
             style={{
-              height: "60vh", // Responsive height
+              height: "80vh", // Responsive height
               objectFit: "cover",
               filter: "blur(3px)",
             }}

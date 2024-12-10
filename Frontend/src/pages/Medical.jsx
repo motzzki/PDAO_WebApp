@@ -1,92 +1,30 @@
 import React, { useState, useEffect } from "react";
-import Table from "react-bootstrap/Table";
 import axios from "axios";
-import searchIcon from "../images/search.svg";
 import { host } from "../apiRoutes";
 import Swal from "sweetalert2";
-import { Modal, Form, Button, Row, Col } from "react-bootstrap";
+import { Modal, Form, Button, Row, Col, Table } from "react-bootstrap";
+import searchIcon from "../images/search.svg";
 
-const BirthdayCashGift = () => {
-  const [birthdays, setBirthdays] = useState([]);
+const Medical = () => {
+  const [medicals, setMedical] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [totalClaimed, setTotalClaimed] = useState(0);
   const [totalUnclaimed, setTotalUnclaimed] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const [showModal, setShowModal] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
-
-  const handleShow = () => setShowModal(true);
-
-  const handleClose = () => {
-    setShowModal(false);
-    setSelectedFile(null);
-    setPreviewUrl(null);
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSelectedFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreviewUrl(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleUpload = async (e) => {
-    e.preventDefault();
-    if (selectedFile) {
-      try {
-        const formData = new FormData();
-        formData.append("file", selectedFile);
-
-        console.log("Uploading file:", selectedFile);
-
-        const response = await axios.post(
-          `${host}/api/pwdInfo/post-sched`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-
-        if (response.status === 201) {
-          alert("Image uploaded successfully!");
-          console.log("Upload response:", response.data);
-          handleClose(); // Close the modal after successful upload
-        } else {
-          alert("Failed to upload image. Please try again.");
-        }
-      } catch (error) {
-        console.error("Error uploading image:", error);
-        alert("An error occurred while uploading the image.");
-      }
-    } else {
-      alert("Please select a file to upload.");
-    }
-  };
-
   useEffect(() => {
-    fetchBirthdays();
+    fetchMedical();
   }, []);
 
-  const fetchBirthdays = async () => {
+  const fetchMedical = async () => {
     try {
-      const response = await axios.get(
-        `${host}/api/user_management/current-cashgift`
-      );
-      const birthdaysData = response.data.birthdays;
+      const response = await axios.get(`${host}/api/user_management/medical`);
+      const medicalData = response.data.medicals;
 
-      setBirthdays(birthdaysData);
-      setTotalClaimed(birthdaysData.filter((b) => b.claim_tag === 1).length);
-      setTotalUnclaimed(birthdaysData.filter((b) => b.claim_tag === 0).length);
+      setMedical(medicalData);
+      setTotalClaimed(medicalData.filter((b) => b.claim_tag === 1).length);
+      setTotalUnclaimed(medicalData.filter((b) => b.claim_tag === 0).length);
 
       setLoading(false);
     } catch (error) {
@@ -99,30 +37,30 @@ const BirthdayCashGift = () => {
   const handleClaim = (userId) => {
     Swal.fire({
       title: "Are you sure?",
-      text: "You are about to claim the cash gift for this user.",
+      text: "You are about to register this user.",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Yes, claim it!",
+      confirmButtonText: "Yes, register it!",
       cancelButtonText: "Cancel",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           const response = await axios.post(
-            `${host}/api/user_management/claim`,
+            `${host}/api/user_management/register-medical`,
             {
               userId,
-              claimType: "birthday",
+              claimType: "medical",
             }
           );
 
-          Swal.fire("Claimed!", response.data.message, "success");
-          setBirthdays((prevState) =>
+          Swal.fire("Registered!", response.data.message, "success");
+          setMedical((prevState) =>
             prevState.map((user) =>
               user.userId === userId ? { ...user, claim_tag: 1 } : user
             )
           );
           setTotalClaimed((prevTotal) => prevTotal + 1);
-          fetchBirthdays();
+          fetchMedical();
         } catch (error) {
           Swal.fire(
             "Error",
@@ -134,18 +72,15 @@ const BirthdayCashGift = () => {
     });
   };
 
-  const filteredBirthdays = birthdays.filter((user) =>
+  const filteredMedical = medicals.filter((user) =>
     user.first_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <div style={styles.tableContainer}>
       <div style={styles.header}>
-        <h1 style={styles.title}>Birthday Cash Gift</h1>
+        <h1 style={styles.title}>Medical Mission</h1>
         <div className="d-flex flex-row align-items-center">
-          <button className="btn btn-danger me-3" onClick={handleShow}>
-            Upload Schedule
-          </button>
           <div style={styles.searchWrapper}>
             <input
               type="text"
@@ -170,7 +105,7 @@ const BirthdayCashGift = () => {
             <th style={styles.tableHead}>User ID</th>
             <th style={styles.tableHead}>Name</th>
             <th style={styles.tableHead}>Gender</th>
-            <th style={styles.tableHead}>Date of Birth</th>
+            <th style={styles.tableHead}>Disability Type</th>
             <th style={styles.tableHead}>Action</th>
           </tr>
         </thead>
@@ -188,7 +123,7 @@ const BirthdayCashGift = () => {
               </td>
             </tr>
           ) : (
-            filteredBirthdays.map((user) => (
+            filteredMedical.map((user) => (
               <tr
                 key={user.userId}
                 style={styles.tableRow}
@@ -198,7 +133,7 @@ const BirthdayCashGift = () => {
                 <td>{user.userId}</td>
                 <td>{`${user.first_name} ${user.middle_name} ${user.last_name}`}</td>
                 <td>{user.gender}</td>
-                <td>{new Date(user.date_of_birth).toLocaleDateString()}</td>
+                <td>{user.disability_status.toUpperCase()}</td>
                 <td className="text-center">
                   <button
                     className="btn btn-danger btn-sm"
@@ -208,7 +143,7 @@ const BirthdayCashGift = () => {
                       cursor: user.claim_tag === 1 ? "not-allowed" : "pointer",
                     }}
                   >
-                    {user.claim_tag === 1 ? "Claimed" : "Claim"}
+                    {user.claim_tag === 1 ? "Registered" : "Register"}
                   </button>
                 </td>
               </tr>
@@ -225,52 +160,6 @@ const BirthdayCashGift = () => {
           Unclaimed: {totalUnclaimed}
         </span>
       </div>
-      <Modal show={showModal} onHide={handleClose} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Upload Schedule Image</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form onSubmit={handleUpload}>
-            <Form.Group controlId="formFile">
-              <Form.Label>Select an image to upload:</Form.Label>
-              <Form.Control
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
-            </Form.Group>
-
-            {/* Image Preview */}
-            {previewUrl && (
-              <div className="mt-3 text-center">
-                <img
-                  src={previewUrl}
-                  alt="Preview"
-                  style={{
-                    width: "100%",
-                    maxHeight: "300px",
-                    objectFit: "cover",
-                  }}
-                />
-              </div>
-            )}
-            <Row className="mt-4">
-              <Col className="text-end">
-                <Button
-                  variant="secondary"
-                  onClick={handleClose}
-                  className="me-2"
-                >
-                  Close
-                </Button>
-                <Button variant="primary" type="submit">
-                  Save Changes
-                </Button>
-              </Col>
-            </Row>
-          </Form>
-        </Modal.Body>
-      </Modal>
     </div>
   );
 };
@@ -358,4 +247,4 @@ const onRowLeave = (e) => {
   e.currentTarget.style.backgroundColor = "#ffffff";
 };
 
-export default BirthdayCashGift;
+export default Medical;

@@ -33,16 +33,16 @@ const LandingPage = () => {
     <Container fluid className="p-0">
       <Navigation />
 
+      <section id="services" className="mb-5">
+        <Services />
+      </section>
+
       <Image
         src={bgLogo}
         fluid
         className="custom-bg-image"
         alt="Background logo"
       />
-
-      <section id="services" className="mb-5">
-        <Services />
-      </section>
 
       <Footer />
     </Container>
