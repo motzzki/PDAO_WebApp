@@ -100,7 +100,7 @@ const Services = () => {
                   margin: 0,
                 }}
               >
-                PWD Registration
+                PWD Cash Assistance
               </h3>
             </Carousel.Caption>
           </div>
@@ -150,7 +150,7 @@ const Services = () => {
                   margin: 0,
                 }}
               >
-                PWD Cash Assistance
+                PWD Registration
               </h3>
             </Carousel.Caption>
           </div>

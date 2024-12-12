@@ -174,7 +174,7 @@ const Sidebar = () => {
               <div style={{ paddingLeft: "20px" }}>
                 <Link to="/admin/registration">
                   <CDBSidebarMenuItem
-                    icon="users"
+                    icon="user-plus"
                     style={menuItemStyle}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.backgroundColor =
@@ -193,7 +193,7 @@ const Sidebar = () => {
                 </Link>
                 <Link to="/admin/registered_pwd">
                   <CDBSidebarMenuItem
-                    icon="users"
+                    icon="list"
                     style={menuItemStyle}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.backgroundColor =
@@ -212,7 +212,7 @@ const Sidebar = () => {
                 </Link>
                 <Link to="/admin/barangay">
                   <CDBSidebarMenuItem
-                    icon="users"
+                    icon="map-marker-alt"
                     style={menuItemStyle}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.backgroundColor =
@@ -231,7 +231,7 @@ const Sidebar = () => {
                 </Link>
                 <Link to="/admin/addhelp">
                   <CDBSidebarMenuItem
-                    icon="users"
+                    icon="question-circle"
                     style={menuItemStyle}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.backgroundColor =
@@ -338,7 +338,7 @@ const Sidebar = () => {
               <div style={{ paddingLeft: "20px" }}>
                 <Link to="/admin/registered_users">
                   <CDBSidebarMenuItem
-                    icon="users"
+                    icon="user-friends"
                     style={menuItemStyle}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.backgroundColor =
@@ -357,7 +357,7 @@ const Sidebar = () => {
                 </Link>
                 <Link to="/admin/accounts">
                   <CDBSidebarMenuItem
-                    icon="users"
+                    icon="user-circle"
                     style={menuItemStyle}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.backgroundColor =

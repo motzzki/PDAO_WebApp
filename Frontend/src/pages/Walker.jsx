@@ -154,10 +154,10 @@ const Walker = () => {
 
       <div style={styles.legend}>
         <span className="badge bg-success" style={styles.badge}>
-          Claimed: {totalClaimed}
+          Registered: {totalClaimed}
         </span>
         <span className="badge bg-danger" style={styles.badge}>
-          Unclaimed: {totalUnclaimed}
+          Not Registered: {totalUnclaimed}
         </span>
       </div>
     </div>
