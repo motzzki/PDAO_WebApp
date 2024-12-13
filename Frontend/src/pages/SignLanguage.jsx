@@ -5,8 +5,8 @@ import Swal from "sweetalert2";
 import { Table } from "react-bootstrap";
 import searchIcon from "../images/search.svg";
 
-const Medical = () => {
-  const [medicals, setMedical] = useState([]);
+const SignLanguage = () => {
+  const [signLanguage, setSignLanguage] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [totalClaimed, setTotalClaimed] = useState(0);
@@ -14,17 +14,19 @@ const Medical = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    fetchMedical();
+    fetchSign();
   }, []);
 
-  const fetchMedical = async () => {
+  const fetchSign = async () => {
     try {
-      const response = await axios.get(`${host}/api/user_management/medical`);
-      const medicalData = response.data.medicals;
+      const response = await axios.get(
+        `${host}/api/user_management/sign-language`
+      );
+      const signData = response.data.sign_language;
 
-      setMedical(medicalData);
-      setTotalClaimed(medicalData.filter((b) => b.claim_tag === 1).length);
-      setTotalUnclaimed(medicalData.filter((b) => b.claim_tag === 0).length);
+      setSignLanguage(signData);
+      setTotalClaimed(signData.filter((b) => b.claim_tag === 1).length);
+      setTotalUnclaimed(signData.filter((b) => b.claim_tag === 0).length);
 
       setLoading(false);
     } catch (error) {
@@ -46,21 +48,21 @@ const Medical = () => {
       if (result.isConfirmed) {
         try {
           const response = await axios.post(
-            `${host}/api/user_management/register-medical`,
+            `${host}/api/user_management/register-sign-language`,
             {
               userId,
-              claimType: "medical",
+              claimType: "sign_language",
             }
           );
 
           Swal.fire("Registered!", response.data.message, "success");
-          setMedical((prevState) =>
+          setSignLanguage((prevState) =>
             prevState.map((user) =>
               user.userId === userId ? { ...user, claim_tag: 1 } : user
             )
           );
           setTotalClaimed((prevTotal) => prevTotal + 1);
-          fetchMedical();
+          fetchSign();
         } catch (error) {
           Swal.fire(
             "Error",
@@ -71,15 +73,13 @@ const Medical = () => {
       }
     });
   };
-
-  const filteredMedical = medicals.filter((user) =>
+  const filteredSign = signLanguage.filter((user) =>
     user.first_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
   return (
     <div style={styles.tableContainer}>
       <div style={styles.header}>
-        <h1 style={styles.title}>Medical Mission</h1>
+        <h1 style={styles.title}>Sign Language Training</h1>
         <div className="d-flex flex-row align-items-center">
           <div style={styles.searchWrapper}>
             <input
@@ -123,7 +123,7 @@ const Medical = () => {
               </td>
             </tr>
           ) : (
-            filteredMedical.map((user) => (
+            filteredSign.map((user) => (
               <tr
                 key={user.userId}
                 style={styles.tableRow}
@@ -247,4 +247,4 @@ const onRowLeave = (e) => {
   e.currentTarget.style.backgroundColor = "#ffffff";
 };
 
-export default Medical;
+export default SignLanguage;

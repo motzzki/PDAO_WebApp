@@ -8,14 +8,30 @@ const router = express.Router();
 let conn;
 
 router.get("/get_barangay", async (req, res) => {
+  const useProduction = false; // Change to `true` for production
+  const host = useProduction
+    ? "https://api.pdao-web.online"
+    : "http://localhost:8018";
   try {
     conn = await pool.getConnection();
-    const [barangay_info] =
-      await conn.query(`SELECT barangay, COUNT(user_id) as Registered
-                        FROM tblusers
-                        JOIN tbladdress on tbladdress.user_id = userId
-                        GROUP BY barangay`);
-    res.json(barangay_info);
+    const [barangay_info_resp] =
+      await conn.query(`SELECT barangay, barangay_name, facility_name, location, picture, flag, latitude, longitude, 
+COUNT(user_id) as Registered
+	FROM tblusers
+	JOIN tbladdress on tbladdress.user_id = userId
+	CROSS JOIN facilities
+	GROUP BY barangay, barangay_name, facility_name,location, picture,flag, latitude, longitude`);
+    //res.json(barangay_info);
+
+    const barangay_info = barangay_info_resp.map((barangay) => {
+      return {
+        ...barangay,
+        picture: `${host}/uploads/${barangay.picture.split("/").pop()}`, // Assuming picture is stored as a relative path
+      };
+    });
+
+    // Respond with the facilities data
+    res.status(200).json(barangay_info);
   } catch (err) {
     console.error("Error fetching Barangay:", err);
     res.status(500).json({ error: "Error fetching Barangay" });

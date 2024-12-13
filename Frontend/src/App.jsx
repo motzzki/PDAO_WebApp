@@ -18,6 +18,8 @@ import AddHelp from "./pages/AddHelp.jsx";
 import Assistance from "./pages/Assistance.jsx";
 import Walker from "./pages/Walker.jsx";
 import Medical from "./pages/Medical.jsx";
+import Hearing from "./pages/Hearing.jsx";
+import Arts from "./pages/Arts.jsx";
 
 import UserFacilities from "./pages/UserFacilities.jsx";
 import AdminLayout from "./layout/AdminLayout.jsx";
@@ -34,6 +36,7 @@ import UserAccounts from "./pages/UserAccounts.jsx";
 import Custom404 from "./pages/Custom404.jsx";
 import BirthdayCashGift from "./pages/BirthdayCashGift.jsx";
 import UserFeedbacks from "./pages/UserFeedbacks.jsx";
+import SignLanguage from "./pages/SignLanguage.jsx";
 
 function App() {
   return (
@@ -69,6 +72,9 @@ function App() {
         <Route path="assistance" element={<Assistance />} />
         <Route path="walker" element={<Walker />} />
         <Route path="medical-mission" element={<Medical />} />
+        <Route path="hearing-aid" element={<Hearing />} />
+        <Route path="sign-language-training" element={<SignLanguage />} />
+        <Route path="arts-workshop" element={<Arts />} />
       </Route>
 
       <Route

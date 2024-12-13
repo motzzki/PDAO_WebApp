@@ -539,6 +539,262 @@ router.post("/register-medical", async (req, res) => {
   }
 });
 
+router.get("/hearing", async (req, res) => {
+  try {
+    const [result] = await pool.query(
+      `SELECT 
+    u.userId, 
+    u.first_name, 
+    u.middle_name, 
+    u.last_name, 
+    u.gender, 
+    d.disability_status, 
+    IFNULL(c.claim_tag, 0) AS claim_tag
+FROM 
+    tblusers u
+LEFT JOIN 
+    claim_table c 
+    ON u.userId = c.user_id AND c.claim_type IN ('hearing')
+LEFT JOIN 
+    disabilities d 
+    ON u.userId = d.user_id
+WHERE 
+    d.disability_status = 'hearing';`
+    );
+
+    if (result.length === 0) {
+      return res.json({
+        hearing: [],
+        totalClaimed: 0,
+        totalUnclaimed: 0,
+      });
+    }
+
+    const userIds = result.map((user) => user.userId);
+
+    const [claimedCount] = await pool.query(
+      `SELECT COUNT(*) as claimed_count
+       FROM claim_table
+       WHERE user_id IN (?) AND claim_tag = 1`,
+      [userIds]
+    );
+
+    const [unclaimedCount] = await pool.query(
+      `SELECT COUNT(*) as unclaimed_count
+       FROM claim_table
+       WHERE user_id IN (?) AND claim_tag = 0`,
+      [userIds]
+    );
+
+    res.json({
+      hearing: result,
+      totalClaimed: claimedCount[0].claimed_count,
+      totalUnclaimed: unclaimedCount[0].unclaimed_count,
+    });
+  } catch (error) {
+    console.error("Error fetching birthdays this month:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/register-hearing", async (req, res) => {
+  const { userId, claimType } = req.body;
+
+  try {
+    const [existingClaim] = await pool.query(
+      `SELECT * FROM claim_table WHERE user_id = ? AND claim_type = ?`,
+      [userId, claimType]
+    );
+
+    if (existingClaim.length > 0) {
+      return res.status(400).json({ message: "User has already registered!" });
+    }
+
+    const [result] = await pool.query(
+      `INSERT INTO claim_table (user_id, claim_type, claim_tag) VALUES (?, ?, 1)`,
+      [userId, claimType]
+    );
+
+    res
+      .status(201)
+      .json({ message: "Claim successful!", claimId: result.insertId });
+  } catch (error) {
+    console.error("Error claiming the gift:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get("/sign-language", async (req, res) => {
+  try {
+    const [result] = await pool.query(
+      `SELECT 
+    u.userId, 
+    u.first_name, 
+    u.middle_name, 
+    u.last_name, 
+    u.gender, 
+    d.disability_status, 
+    IFNULL(c.claim_tag, 0) AS claim_tag
+FROM 
+    tblusers u
+LEFT JOIN 
+    claim_table c 
+    ON u.userId = c.user_id AND c.claim_type IN ('sign_language')
+LEFT JOIN 
+    disabilities d 
+    ON u.userId = d.user_id
+WHERE 
+    d.disability_status = 'hearing' OR d.disability_status = 'speech';`
+    );
+
+    if (result.length === 0) {
+      return res.json({
+        sign_language: [],
+        totalClaimed: 0,
+        totalUnclaimed: 0,
+      });
+    }
+
+    const userIds = result.map((user) => user.userId);
+
+    const [claimedCount] = await pool.query(
+      `SELECT COUNT(*) as claimed_count
+       FROM claim_table
+       WHERE user_id IN (?) AND claim_tag = 1`,
+      [userIds]
+    );
+
+    const [unclaimedCount] = await pool.query(
+      `SELECT COUNT(*) as unclaimed_count
+       FROM claim_table
+       WHERE user_id IN (?) AND claim_tag = 0`,
+      [userIds]
+    );
+
+    res.json({
+      sign_language: result,
+      totalClaimed: claimedCount[0].claimed_count,
+      totalUnclaimed: unclaimedCount[0].unclaimed_count,
+    });
+  } catch (error) {
+    console.error("Error fetching birthdays this month:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/register-sign-language", async (req, res) => {
+  const { userId, claimType } = req.body;
+
+  try {
+    const [existingClaim] = await pool.query(
+      `SELECT * FROM claim_table WHERE user_id = ? AND claim_type = ?`,
+      [userId, claimType]
+    );
+
+    if (existingClaim.length > 0) {
+      return res.status(400).json({ message: "User has already registered!" });
+    }
+
+    const [result] = await pool.query(
+      `INSERT INTO claim_table (user_id, claim_type, claim_tag) VALUES (?, ?, 1)`,
+      [userId, claimType]
+    );
+
+    res
+      .status(201)
+      .json({ message: "Claim successful!", claimId: result.insertId });
+  } catch (error) {
+    console.error("Error claiming the gift:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.get("/arts", async (req, res) => {
+  try {
+    const [result] = await pool.query(
+      `SELECT 
+    u.userId, 
+    u.first_name, 
+    u.middle_name, 
+    u.last_name, 
+    u.gender, 
+    d.disability_status, 
+    IFNULL(c.claim_tag, 0) AS claim_tag
+FROM 
+    tblusers u
+LEFT JOIN 
+    claim_table c 
+    ON u.userId = c.user_id AND c.claim_type IN ('arts')
+LEFT JOIN 
+    disabilities d 
+    ON u.userId = d.user_id
+WHERE 
+    d.disability_status = 'psychosocial' OR d.disability_status = 'learning' OR 
+    d.disability_status = 'intellectual';`
+    );
+
+    if (result.length === 0) {
+      return res.json({
+        arts: [],
+        totalClaimed: 0,
+        totalUnclaimed: 0,
+      });
+    }
+
+    const userIds = result.map((user) => user.userId);
+
+    const [claimedCount] = await pool.query(
+      `SELECT COUNT(*) as claimed_count
+       FROM claim_table
+       WHERE user_id IN (?) AND claim_tag = 1`,
+      [userIds]
+    );
+
+    const [unclaimedCount] = await pool.query(
+      `SELECT COUNT(*) as unclaimed_count
+       FROM claim_table
+       WHERE user_id IN (?) AND claim_tag = 0`,
+      [userIds]
+    );
+
+    res.json({
+      arts: result,
+      totalClaimed: claimedCount[0].claimed_count,
+      totalUnclaimed: unclaimedCount[0].unclaimed_count,
+    });
+  } catch (error) {
+    console.error("Error fetching birthdays this month:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+router.post("/register-arts", async (req, res) => {
+  const { userId, claimType } = req.body;
+
+  try {
+    const [existingClaim] = await pool.query(
+      `SELECT * FROM claim_table WHERE user_id = ? AND claim_type = ?`,
+      [userId, claimType]
+    );
+
+    if (existingClaim.length > 0) {
+      return res.status(400).json({ message: "User has already registered!" });
+    }
+
+    const [result] = await pool.query(
+      `INSERT INTO claim_table (user_id, claim_type, claim_tag) VALUES (?, ?, 1)`,
+      [userId, claimType]
+    );
+
+    res
+      .status(201)
+      .json({ message: "Claim successful!", claimId: result.insertId });
+  } catch (error) {
+    console.error("Error claiming the gift:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 router.post("/claim", async (req, res) => {
   const { userId, claimType } = req.body;
 

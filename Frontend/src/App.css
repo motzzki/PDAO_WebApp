@@ -470,3 +470,93 @@ div.footer {
 }
 
 /*  */
+/* Modern Modal Styles */
+.modern-modal .modal-content {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0px 8px 30px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  transition: all 0.3s ease-in-out;
+}
+
+.modern-modal .modal-header {
+  background-color: #dc3545;
+  color: #fff;
+  font-size: 1.25rem;
+  font-weight: bold;
+  border-bottom: none;
+  padding: 20px;
+}
+
+.modern-modal .modal-title {
+  color: #fff;
+}
+
+.modern-modal .modal-body {
+  padding: 20px;
+}
+
+.modern-modal .modal-info {
+  margin-bottom: 20px;
+}
+
+.modern-modal .modal-info-item {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.modern-modal .modal-info-item strong {
+  color: #333;
+}
+
+.modern-modal .modal-image {
+  text-align: center;
+}
+
+.modern-modal .facility-image {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.modern-modal .modal-footer {
+  background-color: #f8f9fa;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+}
+
+.modern-modal .btn-primary {
+  background-color: #cc3241;
+  border: none;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+.modern-modal .btn-primary:hover {
+  background-color: #8b232e;
+}
+
+.modern-modal .btn-primary:focus {
+  outline: none;
+}
+
+/* Close button styling */
+.modern-modal .close {
+  color: #fff;
+  font-size: 1.5rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.modern-modal .close:hover {
+  color: #ccc;
+}
