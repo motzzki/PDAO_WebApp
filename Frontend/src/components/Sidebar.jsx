@@ -275,7 +275,7 @@ const Sidebar = () => {
           <Link to="/admin/assistance">
             {/* Updated Graphical Report Icon */}
             <CDBSidebarMenuItem
-              icon="gift"
+              icon="question-circle"
               style={menuItemStyle}
               onMouseEnter={(e) => {
                 e.currentTarget.style.backgroundColor =

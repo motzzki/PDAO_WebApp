@@ -301,7 +301,7 @@ const Registration = () => {
       <h1 className="mb-4 text-center">Registration Form</h1>
 
       <Row>
-        <Col md={8} className="mx-auto">
+        <Col md={14} className="mx-auto">
           <Card>
             <Card.Body>
               <ProgressBar
@@ -472,6 +472,11 @@ const Registration = () => {
                         </FloatingLabel>
                       </Col>
                     </Row>
+                    <div className="mt-5 d-flex justify-content-end mb-5">
+                      <Button variant="primary" onClick={nextStep}>
+                        Next
+                      </Button>
+                    </div>
                   </>
                 )}
                 {currentStep === 2 && (
@@ -547,6 +552,27 @@ const Registration = () => {
                         />
                       </Col>
                     </Row>
+                    <div className="mt-5 d-flex justify-content-between mb-5">
+                      <Button
+                        variant="secondary"
+                        onClick={prevStep}
+                        disabled={currentStep === 1}
+                      >
+                        Previous
+                      </Button>
+                      <Button
+                        variant="primary"
+                        onClick={nextStep}
+                        disabled={currentStep === 3}
+                      >
+                        Next
+                      </Button>
+                      {/* {currentStep === 3 && (
+                        <Button type="submit" variant="success">
+                          Submit
+                        </Button>
+                      )} */}
+                    </div>
                   </>
                 )}
                 {currentStep === 3 && (
@@ -684,29 +710,29 @@ const Registration = () => {
                         </FloatingLabel>
                       </Col>
                     </Row>
-                  </>
-                )}
-                <div className="mt-4 d-flex justify-content-between">
-                  <Button
-                    variant="secondary"
-                    onClick={prevStep}
-                    disabled={currentStep === 1}
-                  >
-                    Previous
-                  </Button>
-                  <Button
+                    <div className="mt-5 d-flex justify-content-between mb-5">
+                      <Button
+                        variant="secondary"
+                        onClick={prevStep}
+                        disabled={currentStep === 1}
+                      >
+                        Previous
+                      </Button>
+                      {/* <Button
                     variant="primary"
                     onClick={nextStep}
                     disabled={currentStep === 3}
                   >
                     Next
-                  </Button>
-                  {currentStep === 3 && (
-                    <Button type="submit" variant="success">
-                      Submit
-                    </Button>
-                  )}
-                </div>
+                  </Button> */}
+                      {currentStep === 3 && (
+                        <Button type="submit" variant="success">
+                          Submit
+                        </Button>
+                      )}
+                    </div>
+                  </>
+                )}
               </Form>
             </Card.Body>
           </Card>
