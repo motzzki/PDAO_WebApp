@@ -74,7 +74,7 @@ const UserFacilities = () => {
                 ))}
           </Row>
         </Tab>
-        <Tab
+        {/* <Tab
           eventKey="antiFriendly"
           title="Anti-Friendly"
           className="custom-tab"
@@ -88,7 +88,7 @@ const UserFacilities = () => {
                   </Col>
                 ))}
           </Row>
-        </Tab>
+        </Tab> */}
       </Tabs>
     </Container>
   );

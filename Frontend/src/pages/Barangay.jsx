@@ -17,7 +17,9 @@ const Barangay = () => {
 
   const fetchBarangayInfo = async () => {
     try {
-      const response = await axios.get(`${host}/api/barangay/get_barangay`);
+      const response = await axios.get(
+        `${host}/api/barangay/get_barangay_count`
+      );
       setBarangayInfo(response.data);
     } catch (error) {
       console.error("Error fetching barangay information:", error);

@@ -21,7 +21,6 @@ COUNT(user_id) as Registered
 	JOIN tbladdress on tbladdress.user_id = userId
 	CROSS JOIN facilities
 	GROUP BY barangay, barangay_name, facility_name,location, picture,flag, latitude, longitude`);
-    //res.json(barangay_info);
 
     const barangay_info = barangay_info_resp.map((barangay) => {
       return {
@@ -30,8 +29,24 @@ COUNT(user_id) as Registered
       };
     });
 
-    // Respond with the facilities data
     res.status(200).json(barangay_info);
+  } catch (err) {
+    console.error("Error fetching Barangay:", err);
+    res.status(500).json({ error: "Error fetching Barangay" });
+  } finally {
+    conn.release();
+  }
+});
+
+router.get("/get_barangay_count", async (req, res) => {
+  try {
+    conn = await pool.getConnection();
+    const [barangay_info] =
+      await conn.query(`SELECT barangay, COUNT(user_id) as Registered
+                        FROM tblusers
+                        JOIN tbladdress on tbladdress.user_id = userId
+                        GROUP BY barangay`);
+    res.json(barangay_info);
   } catch (err) {
     console.error("Error fetching Barangay:", err);
     res.status(500).json({ error: "Error fetching Barangay" });

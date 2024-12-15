@@ -21,6 +21,7 @@ import {
   FaEye,
   FaEyeSlash,
   FaExclamationCircle,
+  FaUserCheck,
 } from "react-icons/fa";
 import { useAuth } from "../layout/AuthContext";
 import moment from "moment";
@@ -199,13 +200,8 @@ const MyAccount = () => {
               className="shadow-lg rounded-lg border-0 text-center"
             >
               <Card.Body>
-                <Image
-                  src="https://via.placeholder.com/150"
-                  alt="Profile Picture"
-                  roundedCircle
-                  style={profileImageStyle}
-                  className="mb-3 profile-image"
-                />
+                <FaUserCheck size={80} />
+
                 <h3 style={profileNameStyle}>
                   {employeeData.firstname} {employeeData.lastname}
                 </h3>

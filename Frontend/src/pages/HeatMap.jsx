@@ -212,7 +212,7 @@ const HeatMap = () => {
         const layer = e.target;
         layer.setStyle({
           color: "white",
-          weight: 2,
+          weight: 3,
           fillOpacity: 0.7,
         });
         layer.closePopup();
@@ -263,7 +263,7 @@ const HeatMap = () => {
     background: bgColor,
     height: "20px",
     width: "20px",
-    borderRadius: "4px", // Rounded corners for each color block
+    borderRadius: "4px",
     marginRight: "10px",
   });
 

@@ -192,23 +192,7 @@ const Registration = () => {
         });
 
         // Reset form fields after successful registration
-        setFirstName("");
-        setAddress("");
-        setAge("");
-        setBarangay("");
-        setBloodType("");
-        setCause("");
-        setCivilStatus("");
-        setContactNum("");
-        setDateOfBirth("");
-        setDisability("");
-        setEducation("");
-        setEmail("");
-        setEmployment("");
-        setLastName("");
-        setMiddleName("");
-        setNationality("");
-        setOccupation("");
+        clearForm();
       }
     } catch (err) {
       console.error("Error adding user:", err.message);
@@ -321,6 +305,7 @@ const Registration = () => {
                           id="newId"
                           name="option" // All radios with the same name will behave like a group
                           label="New ID"
+                          defaultChecked
                         />
                         <Form.Check
                           type="radio"
@@ -377,7 +362,6 @@ const Registration = () => {
                             value={middleName}
                             onChange={(e) => setMiddleName(e.target.value)}
                             onKeyDown={blockNumbers} // Changed to onKeyDown
-                            required
                             className="form-control-custom"
                           />
                         </FloatingLabel>

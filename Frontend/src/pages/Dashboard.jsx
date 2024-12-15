@@ -34,16 +34,5 @@ const Dashboard = () => {
     </Container>
   );
 };
-{
-  /* <LineGraph /> */
-}
-{
-  /* <PieChart /> */
-}
-{
-  /* <CashGiftGraph /> */
-}
-
-// Disability Distribution per Barangay
 
 export default Dashboard;
