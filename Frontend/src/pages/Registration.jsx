@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Card,
@@ -35,6 +35,7 @@ const Registration = () => {
   const [employment, setEmployment] = useState("");
   const [address, setAddress] = useState("");
   const [occupation, setOccupation] = useState("");
+  const [randomNumber, setRandomNumber] = useState("");
 
   const blockNumbers = (e) => {
     if (!/[a-zA-Z\s]/.test(e.key)) {
@@ -200,6 +201,12 @@ const Registration = () => {
     }
   };
 
+  useEffect(() => {
+    // Generate a random 4-digit number (1000-9999) when the component mounts
+    const number = Math.floor(1000 + Math.random() * 9000);
+    setRandomNumber(number);
+  }, []);
+
   const clearForm = () => {
     setFirstName("");
     setMiddleName("");
@@ -298,6 +305,10 @@ const Registration = () => {
                 {currentStep === 1 && (
                   <>
                     <h4 className="text-center mb-3">Personal Information</h4>
+                    <div className="mb-3 d-flex gap-3 open-sans-bold fs-4 justify-content-center">
+                      <span>Person With Disability Number:</span>
+                      <span>04-3404-000-{randomNumber}</span>
+                    </div>
                     <div className="">
                       <Form.Group className="mb-3 d-flex justify-content-evenly">
                         <Form.Check

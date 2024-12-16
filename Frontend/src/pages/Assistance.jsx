@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Col, Row } from "react-bootstrap";
+import { Card, CardText, Col, Row } from "react-bootstrap";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import {
@@ -14,31 +14,42 @@ import {
 const assistanceData = [
   {
     title: "CASH GIFT",
+    text: "(PWD Birthdays)",
     link: "/admin/cashgift",
     icon: <FaGift size={50} color="#dc3545" />,
   },
   {
     title: "WALKER AND WHEELCHAIR",
+    text: "(Physical Disability)",
+
     link: "/admin/walker",
     icon: <FaWheelchair size={50} color="#dc3545" />,
   },
   {
     title: "MEDICAL MISSION",
     link: "/admin/medical-mission",
+    text: "(General Disabilities)",
+
     icon: <FaStethoscope size={50} color="#dc3545" />,
   },
   {
     title: "HEARING AID",
     link: "/admin/hearing-aid",
+    text: "(Hearing Disability)",
+
     icon: <FaAssistiveListeningSystems size={50} color="#dc3545" />,
   },
   {
     title: "SIGN LANGUAGE TRAINING",
+    text: "(Hearing and Speech Disabilities)",
+
     link: "/admin/sign-language-training",
     icon: <FaHandsHelping size={50} color="#dc3545" />,
   },
   {
     title: "ARTS AND WORKSHOP",
+    text: "(Psychosocial, Learning, and Intellectual Disabilities)",
+
     link: "/admin/arts-workshop",
     icon: <FaPalette size={50} color="#dc3545" />,
   },
@@ -90,6 +101,9 @@ const Assistance = () => {
                       {item.title}
                     </Card.Title>
                     {item.icon}
+                    <CardText className="mt-5 open-sans-bold">
+                      {item.text}
+                    </CardText>
                   </Card.Body>
                 </Card>
               </Link>

@@ -560,3 +560,18 @@ div.footer {
 .modern-modal .close:hover {
   color: #ccc;
 }
+
+.tooltip-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; /* Space between text and "Pro-Friendly" */
+}
+
+.pro-friendly {
+  background-color: #cc3241; /* Bright blue background */
+  color: white; /* White text for contrast */
+  border-radius: 5px; /* Rounded pill shape */
+  padding: 2px 8px; /* Compact padding for better appearance */
+  font-size: 18px; /* Slightly smaller text for emphasis */
+  font-weight: bold;
+}

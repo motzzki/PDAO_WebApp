@@ -152,11 +152,14 @@ const HeatMap = () => {
       barangayMarkers.forEach((marker) => {
         const leafletMarker = L.marker([marker.lat, marker.lng])
           .addTo(map)
-          .bindTooltip(marker.name, {
-            permanent: false,
-            direction: "top",
-            className: "custom-tooltip",
-          });
+          .bindTooltip(
+            `<span class="pro-friendly">${marker.name} - Pro-Friendly</span></div>`,
+            {
+              permanent: false,
+              direction: "top",
+              className: "custom-tooltip",
+            }
+          );
 
         leafletMarker.on("click", () => {
           setModalData(marker);
