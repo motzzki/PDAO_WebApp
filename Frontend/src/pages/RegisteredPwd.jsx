@@ -19,6 +19,7 @@ const TABLE_HEAD = [
   "Birthdate",
   "Blood Type",
   "Nationality",
+  "Created At",
   "Action",
 ];
 
@@ -214,6 +215,7 @@ const RegisteredPwd = () => {
                   </td>
                   <td className="text-center">{infos.blood_type}</td>
                   <td>{infos.nationality}</td>
+                  <td> {moment(infos.created_at).format("MMM DD, YYYY")}</td>
                   <td className="text-center">
                     <img
                       src={eye}

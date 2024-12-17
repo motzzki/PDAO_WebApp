@@ -36,6 +36,7 @@ const Registration = () => {
   const [address, setAddress] = useState("");
   const [occupation, setOccupation] = useState("");
   const [randomNumber, setRandomNumber] = useState("");
+  const [randomNum, setRandomNum] = useState("");
 
   const blockNumbers = (e) => {
     if (!/[a-zA-Z\s]/.test(e.key)) {
@@ -192,7 +193,6 @@ const Registration = () => {
           },
         });
 
-        // Reset form fields after successful registration
         clearForm();
       }
     } catch (err) {
@@ -204,7 +204,9 @@ const Registration = () => {
   useEffect(() => {
     // Generate a random 4-digit number (1000-9999) when the component mounts
     const number = Math.floor(1000 + Math.random() * 9000);
+    const number1 = Math.floor(1 + Math.random() * 99);
     setRandomNumber(number);
+    setRandomNum(number1);
   }, []);
 
   const clearForm = () => {
@@ -304,10 +306,12 @@ const Registration = () => {
               <Form onSubmit={handleSubmit}>
                 {currentStep === 1 && (
                   <>
-                    <h4 className="text-center mb-3">Personal Information</h4>
-                    <div className="mb-3 d-flex gap-3 open-sans-bold fs-4 justify-content-center">
-                      <span>Person With Disability Number:</span>
-                      <span>04-3404-000-{randomNumber}</span>
+                    <h1 className="text-center mb-3">Personal Information</h1>
+                    <div className="mb-3 d-flex gap-3 justify-content-center">
+                      <h4>Person With Disability Number:</h4>
+                      <h4 className="text-danger">
+                        {randomNum}-{randomNumber}-000-0000
+                      </h4>
                     </div>
                     <div className="">
                       <Form.Group className="mb-3 d-flex justify-content-evenly">
@@ -476,7 +480,7 @@ const Registration = () => {
                 )}
                 {currentStep === 2 && (
                   <>
-                    <h4 className="text-center mb-3">Contact & Address</h4>
+                    <h1 className="text-center mb-3">Contact & Address</h1>
                     <Row className="g-4">
                       <Col md={6}>
                         <FloatingLabel
@@ -572,7 +576,7 @@ const Registration = () => {
                 )}
                 {currentStep === 3 && (
                   <>
-                    <h4 className="text-center mb-4">Health & Status</h4>
+                    <h1 className="text-center mb-4">Health & Status</h1>
                     <Row className="g-4">
                       <Col md={4}>
                         <FloatingLabel
